@@ -74,9 +74,25 @@ npm test          # pruebas del motor de cálculo e integraciones
 npm run icons     # regenera los iconos PNG de la PWA
 ```
 
-Para instalarla en el celular: publica `dist/` en cualquier hosting estático
-(Netlify, Vercel, GitHub Pages, un contenedor nginx…), ábrela en Chrome o Safari
+Para instalarla en el celular: publícala (ver abajo), ábrela en Chrome o Safari
 y usa **Agregar a pantalla de inicio**.
+
+### Publicar en GitHub Pages
+
+`.github/workflows/deploy.yml` construye y publica la app en cada push. El sitio
+queda en `https://<usuario>.github.io/<repo>/`, por lo que la construcción usa
+la variable `BASE_PATH`:
+
+```bash
+BASE_PATH=/Sam/ npm run build   # así la construye el flujo de CI
+npm run build                   # ruta relativa, para cualquier otro hosting
+```
+
+Requisitos: en **Settings → Pages** el origen debe ser *GitHub Actions* (el
+flujo intenta activarlo solo). Ojo: Pages en repositorios **privados** exige
+plan de pago; con plan gratuito hay que hacer público el repositorio o publicar
+en Netlify, Vercel o Cloudflare Pages, que sí aceptan repos privados gratis.
+En esos servicios el comando es `npm run build` y la carpeta a publicar `dist`.
 
 ## Configurar Google Maps
 

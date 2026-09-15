@@ -2,8 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// En GitHub Pages el sitio vive en /<repo>/, así que la ruta base se inyecta
+// desde el flujo de despliegue. En local y en hostings normales queda relativa.
+const base = process.env.BASE_PATH || './'
+const isSubpath = base !== './'
+
 export default defineConfig({
-  base: './',
+  base,
   plugins: [
     react(),
     VitePWA({
@@ -30,7 +35,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-        navigateFallback: 'index.html',
+        navigateFallback: isSubpath ? `${base}index.html` : 'index.html',
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {

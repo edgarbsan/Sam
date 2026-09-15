@@ -1,0 +1,63 @@
+# Publica la PWA en GitHub Pages en cada push.
+name: Publicar en GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      # Rama de trabajo: permite probar la app en el celular antes de fusionar.
+      # Al fusionar a main se puede borrar este renglón.
+      - claude/pwa-freight-quote-app-choza8
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un despliegue a la vez, sin cancelar el que ya va en camino.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Pruebas
+        run: npm test
+
+      - name: Construir la PWA
+        env:
+          # El sitio queda en https://<usuario>.github.io/<repo>/
+          BASE_PATH: /${{ github.event.repository.name }}/
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  desplegar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Desplegar
+        id: deployment
+        uses: actions/deploy-pages@v4
