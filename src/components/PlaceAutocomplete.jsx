@@ -123,11 +123,11 @@ export default function PlaceAutocomplete({ label, icon, value, onChange, placeh
       {label && (
         <label className="label-base">
           {label}
-          {required && <span className="text-brand-400"> *</span>}
+          {required && <span className="text-carne-700"> *</span>}
         </label>
       )}
       <div className="relative flex items-center">
-        {icon && <span className="pointer-events-none absolute left-3.5 text-zinc-500">{icon}</span>}
+        {icon && <span className="pointer-events-none absolute left-3.5 text-cacao-500">{icon}</span>}
         <input
           className={`input-base ${icon ? 'pl-11' : ''} pr-10`}
           value={query}
@@ -146,12 +146,12 @@ export default function PlaceAutocomplete({ label, icon, value, onChange, placeh
         />
         <span className="absolute right-3 flex items-center">
           {loading ? (
-            <Spinner className="h-4 w-4 text-zinc-400" />
+            <Spinner className="h-4 w-4 text-cacao-600" />
           ) : query ? (
             <button
               type="button"
               aria-label="Limpiar"
-              className="rounded-full p-1 text-zinc-500 hover:bg-ink-700 hover:text-zinc-200"
+              className="rounded-full p-1 text-cacao-500 hover:bg-crema-300 hover:text-cacao-800"
               onClick={() => {
                 setQuery('')
                 setItems([])
@@ -170,17 +170,17 @@ export default function PlaceAutocomplete({ label, icon, value, onChange, placeh
         {error ? (
           <p className="text-xs text-amber-400">{error}</p>
         ) : value?.manual ? (
-          <p className="text-xs text-zinc-500">Dirección capturada a mano: Google la interpretará al calcular la ruta.</p>
+          <p className="text-xs text-cacao-500">Dirección capturada a mano: Google la interpretará al calcular la ruta.</p>
         ) : null}
       </div>
 
       {open && items.length > 0 && (
-        <ul className="absolute z-40 mt-2 max-h-72 w-full overflow-auto rounded-xl border border-ink-700 bg-ink-850 shadow-card">
+        <ul className="absolute z-40 mt-2 max-h-72 w-full overflow-auto rounded-xl border border-crema-400 bg-crema-100 shadow-card">
           {items.map((item) => (
             <li key={item.placeId}>
               <button
                 type="button"
-                className="w-full border-b border-ink-800 px-4 py-3 text-left last:border-0 hover:bg-ink-800 active:bg-ink-700"
+                className="w-full border-b border-crema-300 px-4 py-3 text-left last:border-0 hover:bg-crema-200 active:bg-crema-300"
                 onMouseDown={(e) => {
                   e.preventDefault()
                   pickingRef.current = true
@@ -190,8 +190,8 @@ export default function PlaceAutocomplete({ label, icon, value, onChange, placeh
                 }}
                 onClick={() => pick(item)}
               >
-                <p className="text-[15px] font-medium text-zinc-100">{item.primary}</p>
-                {item.secondary && <p className="text-xs text-zinc-500">{item.secondary}</p>}
+                <p className="text-[15px] font-medium text-cacao-900">{item.primary}</p>
+                {item.secondary && <p className="text-xs text-cacao-500">{item.secondary}</p>}
               </button>
             </li>
           ))}

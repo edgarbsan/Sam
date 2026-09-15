@@ -185,11 +185,11 @@ export default function SettingsScreen() {
 
             <Field label="Logo">
               <div className="flex items-center gap-3">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-ink-700 bg-ink-850">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-crema-400 bg-crema-100">
                   {form.logoDataUrl ? (
                     <img src={form.logoDataUrl} alt="Logo" className="h-full w-full object-contain" />
                   ) : (
-                    <span className="text-[10px] text-zinc-500">Sin logo</span>
+                    <span className="text-[10px] text-cacao-500">Sin logo</span>
                   )}
                 </div>
                 <div className="flex flex-1 gap-2">
@@ -259,7 +259,7 @@ export default function SettingsScreen() {
           )}
           <p className="hint-base">
             Datos abiertos:{' '}
-            <a href={CRE_DATASET_URL} target="_blank" rel="noreferrer" className="text-brand-400 underline">
+            <a href={CRE_DATASET_URL} target="_blank" rel="noreferrer" className="text-carne-700 underline">
               precios de gasolina y diésel (datos.gob.mx)
             </a>
             . Si el navegador bloquea la consulta, captura el precio a mano.
@@ -366,12 +366,12 @@ export default function SettingsScreen() {
           <Button variant="secondary" full onClick={downloadBackup}>
             Descargar respaldo (JSON)
           </Button>
-          <Button variant="ghost" full className="mt-2 text-red-400" onClick={() => setConfirmClear(true)}>
+          <Button variant="ghost" full className="mt-2 text-ladrillo-700" onClick={() => setConfirmClear(true)}>
             <TrashIcon className="h-5 w-5" /> Borrar todo el historial
           </Button>
         </Card>
 
-        <p className="pb-2 text-center text-xs text-zinc-600">
+        <p className="pb-2 text-center text-xs text-cacao-700">
           Cotizador de fletes · Caja seca 53 ft · Los datos viven en este dispositivo.
         </p>
       </div>

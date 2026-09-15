@@ -40,8 +40,8 @@ export default function Step3Margin({ quote, derived, patchPricing, onBack, onNe
               onClick={() => patchPricing({ marginPct: String(m) })}
               className={`rounded-full border px-3.5 py-2 text-sm font-medium transition ${
                 Number(marginValue) === m
-                  ? 'border-brand-500 bg-brand-500/15 text-brand-300'
-                  : 'border-ink-700 bg-ink-850 text-zinc-300 hover:bg-ink-800'
+                  ? 'border-carne-600 bg-carne-200 text-carne-700'
+                  : 'border-crema-400 bg-crema-100 text-cacao-700 hover:bg-crema-200'
               }`}
             >
               {m}%
@@ -83,26 +83,26 @@ export default function Step3Margin({ quote, derived, patchPricing, onBack, onNe
         </Field>
       </Card>
 
-      <Card title="Precio de venta" className="border-brand-500/30 bg-gradient-to-b from-brand-500/[0.07] to-transparent">
+      <Card title="Precio de venta" className="border-carne-400 bg-gradient-to-b from-carne-200/70 to-transparent">
         <Row label="Subtotal sin IVA" value={money(pricing.preIva)} strong />
         <Row label={`IVA ${Math.round(IVA_RATE * 100)}%`} value={money(pricing.iva)} />
         <Divider />
         <Row label="Total" value={money(pricing.total)} accent strong />
 
         <div className="mt-4 grid grid-cols-2 gap-2 text-center">
-          <div className="rounded-xl bg-ink-850 py-2.5">
-            <p className="text-[11px] uppercase text-zinc-500">Utilidad</p>
-            <p className={`tabular text-base font-semibold ${pricing.profit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+          <div className="rounded-xl bg-crema-100 py-2.5">
+            <p className="text-[11px] uppercase text-cacao-500">Utilidad</p>
+            <p className={`tabular text-base font-semibold ${pricing.profit >= 0 ? 'text-emerald-700' : 'text-ladrillo-700'}`}>
               {money(pricing.profit)}
             </p>
-            <p className="text-[11px] text-zinc-500">{number(pricing.realMarginPct, 1)}% real</p>
+            <p className="text-[11px] text-cacao-500">{number(pricing.realMarginPct, 1)}% real</p>
           </div>
-          <div className="rounded-xl bg-ink-850 py-2.5">
-            <p className="text-[11px] uppercase text-zinc-500">Precio por km</p>
-            <p className="tabular text-base font-semibold text-zinc-100">
+          <div className="rounded-xl bg-crema-100 py-2.5">
+            <p className="text-[11px] uppercase text-cacao-500">Precio por km</p>
+            <p className="tabular text-base font-semibold text-cacao-900">
               {distance > 0 ? money(pricing.preIva / distance) : '—'}
             </p>
-            <p className="text-[11px] text-zinc-500">{kmLabel(distance)}</p>
+            <p className="text-[11px] text-cacao-500">{kmLabel(distance)}</p>
           </div>
         </div>
       </Card>

@@ -12,28 +12,28 @@ function QuoteRow({ quote, onOpen, onEdit, onDelete }) {
   const { pricing } = deriveQuote(quote)
   return (
     <li className="card overflow-hidden">
-      <button type="button" onClick={onOpen} className="w-full px-4 py-3 text-left active:bg-ink-850">
+      <button type="button" onClick={onOpen} className="w-full px-4 py-3 text-left active:bg-crema-100">
         <div className="flex items-baseline justify-between gap-3">
-          <span className="text-xs font-semibold tracking-wide text-brand-400">{quote.folio}</span>
-          <span className="text-xs text-zinc-500">{dateLabel(quote.trip?.date)}</span>
+          <span className="text-xs font-semibold tracking-wide text-carne-700">{quote.folio}</span>
+          <span className="text-xs text-cacao-500">{dateLabel(quote.trip?.date)}</span>
         </div>
-        <p className="mt-1 truncate text-[15px] font-medium text-zinc-100">{routeLabel(quote)}</p>
+        <p className="mt-1 truncate text-[15px] font-medium text-cacao-900">{routeLabel(quote)}</p>
         <div className="mt-1.5 flex items-center justify-between gap-3">
-          <span className="text-xs text-zinc-500 tabular">
+          <span className="text-xs text-cacao-500 tabular">
             {quote.route?.distanceKm ? kmLabel(quote.route.distanceKm) : 'Sin ruta'}
             {quote.trip?.escortEnabled ? ' · con resguardo' : ''}
           </span>
-          <span className="tabular text-base font-bold text-zinc-100">{money(pricing.total)}</span>
+          <span className="tabular text-base font-bold text-cacao-900">{money(pricing.total)}</span>
         </div>
       </button>
-      <div className="flex border-t border-ink-800 text-xs">
-        <button onClick={onOpen} className="flex-1 py-2.5 text-zinc-300 hover:bg-ink-800">
+      <div className="flex border-t border-crema-300 text-xs">
+        <button onClick={onOpen} className="flex-1 py-2.5 text-cacao-700 hover:bg-crema-200">
           Ver detalle
         </button>
-        <button onClick={onEdit} className="flex flex-1 items-center justify-center gap-1.5 border-l border-ink-800 py-2.5 text-zinc-300 hover:bg-ink-800">
+        <button onClick={onEdit} className="flex flex-1 items-center justify-center gap-1.5 border-l border-crema-300 py-2.5 text-cacao-700 hover:bg-crema-200">
           <EditIcon className="h-4 w-4" /> Editar
         </button>
-        <button onClick={onDelete} className="flex flex-1 items-center justify-center gap-1.5 border-l border-ink-800 py-2.5 text-red-400 hover:bg-red-500/10">
+        <button onClick={onDelete} className="flex flex-1 items-center justify-center gap-1.5 border-l border-crema-300 py-2.5 text-ladrillo-700 hover:bg-ladrillo-50">
           <TrashIcon className="h-4 w-4" /> Borrar
         </button>
       </div>
@@ -101,7 +101,7 @@ export default function HistoryScreen() {
       }
     >
       <div className="relative mb-4">
-        <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
+        <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-cacao-500" />
         <TextInput
           className="pl-11"
           placeholder="Buscar por folio, origen o destino"

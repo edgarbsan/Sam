@@ -93,12 +93,12 @@ export default function QuoteDetailScreen() {
         <Card title="Viaje">
           <div className="space-y-2">
             <div>
-              <p className="text-xs uppercase tracking-wide text-zinc-500">Origen</p>
-              <p className="text-[15px] text-zinc-100">{quote.trip?.origin?.description || '—'}</p>
+              <p className="text-xs uppercase tracking-wide text-cacao-500">Origen</p>
+              <p className="text-[15px] text-cacao-900">{quote.trip?.origin?.description || '—'}</p>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-wide text-zinc-500">Destino</p>
-              <p className="text-[15px] text-zinc-100">{quote.trip?.destination?.description || '—'}</p>
+              <p className="text-xs uppercase tracking-wide text-cacao-500">Destino</p>
+              <p className="text-[15px] text-cacao-900">{quote.trip?.destination?.description || '—'}</p>
             </div>
           </div>
           <Divider />
@@ -139,7 +139,7 @@ export default function QuoteDetailScreen() {
               <Row label="Total" value={money(pricing.total)} accent strong />
             </>
           ) : (
-            <p className="text-sm text-zinc-500">Oculto para que puedas mostrar la pantalla sin revelar tus costos.</p>
+            <p className="text-sm text-cacao-500">Oculto para que puedas mostrar la pantalla sin revelar tus costos.</p>
           )}
         </Card>
 
@@ -162,7 +162,7 @@ export default function QuoteDetailScreen() {
           <Button variant="secondary" className="flex-1" onClick={() => navigate(`/nueva?edit=${quote.id}`)}>
             <EditIcon className="h-5 w-5" /> Editar
           </Button>
-          <Button variant="ghost" className="flex-1 text-red-400" onClick={() => setConfirmDelete(true)}>
+          <Button variant="ghost" className="flex-1 text-ladrillo-700" onClick={() => setConfirmDelete(true)}>
             <TrashIcon className="h-5 w-5" /> Borrar
           </Button>
         </div>

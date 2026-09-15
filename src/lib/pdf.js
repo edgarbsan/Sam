@@ -5,10 +5,12 @@ import { moneyPlain, dateLabel, km, duration, dateTimeLabel } from './format.js'
 import { deriveQuote } from './quoteModel.js'
 import { IVA_RATE } from './constants.js'
 
-const ORANGE = [255, 129, 18]
-const INK = [24, 24, 27]
-const MUTED = [113, 113, 122]
-const LINE = [228, 228, 231]
+// Misma paleta que la app: carne-600/700 de acento, cafés para el texto.
+const BRAND = [194, 101, 47]
+const BRAND_DEEP = [158, 79, 36]
+const INK = [42, 28, 20]
+const MUTED = [138, 103, 80]
+const LINE = [239, 216, 201]
 
 const M = 14 // margen en mm
 const PAGE_W = 210
@@ -46,7 +48,7 @@ function header(doc, quote, settings) {
   // Bloque de folio a la derecha
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(11)
-  doc.setTextColor(...ORANGE)
+  doc.setTextColor(...BRAND_DEEP)
   doc.text('COTIZACIÓN', PAGE_W - M, y + 6, { align: 'right' })
   doc.setTextColor(...INK)
   doc.setFontSize(13)
@@ -57,7 +59,7 @@ function header(doc, quote, settings) {
   doc.text(dateLabel(quote?.createdAt || new Date().toISOString(), { long: true }), PAGE_W - M, y + 18, { align: 'right' })
 
   y += 25
-  doc.setDrawColor(...ORANGE)
+  doc.setDrawColor(...BRAND)
   doc.setLineWidth(0.8)
   doc.line(M, y, PAGE_W - M, y)
   return y + 7
@@ -141,11 +143,11 @@ function conceptsTable(doc, quote, mode, y) {
     ],
     styles: { font: 'helvetica', fontSize: 10, cellPadding: 2.4, lineColor: LINE, lineWidth: 0.2, textColor: INK },
     headStyles: { fillColor: INK, textColor: [255, 255, 255], fontStyle: 'bold' },
-    footStyles: { fillColor: [250, 250, 250], textColor: INK, fontStyle: 'bold' },
+    footStyles: { fillColor: [253, 244, 238], textColor: INK, fontStyle: 'bold' },
     columnStyles: { 0: { cellWidth: CONTENT_W - 45 }, 1: { cellWidth: 45, halign: 'right' } },
     didParseCell: (data) => {
       if (data.section === 'foot' && data.row.index === 2) {
-        data.cell.styles.fillColor = ORANGE
+        data.cell.styles.fillColor = BRAND_DEEP
         data.cell.styles.textColor = [255, 255, 255]
         data.cell.styles.fontSize = 11.5
       }
@@ -190,8 +192,8 @@ function notesBlock(doc, quote, settings, y) {
       doc.addPage()
       y = M
     }
-    doc.setFillColor(253, 246, 238)
-    doc.setDrawColor(...ORANGE)
+    doc.setFillColor(254, 246, 241)
+    doc.setDrawColor(...BRAND)
     doc.setLineWidth(0.4)
     doc.roundedRect(M, y, CONTENT_W, boxH, 2, 2, 'FD')
     doc.setFont('helvetica', 'normal')

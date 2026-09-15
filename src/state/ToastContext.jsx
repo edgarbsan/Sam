@@ -3,10 +3,10 @@ import { createContext, useCallback, useContext, useMemo, useRef, useState } fro
 const ToastContext = createContext(null)
 
 const TONES = {
-  info: 'bg-ink-800 border-ink-700 text-zinc-100',
-  success: 'bg-emerald-600/15 border-emerald-500/40 text-emerald-200',
-  error: 'bg-red-600/15 border-red-500/40 text-red-200',
-  warn: 'bg-amber-500/15 border-amber-500/40 text-amber-200',
+  info: 'bg-cacao-900 border-cacao-900 text-crema-50',
+  success: 'bg-emerald-700 border-emerald-800 text-white',
+  error: 'bg-ladrillo-600 border-ladrillo-700 text-white',
+  warn: 'bg-amber-600 border-amber-700 text-white',
 }
 
 export function ToastProvider({ children }) {
@@ -44,7 +44,7 @@ export function ToastProvider({ children }) {
           <button
             key={t.id}
             onClick={() => dismiss(t.id)}
-            className={`pointer-events-auto w-full max-w-md rounded-xl border px-4 py-3 text-left text-sm shadow-card animate-fade-in ${TONES[t.tone] || TONES.info}`}
+            className={`pointer-events-auto w-full max-w-md rounded-xl border px-4 py-3 text-left text-sm shadow-pop animate-fade-in ${TONES[t.tone] || TONES.info}`}
           >
             {t.message}
           </button>

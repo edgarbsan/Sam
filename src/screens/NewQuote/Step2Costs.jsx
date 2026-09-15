@@ -12,14 +12,14 @@ function CandidateCard({ candidate, active, onSelect }) {
       type="button"
       onClick={onSelect}
       className={`w-full rounded-xl border px-3 py-2.5 text-left transition ${
-        active ? 'border-brand-500 bg-brand-500/10' : 'border-ink-700 bg-ink-850 hover:bg-ink-800'
+        active ? 'border-carne-600 bg-carne-100' : 'border-crema-400 bg-crema-100 hover:bg-crema-200'
       }`}
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="truncate text-sm font-medium text-zinc-100">{candidate.summary}</span>
-        {active && <span className="shrink-0 text-[10px] font-bold uppercase text-brand-400">Elegida</span>}
+        <span className="truncate text-sm font-medium text-cacao-900">{candidate.summary}</span>
+        {active && <span className="shrink-0 text-[10px] font-bold uppercase text-carne-700">Elegida</span>}
       </div>
-      <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-zinc-400 tabular">
+      <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-cacao-600 tabular">
         <span>{kmLabel(candidate.distanceKm)}</span>
         <span>{duration(candidate.durationMin)}</span>
         <span>Casetas {money(candidate.tolls, { decimals: 0 })}</span>
@@ -119,19 +119,19 @@ export default function Step2Costs({
       <Card title="Ruta" padded={false} className="overflow-hidden">
         <RouteMap path={route?.path} fallbackImage={quote.mapImage?.dataUrl} className="h-48" />
         <div className="p-4">
-          <p className="truncate text-sm font-medium text-zinc-100">{route?.summary || 'Ruta capturada a mano'}</p>
+          <p className="truncate text-sm font-medium text-cacao-900">{route?.summary || 'Ruta capturada a mano'}</p>
           <div className="mt-2 grid grid-cols-3 gap-2 text-center">
-            <div className="rounded-xl bg-ink-850 py-2">
-              <p className="text-[11px] uppercase text-zinc-500">Distancia</p>
-              <p className="tabular text-base font-semibold text-zinc-100">{kmLabel(route?.distanceKm || 0)}</p>
+            <div className="rounded-xl bg-crema-100 py-2">
+              <p className="text-[11px] uppercase text-cacao-500">Distancia</p>
+              <p className="tabular text-base font-semibold text-cacao-900">{kmLabel(route?.distanceKm || 0)}</p>
             </div>
-            <div className="rounded-xl bg-ink-850 py-2">
-              <p className="text-[11px] uppercase text-zinc-500">Tiempo</p>
-              <p className="tabular text-base font-semibold text-zinc-100">{duration(route?.durationMin || 0)}</p>
+            <div className="rounded-xl bg-crema-100 py-2">
+              <p className="text-[11px] uppercase text-cacao-500">Tiempo</p>
+              <p className="tabular text-base font-semibold text-cacao-900">{duration(route?.durationMin || 0)}</p>
             </div>
-            <div className="rounded-xl bg-ink-850 py-2">
-              <p className="text-[11px] uppercase text-zinc-500">Salida</p>
-              <p className="text-base font-semibold text-zinc-100">{dateLabel(quote.trip.date)}</p>
+            <div className="rounded-xl bg-crema-100 py-2">
+              <p className="text-[11px] uppercase text-cacao-500">Salida</p>
+              <p className="text-base font-semibold text-cacao-900">{dateLabel(quote.trip.date)}</p>
             </div>
           </div>
 
@@ -189,7 +189,7 @@ export default function Step2Costs({
         )}
         <Divider />
         <Row label="Subtotal de costos" value={money(costs.subtotal)} strong />
-        <p className="mt-1 text-right text-xs text-zinc-500 tabular">{money(costs.costPerKm)} por km</p>
+        <p className="mt-1 text-right text-xs text-cacao-500 tabular">{money(costs.costPerKm)} por km</p>
       </Card>
 
       <Card title="Ajustes de este viaje" subtitle="Solo afectan esta cotización">

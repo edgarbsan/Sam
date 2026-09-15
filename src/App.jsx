@@ -9,8 +9,8 @@ import { useSettings } from './state/SettingsContext.jsx'
 
 function Splash() {
   return (
-    <div className="flex h-full min-h-screen flex-col items-center justify-center gap-4 bg-ink-950 text-zinc-400">
-      <Spinner className="h-8 w-8 text-brand-500" />
+    <div className="flex h-full min-h-screen flex-col items-center justify-center gap-4 bg-carne-300 text-cacao-700">
+      <Spinner className="h-8 w-8 text-carne-700" />
       <p className="text-sm">Cargando cotizador…</p>
     </div>
   )
@@ -26,12 +26,12 @@ function UpdatePrompt() {
   if (!needRefresh) return null
   return (
     <div className="fixed inset-x-0 bottom-20 z-40 mx-auto max-w-md px-4">
-      <div className="flex items-center gap-3 rounded-xl border border-brand-500/40 bg-ink-900 px-4 py-3 shadow-card">
-        <p className="flex-1 text-sm text-zinc-200">Hay una versión nueva de la app.</p>
+      <div className="flex items-center gap-3 rounded-xl border border-carne-500/50 bg-crema-50 px-4 py-3 shadow-pop">
+        <p className="flex-1 text-sm text-cacao-800">Hay una versión nueva de la app.</p>
         <Button size="sm" onClick={() => updateServiceWorker(true)}>
           Actualizar
         </Button>
-        <button className="text-zinc-500" onClick={() => setNeedRefresh(false)} aria-label="Cerrar">
+        <button className="text-cacao-500" onClick={() => setNeedRefresh(false)} aria-label="Cerrar">
           ✕
         </button>
       </div>

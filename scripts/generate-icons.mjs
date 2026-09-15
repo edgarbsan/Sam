@@ -8,11 +8,12 @@ import { fileURLToPath } from 'node:url'
 const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'icons')
 mkdirSync(OUT, { recursive: true })
 
-const BG = [10, 10, 11]
-const BG_MASKABLE = [18, 18, 20]
-const ORANGE = [255, 129, 18]
-const AMBER = [255, 193, 113]
-const DARK = [12, 12, 14]
+// Paleta de la app: fondo color carne (#f2b390) y trailer en café profundo.
+const BG = [242, 179, 144]
+const BG_MASKABLE = [242, 179, 144]
+const BODY = [42, 28, 20]
+const TRIM = [84, 58, 43]
+const LIGHT = [255, 252, 250]
 
 function crc32(buf) {
   let c, crc = 0xffffffff
@@ -97,23 +98,23 @@ function draw(size, { maskable = false } = {}) {
   const y0 = inset + W * 0.16
 
   // Caja seca de 53 pies
-  rect(Math.round(x0 + 20 * u), Math.round(y0 + 90 * u), Math.round(300 * u), Math.round(180 * u), ORANGE, Math.round(14 * u))
+  rect(Math.round(x0 + 20 * u), Math.round(y0 + 90 * u), Math.round(300 * u), Math.round(180 * u), BODY, Math.round(14 * u))
   // Líneas de la caja
-  rect(Math.round(x0 + 50 * u), Math.round(y0 + 130 * u), Math.round(240 * u), Math.round(10 * u), DARK)
-  rect(Math.round(x0 + 50 * u), Math.round(y0 + 170 * u), Math.round(240 * u), Math.round(10 * u), DARK)
+  rect(Math.round(x0 + 50 * u), Math.round(y0 + 130 * u), Math.round(240 * u), Math.round(10 * u), BG)
+  rect(Math.round(x0 + 50 * u), Math.round(y0 + 170 * u), Math.round(240 * u), Math.round(10 * u), BG)
 
   // Tractor
-  rect(Math.round(x0 + 330 * u), Math.round(y0 + 150 * u), Math.round(140 * u), Math.round(120 * u), AMBER, Math.round(12 * u))
-  rect(Math.round(x0 + 350 * u), Math.round(y0 + 170 * u), Math.round(95 * u), Math.round(55 * u), DARK, Math.round(8 * u))
+  rect(Math.round(x0 + 330 * u), Math.round(y0 + 150 * u), Math.round(140 * u), Math.round(120 * u), TRIM, Math.round(12 * u))
+  rect(Math.round(x0 + 350 * u), Math.round(y0 + 170 * u), Math.round(95 * u), Math.round(55 * u), LIGHT, Math.round(8 * u))
 
   // Chasis
-  rect(Math.round(x0 + 20 * u), Math.round(y0 + 270 * u), Math.round(450 * u), Math.round(18 * u), ORANGE)
+  rect(Math.round(x0 + 20 * u), Math.round(y0 + 270 * u), Math.round(450 * u), Math.round(18 * u), BODY)
 
   // Llantas
   const wy = y0 + 300 * u
   for (const wx of [80, 165, 370, 450]) {
-    disc(x0 + wx * u, wy, 36 * u, AMBER)
-    disc(x0 + wx * u, wy, 16 * u, DARK)
+    disc(x0 + wx * u, wy, 36 * u, BODY)
+    disc(x0 + wx * u, wy, 16 * u, BG)
   }
   void s
   return px

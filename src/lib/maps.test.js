@@ -163,7 +163,7 @@ describe('enlaces', () => {
       ],
     })
     expect(url).toContain('staticmap?')
-    expect(url).toContain('path=color:0xff8112ff')
-    expect(url).toContain('markers=color:0x22c55e')
+    expect(url).toContain('path=color:0x9e4f24ff')
+    expect(url).toContain('markers=color:0x15803d')
   })
 })

@@ -82,9 +82,9 @@ export default function Step1Trip({ quote, patchTrip, onNext, hasApiKey }) {
                 prefix="$"
               />
             </Field>
-            <p className="col-span-2 text-xs text-zinc-500">
+            <p className="col-span-2 text-xs text-cacao-500">
               Resguardo estimado:{' '}
-              <span className="text-zinc-300">
+              <span className="text-cacao-700">
                 {money((Number(trip.escortDays) || 0) * (Number(trip.escortCostPerDay) || 0))}
               </span>
             </p>
@@ -108,7 +108,7 @@ export default function Step1Trip({ quote, patchTrip, onNext, hasApiKey }) {
       <Button size="lg" full onClick={onNext} disabled={!ready}>
         Calcular ruta y costos
       </Button>
-      {!ready && <p className="text-center text-xs text-zinc-500">Captura origen, destino y fecha para continuar.</p>}
+      {!ready && <p className="text-center text-xs text-cacao-700">Captura origen, destino y fecha para continuar.</p>}
     </div>
   )
 }

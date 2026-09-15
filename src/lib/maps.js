@@ -466,13 +466,13 @@ export function buildStaticMapUrl({ apiKey, path, origin, destination, size = '6
   params.set('region', 'MX')
   params.set('key', apiKey)
   const qs = []
-  if (pts.length > 1) qs.push(`path=color:0xff8112ff|weight:5|enc:${encodePolyline(pts)}`)
+  if (pts.length > 1) qs.push(`path=color:0x9e4f24ff|weight:5|enc:${encodePolyline(pts)}`)
   const first = pts[0]
   const last = pts[pts.length - 1]
-  if (first) qs.push(`markers=color:0x22c55e|label:A|${first.lat.toFixed(5)},${first.lng.toFixed(5)}`)
-  else if (Number.isFinite(origin?.lat)) qs.push(`markers=color:0x22c55e|label:A|${origin.lat},${origin.lng}`)
-  if (last) qs.push(`markers=color:0xff8112|label:B|${last.lat.toFixed(5)},${last.lng.toFixed(5)}`)
-  else if (Number.isFinite(destination?.lat)) qs.push(`markers=color:0xff8112|label:B|${destination.lat},${destination.lng}`)
+  if (first) qs.push(`markers=color:0x15803d|label:A|${first.lat.toFixed(5)},${first.lng.toFixed(5)}`)
+  else if (Number.isFinite(origin?.lat)) qs.push(`markers=color:0x15803d|label:A|${origin.lat},${origin.lng}`)
+  if (last) qs.push(`markers=color:0x9e4f24|label:B|${last.lat.toFixed(5)},${last.lng.toFixed(5)}`)
+  else if (Number.isFinite(destination?.lat)) qs.push(`markers=color:0x9e4f24|label:B|${destination.lat},${destination.lng}`)
   return `https://maps.googleapis.com/maps/api/staticmap?${params.toString()}&${qs.join('&')}`
 }
 

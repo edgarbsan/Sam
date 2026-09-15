@@ -4,12 +4,15 @@
 import { simplifyPath, boundsOf } from './polyline.js'
 import { buildStaticMapUrl } from './maps.js'
 
-const BG = '#111114'
-const GRID = '#1f1f24'
-const ROUTE = '#ff8112'
-const START = '#22c55e'
-const TEXT = '#e7e7ea'
-const MUTED = '#9a9aa4'
+const BG = '#fdf4ee'
+const GRID = '#f2e0d2'
+const ROUTE = '#c2652f'
+const ROUTE_HALO = 'rgba(194,101,47,.16)'
+const START = '#15803d'
+const END = '#9e4f24'
+const TEXT = '#2a1c14'
+const MUTED = '#8a6750'
+const BAND = 'rgba(255,252,250,.94)'
 
 function loadImage(src) {
   return new Promise((resolve, reject) => {
@@ -67,7 +70,7 @@ export function drawRouteSketch({ path, width = 900, height = 450, origin, desti
     })
 
     // Sombra suave bajo la ruta
-    ctx.strokeStyle = 'rgba(255,129,18,.18)'
+    ctx.strokeStyle = ROUTE_HALO
     ctx.lineWidth = 14
     ctx.lineJoin = 'round'
     ctx.lineCap = 'round'
@@ -90,16 +93,16 @@ export function drawRouteSketch({ path, width = 900, height = 450, origin, desti
       ctx.fillStyle = color
       ctx.fill()
       ctx.lineWidth = 3
-      ctx.strokeStyle = BG
+      ctx.strokeStyle = '#fffcfa'
       ctx.stroke()
-      ctx.fillStyle = '#0a0a0b'
+      ctx.fillStyle = '#ffffff'
       ctx.font = 'bold 13px system-ui, sans-serif'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.fillText(label, p.x, p.y + 0.5)
     }
     marker(a, START, 'A')
-    marker(z, ROUTE, 'B')
+    marker(z, END, 'B')
   } else {
     ctx.fillStyle = MUTED
     ctx.font = '16px system-ui, sans-serif'
@@ -108,8 +111,14 @@ export function drawRouteSketch({ path, width = 900, height = 450, origin, desti
   }
 
   // Cintillo inferior con origen → destino
-  ctx.fillStyle = 'rgba(10,10,11,.86)'
+  ctx.fillStyle = BAND
   ctx.fillRect(0, height - 52, width, 52)
+  ctx.strokeStyle = GRID
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(0, height - 52.5)
+  ctx.lineTo(width, height - 52.5)
+  ctx.stroke()
   ctx.textAlign = 'left'
   ctx.textBaseline = 'middle'
   ctx.fillStyle = TEXT

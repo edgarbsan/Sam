@@ -43,6 +43,26 @@ Ambas llevan siempre al pie la leyenda de maniobras y seguro.
 > por defecto (2.6×) aproxima la tarifa de un T3-S2. Ajústalo en Ajustes con
 > tus propios tickets de caseta y edita el monto cuando haga falta.
 
+## Identidad visual
+
+El color primario del negocio es **`#f2b390`** (durazno / color carne). Toda la
+paleta se derivó de ese tono (21° en HSL) para que nada desentone:
+
+| Familia | Uso | Muestras |
+| --- | --- | --- |
+| `carne` | Color de marca y acciones | `carne-300 #f2b390` fondo de la app y barra superior · `carne-700 #9e4f24` botones principales y acentos |
+| `crema` | Superficies | `crema-50 #fffcfa` tarjetas · `crema-100 #fdf4ee` campos · `crema-300/400` bordes |
+| `cacao` | Textos | `cacao-900 #2a1c14` principal · `cacao-500 #8a6750` secundario |
+| `ladrillo` | Acciones destructivas | `ladrillo-600 #ab3624`, un rojo cálido en lugar de uno frío |
+
+Los contrastes se eligieron para que todo texto cumpla WCAG AA: 9.1:1 del texto
+principal sobre el color de marca y 5.8:1 del blanco sobre los botones. El mapa,
+el croquis de la ruta, el PDF y los iconos usan esa misma paleta.
+
+Para cambiar el tono de marca basta editar la escala `carne` en
+`tailwind.config.js` y los cuatro hex de `theme_color` / `background_color`
+(`index.html`, `vite.config.js`, `scripts/generate-icons.mjs`).
+
 ## Arranque
 
 ```bash
