@@ -51,6 +51,7 @@ button{cursor:pointer}
 .top .btn{padding:7px 10px}
 .toast{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom, 0px));margin:0 auto;max-width:440px;background:var(--fg);color:var(--bg);border-radius:10px;padding:10px 14px;font-size:13.5px;z-index:10;box-shadow:0 6px 24px rgba(0,0,0,.25)}
 .toast.err{background:var(--warn);color:#FFFFFF}
+.toast a{color:inherit;font-weight:600;text-underline-offset:3px;display:inline-block;margin-top:4px}
 
 .app{flex:1;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto minmax(0,42%);gap:10px;padding-bottom:12px}
 @media (min-width:900px){
@@ -866,10 +867,27 @@ function load(src, name, keepTime){
   requestRender();
 }
 let toastT = 0;
-function toast(msg, err){
+function toast(msg, err, link, ms){
   const t = $('#toast'); t.textContent = msg; t.classList.toggle('err', !!err); t.hidden = false;
-  clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, err ? 7000 : 3500);
+  if (link){ const a = document.createElement('a'); a.href = link.href; a.target = '_blank'; a.rel = 'noopener'; a.textContent = link.text; t.append(document.createElement('br'), a); }
+  clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, ms || (err ? 7000 : 3500));
 }
+/* Algunas vistas web (por ejemplo la app de Claude en Android) no abren el selector de archivos.
+   Si al tocar Abrir la página no pierde el foco en 1.5 s, el selector no se abrió: se ofrece Pegar o el navegador. */
+const PAGE_URL = 'https://claude.ai/artifact/UG1wkxxU5zHncHwXRY6mrb';
+let pickAt = 0;
+const pickOpened = () => { pickAt = 0; };
+window.addEventListener('blur', pickOpened);
+document.addEventListener('visibilitychange', pickOpened);
+$('#file').addEventListener('click', () => {
+  pickAt = performance.now();
+  setTimeout(() => {
+    if (!pickAt || document.hidden) return;
+    pickAt = 0;
+    toast('Esta app no deja abrir archivos desde aquí. Usa Pegar, o abre el simulador en Chrome, donde Abrir sí funciona.', true,
+      window.self !== window.top ? {href: PAGE_URL, text: 'Abrir en Chrome'} : null, 12000);
+  }, 1500);
+});
 function readFile(f){
   if (f.text) return f.text();
   return new Promise((ok, bad) => { const rd = new FileReader(); rd.onload = () => ok(String(rd.result)); rd.onerror = () => bad(rd.error); rd.readAsText(f); });
@@ -882,6 +900,7 @@ function loadChecked(txt, name){
   else toast(`${name}: ${R.lines.length} bloques, ${R.W.length ? R.W.length + ' avisos' : 'sin avisos'}. Toca ▶ para simular.`);
 }
 $('#file').addEventListener('change', async e => {
+  pickAt = 0;
   const f = e.target.files && e.target.files[0];
   e.target.value = '';
   if (!f){ toast('No se eligió ningún archivo.', true); return; }
