@@ -61,6 +61,9 @@ button{cursor:pointer}
 .views button{font:500 11px var(--mono);letter-spacing:.04em;width:42px;height:32px;border-radius:7px;border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 82%,transparent)}
 .views button.on{border-color:var(--durazno);color:var(--acc-text)}
 .views button.unit{margin-top:6px;background:var(--tostado);border-color:var(--tostado);color:#FFFFFF}
+.stk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.stk label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--muted)}
+.stk input{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--surface);font-family:var(--mono);font-size:13px;color:var(--fg)}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .seg button{border:0;background:var(--surface);padding:6px 12px;font-size:13px;font-weight:500}
 .seg button[aria-pressed="true"]{background:var(--tostado);color:#FFFFFF}
@@ -154,6 +157,7 @@ button{cursor:pointer}
       <button type="button" data-v="xz">XZ</button>
       <button type="button" data-v="yz">YZ</button>
       <button type="button" data-v="fit" aria-label="Ajustar a la pieza">FIT</button>
+      <button type="button" id="bStock" aria-pressed="false" aria-label="Mostrar material y desbaste">MAT</button>
       <button type="button" id="bUnit" class="unit">MM</button>
     </div>
     <div class="legend"><span class="c"><i></i>Corte</span><span class="r"><i></i>Rápido</span></div>
@@ -206,6 +210,7 @@ const LS = {get(k){try{return localStorage.getItem(k)}catch(e){return null}},set
 
 const SAMPLE = `%
 O1001 (PLACA DEMO 100 X 80)
+(STOCK X-5/105 Y-5/85 Z-20/1)
 (T1 D=50. PLANEADOR)
 (T2 D=10. FRESA PLANA 3 FILOS)
 (T3 D=8.5 BROCA HSS)
@@ -307,7 +312,15 @@ function parse(src, rapidRate){
   const lineSeg = new Int32Array(lines.length + 1);
   let endLine = -1;
 
+  let stockC = null;
   function toolComment(c){
+    const sm = c.match(/STOCK\b(.*)/i);
+    if (sm && !stockC){
+      const g = L => { const m = sm[1].match(new RegExp(L + '\\s*([+-]?\\d*\\.?\\d+)\\s*[/:,]\\s*([+-]?\\d*\\.?\\d+)', 'i')); return m ? [parseFloat(m[1]) * k0, parseFloat(m[2]) * k0].sort((a, b) => a - b) : null; };
+      const X = g('X'), Y = g('Y'), Z = g('Z');
+      if (X && Y && Z) stockC = {x0: X[0], x1: X[1], y0: Y[0], y1: Y[1], z0: Z[0], z1: Z[1]};
+      return;
+    }
     const t = c.match(/\bT\s*0*(\d+)\b/i); if (!t) return;
     const n = +t[1]; if (tools[n]) return;
     const d = c.match(/(?:^|[\s,(])(?:D|DIA|Ø|⌀)\s*[=:]?\s*(\d*\.?\d+)/i);
@@ -518,7 +531,7 @@ function parse(src, rapidRate){
   }
   W.sort((a, b) => a.li - b.li);
   return {lines, n, pos:new Float32Array(pos), typ:Uint8Array.from(typ), lin:Int32Array.from(lin), dur, cum,
-    f:fA, s:sA, t:tA, W, tools, used, lineSeg, homeZ, inch, mixed, bb, cb, rapidRate,
+    f:fA, s:sA, t:tA, W, tools, used, lineSeg, homeZ, inch, mixed, bb, cb, rapidRate, stockC,
     stats:{total:acc, tCut, tRap, tDw, dCut, dRap}, toolTime};
 }
 
@@ -551,7 +564,8 @@ toolG.add(cutG, holdG); scene.add(toolG);
 
 function applyTheme(){
   scene.background = new THREE.Color(css('--view') || '#FBF9F8');
-  if (ghost) ghost.material.opacity = css('--bg').toUpperCase() === '#000000' ? .32 : .26;
+  if (ghost) ghost.material.opacity = STK.mesh ? .1 : css('--bg').toUpperCase() === '#000000' ? .32 : .26;
+  if (STK.mesh){ STK.dirty = true; updateStockMesh(); }
   if (R) buildGrid();
   requestRender();
 }
@@ -573,7 +587,7 @@ function fit(){
   applyCam(); requestRender();
 }
 function setView(v){
-  document.querySelectorAll('.views button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  document.querySelectorAll('.views button[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   if (v === 'iso'){ ctl.az = -Math.PI * .3; ctl.el = .55; }
   else if (v === 'xy'){ ctl.az = -Math.PI / 2; ctl.el = Math.PI / 2 - 1e-3; }
   else if (v === 'xz'){ ctl.az = -Math.PI / 2; ctl.el = 0; }
@@ -653,7 +667,7 @@ cv.addEventListener('pointermove', e => {
   const p = ptrs.get(e.pointerId), dx = e.clientX - p.x, dy = e.clientY - p.y;
   if (ptrs.size === 1){
     if (e.shiftKey || (e.buttons & 2) || (e.buttons & 4)) panBy(dx, dy);
-    else { ctl.az -= dx * .008; ctl.el = Math.max(-1.55, Math.min(Math.PI / 2 - 1e-3, ctl.el + dy * .008)); document.querySelectorAll('.views button').forEach(b => b.classList.remove('on')); }
+    else { ctl.az -= dx * .008; ctl.el = Math.max(-1.55, Math.min(Math.PI / 2 - 1e-3, ctl.el + dy * .008)); document.querySelectorAll('.views button[data-v]').forEach(b => b.classList.remove('on')); }
     p.x = e.clientX; p.y = e.clientY;
   } else if (ptrs.size === 2){
     const [a, b] = [...ptrs.values()];
@@ -669,6 +683,171 @@ const up = e => { ptrs.delete(e.pointerId); };
 cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
 cv.addEventListener('wheel', e => { e.preventDefault(); ctl.r *= Math.exp(e.deltaY * .0012); applyCam(); requestRender(); }, {passive:false});
 document.querySelectorAll('.views button[data-v]').forEach(b => b.addEventListener('click', () => b.dataset.v === 'fit' ? fit() : setView(b.dataset.v)));
+
+/* ============ Material (stock) y desbaste: mapa de alturas 2.5D ============ */
+const STK = {on: LS.get('simg.stk') !== '0', res: +(LS.get('simg.stkres') || 260), src: '',
+  x0: 0, x1: 100, y0: 0, y1: 80, z0: -20, z1: 0,
+  nx: 0, ny: 0, cx: 1, cy: 1, h: null, crash: null, done: 0, partI: -1, partF: 0, crashLine: -1,
+  mesh: null, dirty: false, lastMesh: 0};
+const stockMat = new THREE.MeshStandardMaterial({vertexColors: true, metalness: .25, roughness: .55, side: THREE.DoubleSide});
+const dl2 = new THREE.DirectionalLight(0xffffff, .35); dl2.position.set(-2, 1.5, 1); scene.add(dl2);
+
+function stockAuto(){
+  if (R.stockC){ Object.assign(STK, R.stockC); STK.src = 'comentario (STOCK …) del programa'; return; }
+  const b = {x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity, z: Infinity};
+  for (let i = 0; i < R.n; i++){
+    if (R.typ[i] !== 1) continue;
+    for (const o of [i * 6, i * 6 + 3]){
+      if (R.pos[o + 2] >= -1e-6) continue;
+      b.x0 = Math.min(b.x0, R.pos[o]); b.x1 = Math.max(b.x1, R.pos[o]);
+      b.y0 = Math.min(b.y0, R.pos[o + 1]); b.y1 = Math.max(b.y1, R.pos[o + 1]); b.z = Math.min(b.z, R.pos[o + 2]);
+    }
+  }
+  if (!isFinite(b.x0)){ const c = R.cb.min[0] <= R.cb.max[0] ? R.cb : R.bb; b.x0 = c.min[0]; b.x1 = c.max[0]; b.y0 = c.min[1]; b.y1 = c.max[1]; b.z = c.min[2] - 10; }
+  if (b.x1 - b.x0 < 1){ b.x0 -= 5; b.x1 += 5; }
+  if (b.y1 - b.y0 < 1){ b.y0 -= 5; b.y1 += 5; }
+  Object.assign(STK, {x0: b.x0, x1: b.x1, y0: b.y0, y1: b.y1, z1: 0, z0: Math.min(b.z, 0) - 5});
+  STK.src = 'automático, ajústalo a tu bloque';
+}
+function stockInit(){
+  if (STK.mesh){ scene.remove(STK.mesh); STK.mesh.geometry.dispose(); STK.mesh = null; }
+  if (!STK.on || !R || !R.n) return;
+  const w = STK.x1 - STK.x0, l = STK.y1 - STK.y0;
+  if (!(w > 0 && l > 0 && STK.z1 > STK.z0)){ toast('Las medidas del material no son válidas: revisa mínimos, máximos y alturas.', true); return; }
+  const c = Math.max(w, l) / STK.res;
+  STK.nx = Math.max(2, Math.round(w / c) + 1); STK.ny = Math.max(2, Math.round(l / c) + 1);
+  STK.cx = w / (STK.nx - 1); STK.cy = l / (STK.ny - 1);
+  STK.h = new Float32Array(STK.nx * STK.ny).fill(STK.z1);
+  STK.crash = new Uint8Array(STK.nx * STK.ny);
+  STK.done = 0; STK.partI = -1; STK.crashLine = -1;
+  buildStockMesh();
+  if (ghost) ghost.material.opacity = .1;
+}
+function stockReset(){ STK.h.fill(STK.z1); STK.crash.fill(0); STK.done = 0; STK.partI = -1; STK.crashLine = -1; }
+
+const toolCache = {};
+function toolOf(t){
+  if (toolCache[t]) return toolCache[t];
+  const info = R.tools[t] || {}, d = info.desc || '';
+  const r = info.d ? info.d / 2 : Math.max(size * .012, .5);
+  const kind = /BROCA|DRILL|CENTR|SPOT|AVELLAN/i.test(d) ? 'drill' : /BALL|BOLA|ESF[EÉ]RIC|BALLNOSE/i.test(d) ? 'ball' : 'flat';
+  return (toolCache[t] = {r, kind});
+}
+function stampLine(ax, ay, az, bx, by, bz, t, type, li){
+  if (Math.min(az, bz) >= STK.z1 - 1e-9) return;
+  const {r, kind} = toolOf(t), r2 = r * r;
+  const i0 = Math.max(0, Math.floor((Math.min(ax, bx) - r - STK.x0) / STK.cx)), i1 = Math.min(STK.nx - 1, Math.ceil((Math.max(ax, bx) + r - STK.x0) / STK.cx));
+  const j0 = Math.max(0, Math.floor((Math.min(ay, by) - r - STK.y0) / STK.cy)), j1 = Math.min(STK.ny - 1, Math.ceil((Math.max(ay, by) + r - STK.y0) / STK.cy));
+  if (i0 > i1 || j0 > j1) return;
+  const dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy, h = STK.h, nx = STK.nx, zb = STK.z0;
+  for (let j = j0; j <= j1; j++){
+    const py = STK.y0 + j * STK.cy;
+    for (let i = i0; i <= i1; i++){
+      const px = STK.x0 + i * STK.cx;
+      let u = L2 > 1e-12 ? ((px - ax) * dx + (py - ay) * dy) / L2 : 0;
+      u = u < 0 ? 0 : u > 1 ? 1 : u;
+      const ex = px - ax - u * dx, ey = py - ay - u * dy, d2 = ex * ex + ey * ey;
+      if (d2 > r2) continue;
+      let zc = L2 > 1e-12 ? az + u * (bz - az) : (az < bz ? az : bz);
+      if (kind === 'ball') zc += r - Math.sqrt(r2 - d2); else if (kind === 'drill') zc += Math.sqrt(d2) * .6009;
+      if (zc < zb) zc = zb;
+      const k = j * nx + i;
+      if (zc < h[k]){
+        if (type === 0 && h[k] - zc > .01){ STK.crash[k] = 1; if (STK.crashLine < 0) STK.crashLine = li; }
+        h[k] = zc;
+      }
+    }
+  }
+}
+function stampSeg(s, x, y, z){
+  const P = R.pos, o = s * 6;
+  stampLine(P[o], P[o + 1], P[o + 2], x ?? P[o + 3], y ?? P[o + 4], z ?? P[o + 5], R.t[s], R.typ[s], R.lin[s]);
+}
+function stockAdvance(i, fr, x, y, z){
+  if (!STK.mesh) return;
+  if (STK.done > i || (STK.partI === i && fr < STK.partF - 1e-9)) stockReset();
+  const hadCrash = STK.crashLine >= 0;
+  let n = 0;
+  while (STK.done < i){ if (R.typ[STK.done] !== 2) stampSeg(STK.done); STK.done++; n++; }
+  if (R.typ[i] !== 2 && fr > 0) stampSeg(i, x, y, z);
+  STK.partI = i; STK.partF = fr;
+  STK.dirty = true;
+  if (!hadCrash && STK.crashLine >= 0){
+    const nm = R.lines[STK.crashLine].match(/^\s*N(\d+)/i);
+    toast(`Rápido (G00) dentro del material en ${nm ? 'N' + nm[1] : 'la línea ' + (STK.crashLine + 1)}: posible choque. Se marca en rojo.`, true, null, 9000);
+  }
+}
+
+function buildStockMesh(){
+  const {nx, ny} = STK, top = nx * ny;
+  const edges = [];
+  for (let i = 0; i < nx; i++) edges.push(i);
+  const eB = edges.slice(), eT = eB.map(i => (ny - 1) * nx + i);
+  const eL = [], eR = [];
+  for (let j = 0; j < ny; j++){ eL.push(j * nx); eR.push(j * nx + nx - 1); }
+  STK.edges = [eB, eT, eL, eR];
+  const wallN = 2 * (2 * nx + 2 * ny);
+  const nv = top + wallN + 4;
+  const pos = new Float32Array(nv * 3), col = new Float32Array(nv * 3);
+  const idx = [];
+  for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++){
+    const k = j * nx + i; pos[k * 3] = STK.x0 + i * STK.cx; pos[k * 3 + 1] = STK.y0 + j * STK.cy;
+  }
+  for (let j = 0; j < ny - 1; j++) for (let i = 0; i < nx - 1; i++){
+    const a = j * nx + i, b = a + 1, c = a + nx, d = c + 1; idx.push(a, b, d, a, d, c);
+  }
+  let v = top;
+  STK.wallStart = top;
+  for (const e of STK.edges){
+    const base = v;
+    for (const k of e){
+      pos[v * 3] = pos[k * 3]; pos[v * 3 + 1] = pos[k * 3 + 1]; v++;
+      pos[v * 3] = pos[k * 3]; pos[v * 3 + 1] = pos[k * 3 + 1]; pos[v * 3 + 2] = STK.z0; v++;
+    }
+    for (let m = 0; m < e.length - 1; m++){ const a = base + m * 2; idx.push(a, a + 1, a + 3, a, a + 3, a + 2); }
+  }
+  const bz = v;
+  for (const [x, y] of [[STK.x0, STK.y0], [STK.x1, STK.y0], [STK.x1, STK.y1], [STK.x0, STK.y1]]){ pos[v * 3] = x; pos[v * 3 + 1] = y; pos[v * 3 + 2] = STK.z0; v++; }
+  idx.push(bz, bz + 2, bz + 1, bz, bz + 3, bz + 2);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  g.setIndex(nv > 65535 ? new THREE.Uint32BufferAttribute(idx, 1) : new THREE.Uint16BufferAttribute(idx, 1));
+  STK.mesh = new THREE.Mesh(g, stockMat);
+  scene.add(STK.mesh);
+  STK.dirty = true; updateStockMesh();
+}
+function updateStockMesh(){
+  if (!STK.mesh || !STK.dirty) return;
+  const g = STK.mesh.geometry, pos = g.attributes.position.array, col = g.attributes.color.array;
+  const dark = css('--bg').toUpperCase() === '#000000';
+  const cS = new THREE.Color(dark ? '#8E8783' : '#CFC9C5'), cC = new THREE.Color('#E3A47F'), cX = new THREE.Color('#D0402B');
+  const {h, crash, z1} = STK, top = STK.nx * STK.ny;
+  for (let k = 0; k < top; k++){
+    pos[k * 3 + 2] = h[k];
+    const c = crash[k] ? cX : h[k] < z1 - 1e-4 ? cC : cS;
+    col[k * 3] = c.r; col[k * 3 + 1] = c.g; col[k * 3 + 2] = c.b;
+  }
+  let v = STK.wallStart;
+  for (const e of STK.edges) for (const k of e){
+    pos[v * 3 + 2] = h[k];
+    for (let q = 0; q < 2; q++){ col[(v + q) * 3] = cS.r; col[(v + q) * 3 + 1] = cS.g; col[(v + q) * 3 + 2] = cS.b; }
+    v += 2;
+  }
+  for (let q = 0; q < 4; q++){ col[(v + q) * 3] = cS.r; col[(v + q) * 3 + 1] = cS.g; col[(v + q) * 3 + 2] = cS.b; }
+  g.attributes.position.needsUpdate = true; g.attributes.color.needsUpdate = true;
+  g.computeVertexNormals();
+  STK.dirty = false; STK.lastMesh = performance.now();
+}
+function setStock(on){
+  STK.on = on; LS.set('simg.stk', on ? '1' : '0');
+  $('#bStock').classList.toggle('on', on);
+  $('#bStock').setAttribute('aria-pressed', on);
+  if (on) stockInit();
+  else { if (STK.mesh){ scene.remove(STK.mesh); STK.mesh.geometry.dispose(); STK.mesh = null; } if (ghost) applyTheme(); }
+  if (R) renderInfo();
+  requestRender();
+}
 
 /* ============ Reproducción ============ */
 let simT = 0, playing = false, lastTs = 0, speed = 10, curLine = -1;
@@ -691,6 +870,7 @@ function updateSim(){
   partial.geometry.attributes.position.needsUpdate = true;
   partial.material.color = R.typ[i] === 0 ? C_RAPID : C_FEED;
   toolG.position.set(x, y, z);
+  if (STK.mesh){ stockAdvance(i, fr, x, y, z); if (!playing || performance.now() - STK.lastMesh > 70) updateStockMesh(); else requestRender(); }
   if (R.t[i] !== curTool) setToolShape(R.t[i]);
   $('#dx').textContent = len(x); $('#dy').textContent = len(y); $('#dz').textContent = len(z);
   $('#dt').textContent = R.t[i] ? 'T' + R.t[i] : '–';
@@ -813,13 +993,35 @@ function renderInfo(){
     <div><h3>Herramientas</h3><div class="tblw"><table class="tbl">
       <tr><th>T</th><th>Ø</th><th>Descripción</th><th>Tiempo</th></tr>${toolsRows}
     </table></div></div>
+    <div><h3>Material (stock)</h3>
+      <div class="set" style="margin-bottom:10px"><span>Ver desbaste en 3D</span><span class="seg" role="group" aria-label="Ver desbaste"><button type="button" data-s="1" aria-pressed="${STK.on}">Sí</button><button type="button" data-s="0" aria-pressed="${!STK.on}">No</button></span></div>
+      <div class="stk">
+        ${[['sx0', 'X mín', STK.x0], ['sx1', 'X máx', STK.x1], ['sy0', 'Y mín', STK.y0], ['sy1', 'Y máx', STK.y1], ['sz0', 'Z fondo', STK.z0], ['sz1', 'Z cara', STK.z1]]
+          .map(([id, l, v]) => `<label for="${id}">${l}<input id="${id}" type="number" inputmode="decimal" step="any" value="${+(dispInch ? v / 25.4 : v).toFixed(dispInch ? 4 : 3)}"></label>`).join('')}
+      </div>
+      <div class="set" style="margin-top:10px"><label for="sres">Detalle</label><select id="sres" class="speed" style="height:34px"><option value="160">Rápido</option><option value="260">Normal</option><option value="420">Fino</option></select>
+        <button class="btn" id="sApply" type="button">Aplicar medidas</button><button class="btn" id="sAuto" type="button">Automático</button></div>
+      <p class="note" style="margin-top:8px">Medidas en ${u}, origen de la pieza. Origen de estas medidas: ${STK.src}. Puedes fijarlas en el programa con un comentario como (STOCK X0/100 Y0/80 Z-20/0). En el bloque, el durazno es lo maquinado y el rojo un rápido que entró al material. Se simula como mapa de alturas: correcto para 3 ejes con herramienta vertical; no muestra socavados.</p>
+    </div>
     <div><h3>Ajustes</h3>
       <div class="set" style="margin-bottom:10px"><span>Unidades en pantalla</span><span class="seg" role="group" aria-label="Unidades en pantalla"><button type="button" data-u="mm" aria-pressed="${!dispInch}">mm</button><button type="button" data-u="in" aria-pressed="${dispInch}">pulgadas</button></span></div>
       <p class="note" style="margin-bottom:10px">El programa está en ${R.mixed ? 'mm y pulgadas (cambia con G20/G21)' : R.inch ? 'pulgadas (G20)' : 'milímetros (G21)'}. Cambiar aquí solo cambia cómo se muestran las medidas; el código no se modifica.</p>
       <div class="set"><label for="rapid">Velocidad de rápidos (${u}/min)</label><input id="rapid" type="number" inputmode="decimal" min="1" value="${dispInch ? Math.round(R.rapidRate / 25.4) : Math.round(R.rapidRate)}"></div>
       <p class="note" style="margin-top:8px">El tiempo es una estimación sin aceleraciones ni cambio de herramienta. G28 se dibuja hacia X0 Y0 y una Z de seguridad. La compensación G41/G42 y los orígenes G54 a G59 no se aplican: se ve la trayectoria tal como está programada. El diámetro de la herramienta se toma de comentarios como (T2 D=10.).</p>
     </div>`;
-  document.querySelectorAll('.seg button').forEach(b => b.onclick = () => setUnits(b.dataset.u === 'in'));
+  document.querySelectorAll('.seg button[data-u]').forEach(b => b.onclick = () => setUnits(b.dataset.u === 'in'));
+  document.querySelectorAll('.seg button[data-s]').forEach(b => b.onclick = () => setStock(b.dataset.s === '1'));
+  $('#sres').value = String(STK.res);
+  const applyStk = () => {
+    const k = dispInch ? 25.4 : 1, v = id => parseFloat($('#' + id).value) * k;
+    const n = {x0: v('sx0'), x1: v('sx1'), y0: v('sy0'), y1: v('sy1'), z0: v('sz0'), z1: v('sz1')};
+    if (Object.values(n).some(x => !isFinite(x)) || n.x1 <= n.x0 || n.y1 <= n.y0 || n.z1 <= n.z0){ toast('Revisa las medidas: cada máximo debe ser mayor que su mínimo y la cara más alta que el fondo.', true); return; }
+    Object.assign(STK, n); STK.src = 'capturadas a mano'; STK.res = +$('#sres').value; LS.set('simg.stkres', STK.res);
+    setStock(true); showPane('info'); toast('Material actualizado.');
+  };
+  $('#sApply').onclick = applyStk;
+  $('#sres').onchange = applyStk;
+  $('#sAuto').onclick = () => { R.stockC = null; stockAuto(); setStock(true); showPane('info'); };
   $('#rapid').onchange = e => { const v = parseFloat(e.target.value); if (v > 0){ rapidMM = dispInch ? v * 25.4 : v; LS.set('simg.rapid', rapidMM); load(program, nameNow, true); showPane('info'); } };
 }
 function setUnits(inch){
@@ -830,6 +1032,7 @@ function setUnits(inch){
   requestRender();
 }
 $('#bUnit').onclick = () => setUnits(!dispInch);
+$('#bStock').onclick = () => setStock(!STK.on);
 function renderWarns(){
   const c = R.W.length;
   $('#wcount').hidden = !c; $('#wcount').textContent = c;
@@ -847,7 +1050,12 @@ function load(src, name, keepTime){
   const prevT = simT;
   R = parse(src, rapidMM);
   if (!keepTime) dispInch = R.inch;
-  buildScene(); renderCode(); setUnits(dispInch); renderWarns();
+  buildScene();
+  for (const k in toolCache) delete toolCache[k];
+  if (!keepTime) stockAuto();
+  STK.on ? setStock(true) : null;
+  $('#bStock').classList.toggle('on', STK.on);
+  renderCode(); setUnits(dispInch); renderWarns();
   curTool = -1;
   simT = keepTime ? prevT : (R.n ? R.stats.total : 0);
   $('#tTot').textContent = fmt(R.stats.total);

@@ -15,11 +15,12 @@ Simulador 3D de código G para centro de maquinado (fresadora vertical). Funcion
 - Milímetros y pulgadas: lee G20/G21 (aunque cambien a mitad del programa) y el botón MM/IN del visor cambia las unidades en pantalla (posición, avance, límites, diámetros y velocidad de rápidos) sin tocar el código
 - Ciclos fijos G73, G81, G82, G83, G84, G85, G86 y G89, con G98/G99 y repeticiones L/K
 - T, M06, M03/M04/M05, S y F, más el diámetro de la herramienta leído de comentarios como `(T2 D=10.)`
+- Material (stock) con desbaste en 3D: mapa de alturas 2.5D con fresa plana, de bola o broca (según la descripción de la herramienta). Las medidas se capturan en Resumen o se fijan en el programa con un comentario `(STOCK X0/100 Y0/80 Z-20/0)`. Lo maquinado se ve en durazno y un G00 que entra al material se marca en rojo con aviso de posible choque
 - Tiempo de ciclo estimado, límites de corte y tiempo por herramienta
 - Avisos: rápidos por debajo de Z0, arcos con radio inválido, corte con el husillo detenido, F no definido, códigos no reconocidos
 
 ## Lo que no hace
 
-No simula remoción de material, compensación G41/G42, orígenes G54 a G59 distintos, G52/G92, G68 ni subprogramas M98. G28 se dibuja hacia X0 Y0 y una Z de seguridad.
+El desbaste no muestra socavados (herramientas en T o cola de milano) ni ejes rotativos. No simula compensación G41/G42, orígenes G54 a G59 distintos, G52/G92, G68 ni subprogramas M98. G28 se dibuja hacia X0 Y0 y una Z de seguridad.
 
 Autor: BS
