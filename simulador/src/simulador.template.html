@@ -54,6 +54,10 @@ button{cursor:pointer}
 .views{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px}
 .views button{font:500 11px var(--mono);letter-spacing:.04em;width:42px;height:32px;border-radius:7px;border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 82%,transparent)}
 .views button.on{border-color:var(--durazno);color:var(--acc-text)}
+.views button.unit{margin-top:6px;background:var(--tostado);border-color:var(--tostado);color:#FFFFFF}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:6px 12px;font-size:13px;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--tostado);color:#FFFFFF}
 .legend{position:absolute;left:8px;bottom:8px;display:flex;gap:12px;font-size:11px;color:var(--muted);background:color-mix(in srgb,var(--bg) 82%,transparent);border-radius:6px;padding:3px 8px;pointer-events:none}
 .legend i{display:inline-block;width:16px;height:0;border-top:2px solid;vertical-align:middle;margin-right:5px}
 .legend .c i{border-color:var(--durazno)}.legend .r i{border-color:var(--gris)}
@@ -144,6 +148,7 @@ button{cursor:pointer}
       <button type="button" data-v="xz">XZ</button>
       <button type="button" data-v="yz">YZ</button>
       <button type="button" data-v="fit" aria-label="Ajustar a la pieza">FIT</button>
+      <button type="button" id="bUnit" class="unit">MM</button>
     </div>
     <div class="legend"><span class="c"><i></i>Corte</span><span class="r"><i></i>Rápido</span></div>
   </section>
@@ -281,15 +286,16 @@ function parse(src, rapidRate){
   const noCom = src.replace(/\([^)]*\)/g, ' ').replace(/;.*$/gm, ' ');
   const um = noCom.match(/G\s*0*2([01])(?![\d.])/i);
   const inch = !!um && um[1] === '0';
+  const k0 = inch ? 25.4 : 1;
   let maxZ = -Infinity;
   for (const m of noCom.matchAll(/Z\s*([+-]?(?:\d+\.?\d*|\.\d+))/gi)) maxZ = Math.max(maxZ, parseFloat(m[1]));
   if (!isFinite(maxZ)) maxZ = 0;
-  const homeZ = Math.max(maxZ, 0) + (inch ? 2 : 50);
-  if (inch && rapidRate > 2000) rapidRate = rapidRate / 25.4;
+  const homeZ = Math.max(maxZ * k0, 0) + 50;
+  let mixed = false;
 
   const tools = {}, used = [], wcsUsed = new Set();
   const st = {x:0, y:0, z:homeZ, abs:true, plane:17, g1:0, cm:0, F:0, S:0, sp:5, tool:0, next:0, ret:98, perRev:false,
-              cyc:{R:null, Z:null, Q:null, P:0}, cycZ:homeZ, inch};
+              cyc:{R:null, Z:null, Q:null, P:0}, cycZ:homeZ, k:k0};
   const pos = [], typ = [], lin = [], dur = [], fA = [], sA = [], tA = [];
   const lineSeg = new Int32Array(lines.length + 1);
   let endLine = -1;
@@ -298,7 +304,7 @@ function parse(src, rapidRate){
     const t = c.match(/\bT\s*0*(\d+)\b/i); if (!t) return;
     const n = +t[1]; if (tools[n]) return;
     const d = c.match(/(?:^|[\s,(])(?:D|DIA|Ø|⌀)\s*[=:]?\s*(\d*\.?\d+)/i);
-    tools[n] = {d: d ? parseFloat(d[1]) : null, desc: c.trim()};
+    tools[n] = {d: d ? parseFloat(d[1]) * k0 : null, desc: c.trim()};
   }
   function seg(x, y, z, type, li, chk = true){
     const len = Math.hypot(x - st.x, y - st.y, z - st.z);
@@ -329,7 +335,7 @@ function parse(src, rapidRate){
       const r = w.R, dx = ea - sa, dy = eb - sb, d = Math.hypot(dx, dy);
       if (d < 1e-9){ warn(li, 'Arco con R y mismo punto inicial y final: usa I/J/K para círculo completo'); return; }
       const h2 = r * r - d * d / 4;
-      if (h2 < -1e-6 * Math.max(1, r * r)) warn(li, `Radio R${Math.abs(r)} demasiado pequeño para la distancia entre puntos (${d.toFixed(3)})`);
+      if (h2 < -1e-6 * Math.max(1, r * r)) warn(li, `Radio R${+(Math.abs(r) / st.k).toFixed(4)} demasiado pequeño para la distancia entre puntos (${+(d / st.k).toFixed(4)})`);
       const h = Math.sqrt(Math.max(0, h2)), nx = -dy / d, ny = dx / d;
       let side = cw ? -1 : 1; if (r < 0) side = -side;
       ca = (sa + ea) / 2 + side * h * nx; cb = (sb + eb) / 2 + side * h * ny;
@@ -338,8 +344,8 @@ function parse(src, rapidRate){
       ca = sa + oa; cb = sb + ob;
     }
     const r0 = Math.hypot(sa - ca, sb - cb), r1 = Math.hypot(ea - ca, eb - cb);
-    const tol = (st.inch ? 0.0005 : 0.01) + 0.002 * r0;
-    if (Math.abs(r0 - r1) > tol) warn(li, `Arco inválido: radio inicial ${r0.toFixed(3)} ≠ final ${r1.toFixed(3)}`);
+    const tol = 0.01 + 0.002 * r0;
+    if (Math.abs(r0 - r1) > tol) warn(li, `Arco inválido: radio inicial ${+(r0 / st.k).toFixed(4)} ≠ final ${+(r1 / st.k).toFixed(4)}`);
     const a0 = Math.atan2(sb - cb, sa - ca), a1 = Math.atan2(eb - cb, ea - ca);
     let sw = cw ? a0 - a1 : a1 - a0;
     while (sw <= 1e-7) sw += Math.PI * 2;
@@ -358,7 +364,7 @@ function parse(src, rapidRate){
     const c = st.cyc;
     if (c.R == null || c.Z == null){ warn(li, 'Ciclo fijo sin R o sin Z definidos'); return; }
     const reps = Math.max(1, Math.round(w.L ?? w.K ?? 1));
-    const m = st.cm, d = st.inch ? 0.02 : 0.5;
+    const m = st.cm, d = 0.5;
     for (let k = 0; k < reps; k++){
       const tx = 'X' in w ? (st.abs ? w.X : st.x + w.X) : st.x;
       const ty = 'Y' in w ? (st.abs ? w.Y : st.y + w.Y) : st.y;
@@ -412,6 +418,8 @@ function parse(src, rapidRate){
       if (L === 'G') G.push(Math.round(v * 10) / 10); else if (L === 'M') M.push(Math.round(v)); else { w[L] = v; raws[L] = m[2]; }
     }
     if ('O' in w && !G.length && !M.length) continue;
+    for (const g of G) if (g === 20 || g === 21){ const k = g === 20 ? 25.4 : 1; if (k !== st.k) mixed = true; st.k = k; }
+    for (const L of 'XYZIJKRQF') if (L in w) w[L] *= st.k;
     if ('A' in w || 'B' in w || 'C' in w) warn(li, 'Ejes rotativos A/B/C: no se simulan', 'rot');
 
     let dw = false, home = false, g53 = false, noMove = false, cycNew = false;
@@ -419,7 +427,7 @@ function parse(src, rapidRate){
       if (g === 0 || g === 1 || g === 2 || g === 3){ st.g1 = g; st.cm = 0; }
       else if (g === 4) dw = true;
       else if (g === 17 || g === 18 || g === 19) st.plane = g;
-      else if (g === 20 || g === 21){ if ((g === 20) !== inch) warn(li, 'El programa mezcla G20 y G21', 'units'); }
+      else if (g === 20 || g === 21) {}
       else if (g === 28) home = true;
       else if (g === 53) g53 = true;
       else if (g === 10 || g === 92 || g === 52){ noMove = true; warn(li, `G${g} cambia el origen; la simulación no lo aplica`, 'g' + g); }
@@ -454,7 +462,7 @@ function parse(src, rapidRate){
     const has = k => k in w;
     const tg = (k, cur) => has(k) ? (st.abs ? w[k] : cur + w[k]) : cur;
     if (dw){
-      const sec = has('X') ? w.X : has('P') ? secsP(w.P, raws.P) : has('U') ? w.U : 0;
+      const sec = has('X') ? parseFloat(raws.X) : has('P') ? secsP(w.P, raws.P) : has('U') ? w.U : 0;
       dwell(sec, li);
     } else if (noMove){
     } else if (home){
@@ -503,7 +511,7 @@ function parse(src, rapidRate){
   }
   W.sort((a, b) => a.li - b.li);
   return {lines, n, pos:new Float32Array(pos), typ:Uint8Array.from(typ), lin:Int32Array.from(lin), dur, cum,
-    f:fA, s:sA, t:tA, W, tools, used, lineSeg, homeZ, inch, bb, cb, rapidRate,
+    f:fA, s:sA, t:tA, W, tools, used, lineSeg, homeZ, inch, mixed, bb, cb, rapidRate,
     stats:{total:acc, tCut, tRap, tDw, dCut, dRap}, toolTime};
 }
 
@@ -517,6 +525,10 @@ camera.up.set(0, 0, 1);
 scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1.0));
 const dl = new THREE.DirectionalLight(0xffffff, 0.6); dl.position.set(1, -2, 3); scene.add(dl);
 
+let dispInch = false;
+const UN = () => dispInch ? 'in' : 'mm';
+const len = v => isFinite(v) ? (dispInch ? v / 25.4 : v).toFixed(dispInch ? 4 : 3) : '–';
+const feed = v => dispInch ? (v / 25.4).toFixed(1) : String(Math.round(v));
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const C_FEED = new THREE.Color('#CF825A'), C_RAPID = new THREE.Color('#7C7470');
 
@@ -567,8 +579,8 @@ function buildGrid(){
   if (grid){ scene.remove(grid); grid.geometry.dispose(); }
   if (axes){ scene.remove(axes); axes.geometry.dispose(); }
   const b = R.bb;
-  const ext = Math.max(b.max[0] - b.min[0], b.max[1] - b.min[1], 10 * (R.inch ? .04 : 1));
-  const step = niceStep(ext / 8);
+  const ext = Math.max(b.max[0] - b.min[0], b.max[1] - b.min[1], 10);
+  const step = dispInch ? niceStep(ext / 25.4 / 8) * 25.4 : niceStep(ext / 8);
   const half = Math.ceil(Math.max(Math.abs(b.min[0]), Math.abs(b.max[0]), Math.abs(b.min[1]), Math.abs(b.max[1])) * 1.15 / step) * step;
   const dark = css('--bg').toUpperCase() === '#000000';
   grid = new THREE.GridHelper(half * 2, Math.round(half * 2 / step), dark ? 0x3A3431 : 0xD9D1CC, dark ? 0x1E1B1A : 0xEEE8E4);
@@ -649,7 +661,7 @@ cv.addEventListener('pointermove', e => {
 const up = e => { ptrs.delete(e.pointerId); };
 cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
 cv.addEventListener('wheel', e => { e.preventDefault(); ctl.r *= Math.exp(e.deltaY * .0012); applyCam(); requestRender(); }, {passive:false});
-document.querySelectorAll('.views button').forEach(b => b.addEventListener('click', () => b.dataset.v === 'fit' ? fit() : setView(b.dataset.v)));
+document.querySelectorAll('.views button[data-v]').forEach(b => b.addEventListener('click', () => b.dataset.v === 'fit' ? fit() : setView(b.dataset.v)));
 
 /* ============ Reproducción ============ */
 let simT = 0, playing = false, lastTs = 0, speed = 10, curLine = -1;
@@ -673,11 +685,10 @@ function updateSim(){
   partial.material.color = R.typ[i] === 0 ? C_RAPID : C_FEED;
   toolG.position.set(x, y, z);
   if (R.t[i] !== curTool) setToolShape(R.t[i]);
-  const d = R.inch ? 4 : 3, f = v => v.toFixed(d);
-  $('#dx').textContent = f(x); $('#dy').textContent = f(y); $('#dz').textContent = f(z);
+  $('#dx').textContent = len(x); $('#dy').textContent = len(y); $('#dz').textContent = len(z);
   $('#dt').textContent = R.t[i] ? 'T' + R.t[i] : '–';
   $('#ds').textContent = Math.round(R.s[i]);
-  $('#df').textContent = R.typ[i] === 0 ? 'RÁP' : (+R.f[i].toFixed(R.inch ? 2 : 0)).toString();
+  $('#df').textContent = R.typ[i] === 0 ? 'RÁP' : feed(R.f[i]);
   const nm = R.lines[R.lin[i]].match(/^\s*N(\d+)/i);
   $('#dn').textContent = nm ? 'N' + nm[1] : 'L' + (R.lin[i] + 1);
   $('#tNow').textContent = fmt(simT);
@@ -775,18 +786,17 @@ $('#bApply').onclick = () => { load($('#ed').value, nameNow === 'Ejemplo: placa 
 
 /* ============ Resumen y avisos ============ */
 function renderInfo(){
-  const s = R.stats, u = R.inch ? 'in' : 'mm', b = R.cb.min[0] <= R.cb.max[0] ? R.cb : R.bb;
-  const d = R.inch ? 4 : 3, f = v => isFinite(v) ? v.toFixed(d) : '–';
+  const s = R.stats, u = UN(), b = R.cb.min[0] <= R.cb.max[0] ? R.cb : R.bb, f = len;
   const toolsRows = R.used.length ? R.used.map(t => {
     const ti = R.tools[t] || {};
-    return `<tr><td class="mono">T${t}</td><td class="mono">${ti.d ? ti.d : '–'}</td><td>${esc(ti.desc || '')}</td><td class="mono">${fmt(R.toolTime[t] || 0)}</td></tr>`;
+    return `<tr><td class="mono">T${t}</td><td class="mono">${ti.d ? +(dispInch ? ti.d / 25.4 : ti.d).toFixed(4) : '–'}</td><td>${esc(ti.desc || '')}</td><td class="mono">${fmt(R.toolTime[t] || 0)}</td></tr>`;
   }).join('') : '<tr><td colspan="4">Sin cambios de herramienta (M06)</td></tr>';
   $('#info').innerHTML = `
     <div class="stats">
       <div class="stat big"><div class="l">Tiempo de ciclo estimado</div><div class="v">${fmt(s.total)}<small>min:s</small></div></div>
       <div class="stat"><div class="l">En corte</div><div class="v">${fmt(s.tCut)}</div></div>
       <div class="stat"><div class="l">En rápidos</div><div class="v">${fmt(s.tRap)}</div></div>
-      <div class="stat"><div class="l">Recorrido de corte</div><div class="v">${(s.dCut / (R.inch ? 1 : 1000)).toFixed(R.inch ? 1 : 2)} ${R.inch ? 'in' : 'm'}</div></div>
+      <div class="stat"><div class="l">Recorrido de corte</div><div class="v">${dispInch ? (s.dCut / 25.4).toFixed(1) + ' in' : (s.dCut / 1000).toFixed(2) + ' m'}</div></div>
       <div class="stat"><div class="l">Bloques</div><div class="v">${R.lines.length}</div></div>
     </div>
     <div><h3>Límites de corte (${u})</h3><div class="tblw"><table class="tbl">
@@ -797,11 +807,22 @@ function renderInfo(){
       <tr><th>T</th><th>Ø</th><th>Descripción</th><th>Tiempo</th></tr>${toolsRows}
     </table></div></div>
     <div><h3>Ajustes</h3>
-      <div class="set"><label for="rapid">Velocidad de rápidos (${u}/min)</label><input id="rapid" type="number" inputmode="decimal" min="1" value="${Math.round(R.rapidRate)}"></div>
+      <div class="set" style="margin-bottom:10px"><span>Unidades en pantalla</span><span class="seg" role="group" aria-label="Unidades en pantalla"><button type="button" data-u="mm" aria-pressed="${!dispInch}">mm</button><button type="button" data-u="in" aria-pressed="${dispInch}">pulgadas</button></span></div>
+      <p class="note" style="margin-bottom:10px">El programa está en ${R.mixed ? 'mm y pulgadas (cambia con G20/G21)' : R.inch ? 'pulgadas (G20)' : 'milímetros (G21)'}. Cambiar aquí solo cambia cómo se muestran las medidas; el código no se modifica.</p>
+      <div class="set"><label for="rapid">Velocidad de rápidos (${u}/min)</label><input id="rapid" type="number" inputmode="decimal" min="1" value="${dispInch ? Math.round(R.rapidRate / 25.4) : Math.round(R.rapidRate)}"></div>
       <p class="note" style="margin-top:8px">El tiempo es una estimación sin aceleraciones ni cambio de herramienta. G28 se dibuja hacia X0 Y0 y una Z de seguridad. La compensación G41/G42 y los orígenes G54 a G59 no se aplican: se ve la trayectoria tal como está programada. El diámetro de la herramienta se toma de comentarios como (T2 D=10.).</p>
     </div>`;
-  $('#rapid').onchange = e => { const v = parseFloat(e.target.value); if (v > 0){ rapidMM = R.inch ? v * 25.4 : v; LS.set('simg.rapid', rapidMM); load(program, nameNow, true); showPane('info'); } };
+  document.querySelectorAll('.seg button').forEach(b => b.onclick = () => setUnits(b.dataset.u === 'in'));
+  $('#rapid').onchange = e => { const v = parseFloat(e.target.value); if (v > 0){ rapidMM = dispInch ? v * 25.4 : v; LS.set('simg.rapid', rapidMM); load(program, nameNow, true); showPane('info'); } };
 }
+function setUnits(inch){
+  dispInch = inch;
+  $('#bUnit').textContent = UN().toUpperCase();
+  $('#bUnit').setAttribute('aria-label', 'Unidades: ' + (inch ? 'pulgadas' : 'milímetros') + '. Toca para cambiar');
+  if (R){ buildGrid(); renderInfo(); }
+  requestRender();
+}
+$('#bUnit').onclick = () => setUnits(!dispInch);
 function renderWarns(){
   const c = R.W.length;
   $('#wcount').hidden = !c; $('#wcount').textContent = c;
@@ -818,7 +839,8 @@ function load(src, name, keepTime){
   setPlaying(false);
   const prevT = simT;
   R = parse(src, rapidMM);
-  buildScene(); renderCode(); renderInfo(); renderWarns();
+  if (!keepTime) dispInch = R.inch;
+  buildScene(); renderCode(); setUnits(dispInch); renderWarns();
   curTool = -1;
   simT = keepTime ? prevT : (R.n ? R.stats.total : 0);
   $('#tTot').textContent = fmt(R.stats.total);
