@@ -16,6 +16,7 @@ Simulador 3D de código G para centro de maquinado (fresadora vertical). Funcion
 - Ciclos fijos G73, G81, G82, G83, G84, G85, G86 y G89, con G98/G99 y repeticiones L/K
 - T, M06, M03/M04/M05, S y F, más el diámetro de la herramienta leído de comentarios como `(T2 D=10.)`
 - Material (stock) con desbaste en 3D: mapa de alturas 2.5D con fresa plana, de bola o broca (según la descripción de la herramienta). Rectangular o redondo (cilindro de pie). Las medidas se capturan en Resumen o se fijan en el programa con un comentario: `(STOCK X0/100 Y0/80 Z-20/0)` para rectangular o `(STOCK D60 X0 Y0 Z-30/0)` para redondo (D diámetro, X Y centro). Lo maquinado se ve en durazno y un G00 que entra al material se marca en rojo con aviso de posible choque
+- Pestaña Montaje: medidas del material y, por cada herramienta detectada, diámetro y longitud (lo que sale del portaherramientas). Las medidas capturadas mandan sobre los comentarios del programa y se guardan por número de herramienta en el teléfono. Con la longitud capturada avisa cuando el portaherramientas tocaría el material
 - Tiempo de ciclo estimado, límites de corte y tiempo por herramienta
 - Avisos: rápidos por debajo de Z0, arcos con radio inválido, corte con el husillo detenido, F no definido, códigos no reconocidos
 

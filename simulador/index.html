@@ -70,6 +70,10 @@ button{cursor:pointer}
 .views button{font:500 11px var(--mono);letter-spacing:.04em;width:42px;height:32px;border-radius:7px;border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 82%,transparent)}
 .views button.on{border-color:var(--durazno);color:var(--acc-text)}
 .views button.unit{margin-top:6px;background:var(--tostado);border-color:var(--tostado);color:#FFFFFF}
+.tools td{vertical-align:middle}
+.tools .desc{font-size:11px;color:var(--muted);white-space:normal;max-width:22ch}
+.tin{width:100%;min-width:64px;padding:6px 7px;border:1px solid var(--line);border-radius:7px;background:var(--surface);font-family:var(--mono);font-size:13px;color:var(--fg)}
+.tin[data-own]{border-color:var(--durazno)}
 .stk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .stk label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--muted)}
 .stk input{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--surface);font-family:var(--mono);font-size:13px;color:var(--fg)}
@@ -193,6 +197,7 @@ button{cursor:pointer}
   <section class="panel">
     <div class="tabs" role="tablist">
       <button role="tab" id="tab-code" aria-selected="true" data-p="code">Código</button>
+      <button role="tab" id="tab-setup" aria-selected="false" data-p="setup">Montaje</button>
       <button role="tab" id="tab-info" aria-selected="false" data-p="info">Resumen</button>
       <button role="tab" id="tab-warn" aria-selected="false" data-p="warn">Avisos<span class="badge" id="wcount" hidden>0</span></button>
     </div>
@@ -206,6 +211,7 @@ button{cursor:pointer}
         <textarea id="ed" spellcheck="false" autocapitalize="characters" autocomplete="off" aria-label="Programa en código G"></textarea>
       </div>
     </div>
+    <div class="pane" id="p-setup" hidden><div class="info" id="setup"></div></div>
     <div class="pane" id="p-info" hidden><div class="info" id="info"></div></div>
     <div class="pane" id="p-warn" hidden><ul class="warns" id="warns"></ul></div>
   </section>
@@ -645,10 +651,10 @@ function buildScene(){
 let curTool = -1;
 function setToolShape(t){
   curTool = t;
-  const info = R.tools[t];
-  let rad = info && info.d ? info.d / 2 : size * .012;
+  const e = toolEff(t);
+  let rad = e.d ? e.d / 2 : size * .012;
   rad = Math.max(rad, size * .004);
-  const L = Math.max(rad * 3, size * .06);
+  const L = e.L || Math.max(rad * 3, size * .06);
   cutG.scale.set(rad, rad, L);
   holdG.scale.set(rad * 1.7, rad * 1.7, L * .8);
   holdG.position.z = L + L * .4;
@@ -752,12 +758,12 @@ function stockInit(){
       STK.msk[j * STK.nx + i] = dx * dx + dy * dy <= r2 ? 1 : 0;
     }
   }
-  STK.done = 0; STK.partI = -1; STK.crashLine = -1;
+  STK.done = 0; STK.partI = -1; STK.crashLine = -1; STK.holdLine = -1;
   buildStockMesh();
   if (grid) grid.position.z = STK.z0 - .01;
   if (ghost) ghost.material.opacity = .1;
 }
-function stockReset(){ STK.h.fill(STK.z1); STK.crash.fill(0); STK.done = 0; STK.partI = -1; STK.crashLine = -1; }
+function stockReset(){ STK.h.fill(STK.z1); STK.crash.fill(0); STK.done = 0; STK.partI = -1; STK.crashLine = -1; STK.holdLine = -1; }
 /* Celda dentro del redondo más cercana a un punto (x, y). */
 function nearestInside(x, y){
   const {nx, ny, msk} = STK;
@@ -770,19 +776,27 @@ function nearestInside(x, y){
   return j * nx + i;
 }
 
+let TOV = {};
+try { TOV = JSON.parse(LS.get('simg.tools') || '{}') || {}; } catch (e) { TOV = {}; }
+/* Medidas que usa la simulación: primero las capturadas en Montaje, luego las del comentario del programa. */
+function toolEff(t){
+  const info = R.tools[t] || {}, o = TOV[t] || {}, d = info.desc || '';
+  const kind = /BROCA|DRILL|CENTR|SPOT|AVELLAN/i.test(d) ? 'drill' : /BALL|BOLA|ESF[EÉ]RIC|BALLNOSE/i.test(d) ? 'ball' : 'flat';
+  return {d: o.d ?? info.d ?? null, L: o.L ?? null, desc: d, kind};
+}
 const toolCache = {};
 function toolOf(t){
   if (toolCache[t]) return toolCache[t];
-  const info = R.tools[t] || {}, d = info.desc || '';
-  const r = info.d ? info.d / 2 : Math.max(size * .012, .5);
-  const kind = /BROCA|DRILL|CENTR|SPOT|AVELLAN/i.test(d) ? 'drill' : /BALL|BOLA|ESF[EÉ]RIC|BALLNOSE/i.test(d) ? 'ball' : 'flat';
-  return (toolCache[t] = {r, kind});
+  const e = toolEff(t);
+  return (toolCache[t] = {r: e.d ? e.d / 2 : Math.max(size * .012, .5), kind: e.kind, L: e.L});
 }
 function stampLine(ax, ay, az, bx, by, bz, t, type, li){
   if (Math.min(az, bz) >= STK.z1 - 1e-9) return;
-  const {r, kind} = toolOf(t), r2 = r * r;
-  const i0 = Math.max(0, Math.floor((Math.min(ax, bx) - r - STK.x0) / STK.cx)), i1 = Math.min(STK.nx - 1, Math.ceil((Math.max(ax, bx) + r - STK.x0) / STK.cx));
-  const j0 = Math.max(0, Math.floor((Math.min(ay, by) - r - STK.y0) / STK.cy)), j1 = Math.min(STK.ny - 1, Math.ceil((Math.max(ay, by) + r - STK.y0) / STK.cy));
+  const {r, kind, L} = toolOf(t), r2 = r * r;
+  /* Con longitud capturada se revisa también un portaherramientas supuesto de radio 1.6 r (mínimo r + 5 mm). */
+  const rh = L ? Math.max(r * 1.6, r + 5) : r, rh2 = rh * rh;
+  const i0 = Math.max(0, Math.floor((Math.min(ax, bx) - rh - STK.x0) / STK.cx)), i1 = Math.min(STK.nx - 1, Math.ceil((Math.max(ax, bx) + rh - STK.x0) / STK.cx));
+  const j0 = Math.max(0, Math.floor((Math.min(ay, by) - rh - STK.y0) / STK.cy)), j1 = Math.min(STK.ny - 1, Math.ceil((Math.max(ay, by) + rh - STK.y0) / STK.cy));
   if (i0 > i1 || j0 > j1) return;
   const dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy, h = STK.h, nx = STK.nx, zb = STK.z0, msk = STK.msk;
   for (let j = j0; j <= j1; j++){
@@ -794,8 +808,11 @@ function stampLine(ax, ay, az, bx, by, bz, t, type, li){
       let u = L2 > 1e-12 ? ((px - ax) * dx + (py - ay) * dy) / L2 : 0;
       u = u < 0 ? 0 : u > 1 ? 1 : u;
       const ex = px - ax - u * dx, ey = py - ay - u * dy, d2 = ex * ex + ey * ey;
+      if (d2 > rh2) continue;
+      const zt = L2 > 1e-12 ? az + u * (bz - az) : (az < bz ? az : bz);
+      if (L && h[k] > zt + L + .01){ STK.crash[k] = 1; if (STK.holdLine < 0){ STK.holdLine = li; STK.holdTool = t; } }
       if (d2 > r2) continue;
-      let zc = L2 > 1e-12 ? az + u * (bz - az) : (az < bz ? az : bz);
+      let zc = zt;
       if (kind === 'ball') zc += r - Math.sqrt(r2 - d2); else if (kind === 'drill') zc += Math.sqrt(d2) * .6009;
       if (zc < zb) zc = zb;
       if (zc < h[k]){
@@ -812,7 +829,7 @@ function stampSeg(s, x, y, z){
 function stockAdvance(i, fr, x, y, z){
   if (!STK.mesh) return;
   if (STK.done > i || (STK.partI === i && fr < STK.partF - 1e-9)) stockReset();
-  const hadCrash = STK.crashLine >= 0;
+  const hadCrash = STK.crashLine >= 0, hadHold = STK.holdLine >= 0;
   while (STK.done < i){ if (R.typ[STK.done] !== 2) stampSeg(STK.done); STK.done++; }
   if (R.typ[i] !== 2 && fr > 0) stampSeg(i, x, y, z);
   STK.partI = i; STK.partF = fr;
@@ -820,6 +837,9 @@ function stockAdvance(i, fr, x, y, z){
   if (!hadCrash && STK.crashLine >= 0){
     const nm = R.lines[STK.crashLine].match(/^\s*N(\d+)/i);
     toast(`Rápido (G00) dentro del material en ${nm ? 'N' + nm[1] : 'la línea ' + (STK.crashLine + 1)}: posible choque. Se marca en rojo.`, true, null, 9000);
+  } else if (!hadHold && STK.holdLine >= 0){
+    const nm = R.lines[STK.holdLine].match(/^\s*N(\d+)/i);
+    toast(`T${STK.holdTool}: la herramienta entra más que su longitud en ${nm ? 'N' + nm[1] : 'la línea ' + (STK.holdLine + 1)}. El portaherramientas tocaría el material.`, true, null, 9000);
   }
 }
 
@@ -911,7 +931,7 @@ function setStock(on){
   $('#bStock').setAttribute('aria-pressed', on);
   if (on) stockInit();
   else { if (STK.mesh){ scene.remove(STK.mesh); STK.mesh.geometry.dispose(); STK.mesh = null; } if (grid) grid.position.z = 0; if (ghost) applyTheme(); }
-  if (R) renderInfo();
+  if (R){ renderInfo(); renderSetup(); }
   requestRender();
 }
 
@@ -1029,7 +1049,7 @@ codeEl.addEventListener('click', e => { const r = e.target.closest('.ln'); if (r
 
 function showPane(p){
   document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.p === p));
-  for (const id of ['code', 'edit', 'info', 'warn']) $('#p-' + id).hidden = id !== p;
+  for (const id of ['code', 'edit', 'setup', 'info', 'warn']) $('#p-' + id).hidden = id !== p;
   if (p === 'code' && rows[curLine]){ const pane = $('#p-code'); pane.scrollTop = Math.max(0, rows[curLine].offsetTop - pane.clientHeight / 2); }
 }
 document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => showPane(b.dataset.p));
@@ -1041,7 +1061,7 @@ $('#bApply').onclick = () => { const v = $('#ed').value; if (!v.trim()){ toast('
 function renderInfo(){
   const s = R.stats, u = UN(), b = R.cb.min[0] <= R.cb.max[0] ? R.cb : R.bb, f = len;
   const toolsRows = R.used.length ? R.used.map(t => {
-    const ti = R.tools[t] || {};
+    const ti = toolEff(t);
     return `<tr><td class="mono">T${t}</td><td class="mono">${ti.d ? +(dispInch ? ti.d / 25.4 : ti.d).toFixed(4) : '–'}</td><td>${esc(ti.desc || '')}</td><td class="mono">${fmt(R.toolTime[t] || 0)}</td></tr>`;
   }).join('') : '<tr><td colspan="4">Sin cambios de herramienta (M06)</td></tr>';
   $('#info').innerHTML = `
@@ -1059,6 +1079,32 @@ function renderInfo(){
     <div><h3>Herramientas</h3><div class="tblw"><table class="tbl">
       <tr><th>T</th><th>Ø</th><th>Descripción</th><th>Tiempo</th></tr>${toolsRows}
     </table></div></div>
+    <div><h3>Ajustes</h3>
+      <div class="set" style="margin-bottom:10px"><span>Unidades en pantalla</span><span class="seg" role="group" aria-label="Unidades en pantalla"><button type="button" data-u="mm" aria-pressed="${!dispInch}">mm</button><button type="button" data-u="in" aria-pressed="${dispInch}">pulgadas</button></span></div>
+      <p class="note" style="margin-bottom:10px">El programa está en ${R.mixed ? 'mm y pulgadas (cambia con G20/G21)' : R.inch ? 'pulgadas (G20)' : 'milímetros (G21)'}. Cambiar aquí solo cambia cómo se muestran las medidas; el código no se modifica.</p>
+      <div class="set"><label for="rapid">Velocidad de rápidos (${u}/min)</label><input id="rapid" type="number" inputmode="decimal" min="1" value="${dispInch ? Math.round(R.rapidRate / 25.4) : Math.round(R.rapidRate)}"></div>
+      <p class="note" style="margin-top:8px">El tiempo es una estimación sin aceleraciones ni cambio de herramienta. G28 se dibuja hacia X0 Y0 y una Z de seguridad. La compensación G41/G42 y los orígenes G54 a G59 no se aplican: se ve la trayectoria tal como está programada. El diámetro de la herramienta se toma de comentarios como (T2 D=10.).</p>
+    </div>`;
+  document.querySelectorAll('.seg button[data-u]').forEach(b => b.onclick = () => setUnits(b.dataset.u === 'in'));
+  $('#rapid').onchange = e => { const v = parseFloat(e.target.value); if (v > 0){ rapidMM = dispInch ? v * 25.4 : v; LS.set('simg.rapid', rapidMM); load(program, nameNow, true); showPane('info'); } };
+}
+function toolRows(){
+  const ts = new Set([...R.used, ...Object.keys(R.tools).map(Number)]);
+  if (!R.used.length && R.n) ts.add(R.t[0]);
+  return [...ts].sort((a, b) => a - b);
+}
+function renderSetup(){
+  if (!R) return;
+  const u = UN(), cv = v => v == null ? '' : +(dispInch ? v / 25.4 : v).toFixed(dispInch ? 4 : 3);
+  const kinds = {flat: 'Plana', ball: 'Bola', drill: 'Broca'};
+  const rows = toolRows().map(t => {
+    const e = toolEff(t), o = TOV[t] || {};
+    return `<tr><td class="mono">${t ? 'T' + t : '–'}</td>
+      <td><input class="tin" id="td${t}" data-t="${t}" data-k="d" type="number" inputmode="decimal" step="any" min="0" value="${cv(e.d)}" placeholder="?" aria-label="Diámetro T${t}"${o.d != null ? ' data-own="1"' : ''}></td>
+      <td><input class="tin" id="tl${t}" data-t="${t}" data-k="L" type="number" inputmode="decimal" step="any" min="0" value="${cv(e.L)}" placeholder="–" aria-label="Longitud T${t}"${o.L != null ? ' data-own="1"' : ''}></td>
+      <td>${kinds[e.kind]}<div class="desc">${esc(e.desc || 'Sin descripción')}</div></td></tr>`;
+  }).join('');
+  $('#setup').innerHTML = `
     <div><h3>Material (stock)</h3>
       <div class="set" style="margin-bottom:10px"><span>Ver desbaste en 3D</span><span class="seg" role="group" aria-label="Ver desbaste"><button type="button" data-s="1" aria-pressed="${STK.on}">Sí</button><button type="button" data-s="0" aria-pressed="${!STK.on}">No</button></span></div>
       <div class="set" style="margin-bottom:10px"><span>Forma</span><span class="seg" role="group" aria-label="Forma del material"><button type="button" data-f="rect" aria-pressed="${STK.shape === 'rect'}">Rectangular</button><button type="button" data-f="round" aria-pressed="${STK.shape === 'round'}">Redondo</button></span></div>
@@ -1073,13 +1119,11 @@ function renderInfo(){
         <button class="btn" id="sApply" type="button">Aplicar medidas</button><button class="btn" id="sAuto" type="button">Automático</button></div>
       <p class="note" style="margin-top:8px">Medidas en ${u}, origen de la pieza. Origen de estas medidas: ${STK.src}. Puedes fijarlas en el programa con un comentario: rectangular (STOCK X0/100 Y0/80 Z-20/0) o redondo de pie (STOCK D60 X0 Y0 Z-30/0), con D el diámetro y X Y el centro. En el material, el durazno es lo maquinado y el rojo un rápido que entró al material. Se simula como mapa de alturas: correcto para 3 ejes con herramienta vertical; no muestra socavados.</p>
     </div>
-    <div><h3>Ajustes</h3>
-      <div class="set" style="margin-bottom:10px"><span>Unidades en pantalla</span><span class="seg" role="group" aria-label="Unidades en pantalla"><button type="button" data-u="mm" aria-pressed="${!dispInch}">mm</button><button type="button" data-u="in" aria-pressed="${dispInch}">pulgadas</button></span></div>
-      <p class="note" style="margin-bottom:10px">El programa está en ${R.mixed ? 'mm y pulgadas (cambia con G20/G21)' : R.inch ? 'pulgadas (G20)' : 'milímetros (G21)'}. Cambiar aquí solo cambia cómo se muestran las medidas; el código no se modifica.</p>
-      <div class="set"><label for="rapid">Velocidad de rápidos (${u}/min)</label><input id="rapid" type="number" inputmode="decimal" min="1" value="${dispInch ? Math.round(R.rapidRate / 25.4) : Math.round(R.rapidRate)}"></div>
-      <p class="note" style="margin-top:8px">El tiempo es una estimación sin aceleraciones ni cambio de herramienta. G28 se dibuja hacia X0 Y0 y una Z de seguridad. La compensación G41/G42 y los orígenes G54 a G59 no se aplican: se ve la trayectoria tal como está programada. El diámetro de la herramienta se toma de comentarios como (T2 D=10.).</p>
+    <div><h3>Herramientas</h3>
+      ${rows ? `<div class="tblw"><table class="tbl tools"><tr><th>T</th><th>Ø (${u})</th><th>Long. (${u})</th><th>Tipo</th></tr>${rows}</table></div>` : '<p class="note">El programa no tiene herramientas.</p>'}
+      <div class="set" style="margin-top:10px"><button class="btn" id="tClear" type="button">Usar las del programa</button></div>
+      <p class="note" style="margin-top:8px">El diámetro se toma de comentarios como (T2 D=10.) y aquí lo puedes corregir; los campos en durazno son medidas tuyas. La longitud es lo que sale la herramienta del portaherramientas: si la capturas, el simulador avisa cuando el portaherramientas tocaría el material (supone un portaherramientas de 1.6 veces el diámetro, mínimo 10 mm más ancho que la herramienta). Las medidas se guardan por número de herramienta en este teléfono. El tipo sale de la descripción (BROCA, BOLA o plana).</p>
     </div>`;
-  document.querySelectorAll('.seg button[data-u]').forEach(b => b.onclick = () => setUnits(b.dataset.u === 'in'));
   document.querySelectorAll('.seg button[data-s]').forEach(b => b.onclick = () => setStock(b.dataset.s === '1'));
   $('#sres').value = String(STK.res);
   const applyStk = () => {
@@ -1088,23 +1132,39 @@ function renderInfo(){
       : {x0: v('sx0'), x1: v('sx1'), y0: v('sy0'), y1: v('sy1'), z0: v('sz0'), z1: v('sz1')};
     if (Object.values(n).some(x => !isFinite(x)) || n.x1 <= n.x0 || n.y1 <= n.y0 || n.z1 <= n.z0 || n.dia <= 0){ toast('Revisa las medidas: cada máximo debe ser mayor que su mínimo, el diámetro mayor que cero y la cara más alta que el fondo.', true); return; }
     Object.assign(STK, n); STK.src = 'capturadas a mano'; STK.res = +$('#sres').value; LS.set('simg.stkres', STK.res);
-    setStock(true); showPane('info'); toast('Material actualizado.');
+    setStock(true); showPane('setup'); toast('Material actualizado.');
   };
   $('#sApply').onclick = applyStk;
   $('#sres').onchange = applyStk;
-  document.querySelectorAll('.seg button[data-f]').forEach(b => b.onclick = () => { setShape(b.dataset.f); STK.src = 'capturadas a mano'; setStock(true); showPane('info'); });
-  $('#sAuto').onclick = () => { R.stockC = null; stockAuto(); setStock(true); showPane('info'); };
-  $('#rapid').onchange = e => { const v = parseFloat(e.target.value); if (v > 0){ rapidMM = dispInch ? v * 25.4 : v; LS.set('simg.rapid', rapidMM); load(program, nameNow, true); showPane('info'); } };
+  document.querySelectorAll('.seg button[data-f]').forEach(b => b.onclick = () => { setShape(b.dataset.f); STK.src = 'capturadas a mano'; setStock(true); showPane('setup'); });
+  $('#sAuto').onclick = () => { R.stockC = null; stockAuto(); setStock(true); showPane('setup'); };
+  document.querySelectorAll('.tin').forEach(inp => inp.onchange = () => {
+    const t = +inp.dataset.t, k = inp.dataset.k, v = parseFloat(inp.value);
+    const o = TOV[t] || (TOV[t] = {});
+    if (inp.value === '' ) delete o[k];
+    else if (!(v > 0)){ toast('La medida debe ser mayor que cero.', true); renderSetup(); return; }
+    else o[k] = dispInch ? v * 25.4 : v;
+    if (!Object.keys(o).length) delete TOV[t];
+    saveTools(); toast(`T${t}: ${k === 'd' ? 'diámetro actualizado' : 'longitud actualizada'}.`);
+  });
+  $('#tClear').onclick = () => { for (const t of toolRows()) delete TOV[t]; saveTools(); toast('Se usan las medidas del programa.'); };
+}
+function saveTools(){
+  LS.set('simg.tools', JSON.stringify(TOV));
+  for (const k in toolCache) delete toolCache[k];
+  curTool = -1;
+  if (STK.mesh) stockInit();
+  renderInfo(); renderSetup(); requestRender();
 }
 function setUnits(inch){
   dispInch = inch;
   $('#bUnit').textContent = UN().toUpperCase();
   $('#bUnit').setAttribute('aria-label', 'Unidades: ' + (inch ? 'pulgadas' : 'milímetros') + '. Toca para cambiar');
-  if (R){ buildGrid(); renderInfo(); }
+  if (R){ buildGrid(); renderInfo(); renderSetup(); }
   requestRender();
 }
 $('#bUnit').onclick = () => setUnits(!dispInch);
-$('#bStock').onclick = () => setStock(!STK.on);
+$('#bStock').onclick = () => { setStock(!STK.on); if (STK.on && STK.src.startsWith('automático')) toast('Captura las medidas reales del material en la pestaña Montaje.'); };
 function renderWarns(){
   const c = R.W.length;
   $('#wcount').hidden = !c; $('#wcount').textContent = c;
