@@ -297,13 +297,15 @@ N700 M30
 %`;
 
 /* ============ Intérprete de código G (fresadora / centro de maquinado) ============ */
-function parse(src, rapidRate){
+function parse(src, rapidRate, defInch){
   const lines = src.split(/\r?\n/);
   const W = [], seen = new Set();
   const warn = (li, msg, key) => { if (key){ if (seen.has(key)) return; seen.add(key); } if (W.length < 400) W.push({li, msg}); };
   const noCom = src.replace(/\([^)]*\)/g, ' ').replace(/;.*$/gm, ' ');
   const um = noCom.match(/G\s*0*2([01])(?![\d.])/i);
-  const inch = !!um && um[1] === '0';
+  /* Sin G20/G21 el control usa sus unidades por parámetro: se toman de Montaje (defInch). */
+  const unitsGuessed = !um;
+  const inch = um ? um[1] === '0' : !!defInch;
   const k0 = inch ? 25.4 : 1;
   let maxZ = -Infinity;
   for (const m of noCom.matchAll(/Z\s*([+-]?(?:\d+\.?\d*|\.\d+))/gi)) maxZ = Math.max(maxZ, parseFloat(m[1]));
@@ -538,8 +540,15 @@ function parse(src, rapidRate){
       if (typ[i] === 1){ cb.min[a] = Math.min(cb.min[a], v); cb.max[a] = Math.max(cb.max[a], v); }
     }
   }
+  if (unitsGuessed && n){
+    const ext = Math.max(cb.max[0] - cb.min[0], cb.max[1] - cb.min[1]);
+    let hint = '';
+    if (!inch && ext < 30) hint = ` La pieza mide ${ext.toFixed(1)} mm: si en realidad son pulgadas, cámbialo.`;
+    if (inch && ext > 1500) hint = ` La pieza mide ${(ext / 25.4).toFixed(1)} in: si en realidad son milímetros, cámbialo.`;
+    W.push({li: 0, msg: `El programa no dice G20 ni G21: se leyó en ${inch ? 'pulgadas' : 'milímetros'}, como está en Montaje.${hint}`});
+  }
   W.sort((a, b) => a.li - b.li);
-  return {lines, n, pos:new Float32Array(pos), typ:Uint8Array.from(typ), lin:Int32Array.from(lin), dur, cum,
+  return {unitsGuessed,lines, n, pos:new Float32Array(pos), typ:Uint8Array.from(typ), lin:Int32Array.from(lin), dur, cum,
     f:fA, s:sA, t:tA, W, tools, used, lineSeg, homeZ, inch, mixed, bb, cb, rapidRate, stockC,
     stats:{total:acc, tCut, tRap, tDw, dCut, dRap}, toolTime};
 }
@@ -1094,6 +1103,11 @@ function renderSetup(){
       <td>${kinds[e.kind]}<div class="desc">${esc(e.desc || 'Sin descripción')}</div></td></tr>`;
   }).join('');
   $('#setup').innerHTML = `
+    <div><h3>Unidades del programa</h3>
+      <p class="note" style="margin-bottom:8px">${R.unitsGuessed ? `Este programa <b>no dice G20 ni G21</b>; se está leyendo en <b>${R.inch ? 'pulgadas' : 'milímetros'}</b>.` : `Este programa trae ${R.mixed ? 'G20 y G21' : R.inch ? '<b>G20 (pulgadas)</b>' : '<b>G21 (milímetros)</b>'} y así se lee.`}</p>
+      <div class="set"><span>Si no trae G20/G21, leer en</span><span class="seg" role="group" aria-label="Unidades por omisión"><button type="button" data-d="mm" aria-pressed="${!defInch}">mm</button><button type="button" data-d="in" aria-pressed="${defInch}">pulgadas</button></span></div>
+      <p class="note" style="margin-top:6px">Ponlo como esté tu control por parámetro. Si el programa sí trae G20 o G21, eso manda.</p>
+    </div>
     <div><h3>Material (stock)</h3>
       <div class="set" style="margin-bottom:10px"><span>Ver desbaste en 3D</span><span class="seg" role="group" aria-label="Ver desbaste"><button type="button" data-s="1" aria-pressed="${STK.on}">Sí</button><button type="button" data-s="0" aria-pressed="${!STK.on}">No</button></span></div>
       <div class="set" style="margin-bottom:10px"><span>Forma</span><span class="seg" role="group" aria-label="Forma del material"><button type="button" data-f="rect" aria-pressed="${STK.shape === 'rect'}">Rectangular</button><button type="button" data-f="round" aria-pressed="${STK.shape === 'round'}">Redondo</button></span></div>
@@ -1127,6 +1141,12 @@ function renderSetup(){
   $('#sres').onchange = applyStk;
   document.querySelectorAll('.seg button[data-f]').forEach(b => b.onclick = () => { setShape(b.dataset.f); STK.src = 'capturadas a mano'; setStock(true); showPane('setup'); });
   $('#sAuto').onclick = () => { R.stockC = null; stockAuto(); setStock(true); showPane('setup'); };
+  document.querySelectorAll('.seg button[data-d]').forEach(b => b.onclick = () => {
+    const inch = b.dataset.d === 'in'; if (inch === defInch) return;
+    defInch = inch; LS.set('simg.defunit', inch ? 'in' : 'mm');
+    load(program, nameNow); showPane('setup');
+    toast(R.unitsGuessed ? `Programa leído en ${inch ? 'pulgadas' : 'milímetros'}.` : 'Guardado. Este programa trae G20/G21, así que no cambia.');
+  });
   document.querySelectorAll('.tin').forEach(inp => inp.onchange = () => {
     const t = +inp.dataset.t, k = inp.dataset.k, v = parseFloat(inp.value);
     const o = TOV[t] || (TOV[t] = {});
@@ -1163,13 +1183,14 @@ function renderWarns(){
 $('#warns').addEventListener('click', e => { const b = e.target.closest('button[data-l]'); if (b){ showPane('code'); userScrollAt = 0; jumpToLine(+b.dataset.l); } });
 
 /* ============ Carga ============ */
+let defInch = LS.get('simg.defunit') === 'in';
 let program = '', nameNow = '', rapidMM = parseFloat(LS.get('simg.rapid')) || 10000;
 function load(src, name, keepTime){
   program = src; nameNow = name;
   $('#fname').textContent = name;
   setPlaying(false);
   const prevT = simT;
-  R = parse(src, rapidMM);
+  R = parse(src, rapidMM, defInch);
   if (!keepTime) dispInch = R.inch;
   buildScene();
   for (const k in toolCache) delete toolCache[k];
@@ -1215,7 +1236,8 @@ function loadChecked(txt, name){
   if ((txt.slice(0, 4000).match(/\0/g) || []).length > 4){ toast('Ese archivo no es texto (parece binario). Exporta el programa como .nc o .txt.', true); return; }
   load(txt, name); simT = 0; showPane('code'); requestRender();
   if (!R.n) toast('No encontré movimientos G0/G1/G2/G3 en ' + name + '. Revisa en Avisos qué se leyó.', true);
-  else toast(`${name}: ${R.lines.length} bloques, ${R.W.length ? R.W.length + ' avisos' : 'sin avisos'}. Toca ▶ para simular.`);
+  else if (R.unitsGuessed) toast(`${name} no dice G20 ni G21: lo leí en ${R.inch ? 'pulgadas' : 'milímetros'}. Si no es así, cámbialo en Montaje.`, true, null, 9000);
+  else toast(`${name}: ${R.lines.length} bloques en ${R.mixed ? 'mm y pulgadas' : R.inch ? 'pulgadas (G20)' : 'mm (G21)'}, ${R.W.length ? R.W.length + ' avisos' : 'sin avisos'}. Toca ▶ para simular.`);
 }
 $('#file').addEventListener('change', async e => {
   pickAt = 0;
