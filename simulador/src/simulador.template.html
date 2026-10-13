@@ -1,0 +1,843 @@
+<title>Simulador G</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: herramienta de una pantalla. Teléfono: visor 3D arriba, transporte, panel de código abajo. Escritorio: visor a la izquierda, panel a la derecha. */
+:root{
+  --durazno:#CF825A; --tostado:#B46034; --gris:#7C7470;
+  --bg:#FFFFFF; --fg:#000000; --muted:#5E5752; --surface:#F7F4F2; --line:#E6E0DC;
+  --view:#FBF9F8; --acc-text:#B46034; --sel:rgba(207,130,90,.16); --warn:#A8321F;
+  --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#000000; --fg:#FFFFFF; --muted:#B3ACA8; --surface:#121010; --line:#2A2624;
+  --view:#080707; --acc-text:#CF825A; --sel:rgba(207,130,90,.22); --warn:#F08A70; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000000; --fg:#FFFFFF; --muted:#B3ACA8; --surface:#121010; --line:#2A2624;
+  --view:#080707; --acc-text:#CF825A; --sel:rgba(207,130,90,.22); --warn:#F08A70; color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:14px/1.45 var(--sans);display:flex;flex-direction:column;overflow:hidden;padding-inline:16px;box-sizing:border-box}
+*,*::before,*::after{box-sizing:border-box}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--durazno);outline-offset:2px}
+
+.top{display:flex;align-items:center;gap:12px;padding-block:10px}
+.ave{display:flex;width:30px;flex:none}
+.ave svg{width:30px;height:auto;display:block}
+.ave-d{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ave-l{display:none}:root:not([data-theme="light"]) .ave-d{display:flex}}
+:root[data-theme="dark"] .ave-l{display:none}:root[data-theme="dark"] .ave-d{display:flex}
+.name{display:flex;flex-direction:column;min-width:0;flex:1}
+.name b{font-weight:600;font-size:17px;letter-spacing:.01em;line-height:1.1}
+.name span{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:13px;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--gris)}
+.btn.pri{background:var(--tostado);border-color:var(--tostado);color:#FFFFFF}
+.file-in{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+
+.app{flex:1;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto minmax(0,42%);gap:10px;padding-bottom:12px}
+@media (min-width:900px){
+  .app{grid-template-columns:minmax(0,1fr) 400px;grid-template-rows:minmax(0,1fr) auto}
+  .viewer{grid-column:1;grid-row:1}.transport{grid-column:1;grid-row:2}.panel{grid-column:2;grid-row:1/3}
+}
+
+.viewer{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--view);min-height:0}
+#cv{display:block;width:100%;height:100%;touch-action:none}
+.dro{position:absolute;left:8px;top:8px;font:12px/1.35 var(--mono);font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--bg) 82%,transparent);border:1px solid var(--line);border-radius:8px;padding:6px 9px;pointer-events:none;display:grid;grid-template-columns:auto auto;column-gap:8px}
+.dro .k{color:var(--muted)}
+.dro .v{text-align:right;min-width:9ch}
+.dro .ax{font-weight:500;color:var(--fg)}
+.dro hr{grid-column:1/3;border:0;border-top:1px solid var(--line);margin:4px 0;width:100%}
+.views{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px}
+.views button{font:500 11px var(--mono);letter-spacing:.04em;width:42px;height:32px;border-radius:7px;border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 82%,transparent)}
+.views button.on{border-color:var(--durazno);color:var(--acc-text)}
+.legend{position:absolute;left:8px;bottom:8px;display:flex;gap:12px;font-size:11px;color:var(--muted);background:color-mix(in srgb,var(--bg) 82%,transparent);border-radius:6px;padding:3px 8px;pointer-events:none}
+.legend i{display:inline-block;width:16px;height:0;border-top:2px solid;vertical-align:middle;margin-right:5px}
+.legend .c i{border-color:var(--durazno)}.legend .r i{border-color:var(--gris)}
+
+.transport{display:flex;align-items:center;gap:8px}
+.tb{width:40px;height:40px;border-radius:9px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;flex:none}
+.tb svg{width:18px;height:18px;fill:currentColor}
+.tb.play{background:var(--tostado);border-color:var(--tostado);color:#FFFFFF;width:48px}
+@media (max-width:420px){.transport{gap:6px}.tb{width:36px}.tb.play{width:44px}.speed{padding:0 4px}}
+.scrub{flex:1 1 0;min-width:72px;display:flex;flex-direction:column;gap:2px}
+.scrub input{width:100%;accent-color:var(--durazno)}
+.times{display:flex;justify-content:space-between;font:11px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.speed{height:40px;border-radius:9px;border:1px solid var(--line);background:var(--surface);padding:0 8px;font:500 13px var(--mono)}
+
+.panel{border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;min-height:0;overflow:hidden;background:var(--bg)}
+.tabs{display:flex;border-bottom:1px solid var(--line);flex:none}
+.tabs button{flex:1;border:0;background:none;padding:10px 6px;font-weight:500;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--durazno)}
+.badge{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;font:500 11px/18px var(--mono);background:var(--warn);color:#FFFFFF;margin-left:4px}
+.pane{flex:1;min-height:0;overflow:auto}
+.bar{display:flex;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:1}
+.bar .hint{flex:1;color:var(--muted);font-size:12px;min-width:0}
+.code{font:12.5px/1.6 var(--mono);padding-block:4px}
+.ln{display:flex;gap:10px;padding:0 10px;white-space:pre;cursor:pointer}
+.ln .n{color:var(--muted);opacity:.7;min-width:4ch;text-align:right;flex:none;font-variant-numeric:tabular-nums}
+.ln .t{min-width:0}
+.ln.cur{background:var(--sel)}
+.ln.cur .n{color:var(--acc-text);opacity:1}
+.ln.w .n{color:var(--warn);opacity:1}
+.ln .g{color:var(--acc-text);font-weight:500}
+.ln .m{color:var(--fg);font-weight:500;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.ln .cm{color:var(--muted);font-style:italic}
+#ed{display:block;width:100%;height:100%;min-height:240px;border:0;resize:none;padding:10px;font:12.5px/1.6 var(--mono);background:var(--bg);white-space:pre;overflow:auto}
+#ed:focus-visible{outline:none}
+.edwrap{display:flex;flex-direction:column;height:100%}
+.edwrap textarea{flex:1}
+
+.info{padding:12px 14px;display:flex;flex-direction:column;gap:16px}
+.info h3{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.stat .l{font-size:11px;color:var(--muted)}
+.stat .v{font:500 18px var(--mono);font-variant-numeric:tabular-nums}
+.stat.big{grid-column:1/3}
+.stat.big .v{font-size:24px;color:var(--fg)}
+.stat.big .v small{font-size:12px;color:var(--muted);margin-left:6px}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th{text-align:left;font-weight:500;color:var(--muted);font-size:11px;padding:4px 6px;border-bottom:1px solid var(--line)}
+.tbl td{padding:5px 6px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;vertical-align:top}
+.tbl td.mono{font-family:var(--mono)}
+.tblw{overflow-x:auto}
+.set{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.set input{width:110px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--surface);font-family:var(--mono)}
+.note{color:var(--muted);font-size:12px;margin:0;max-width:60ch}
+.warns{list-style:none;margin:0;padding:6px 0}
+.warns li{display:flex;gap:10px;padding:8px 14px;border-bottom:1px solid var(--line);align-items:baseline}
+.warns button{border:1px solid var(--line);background:var(--surface);border-radius:6px;font:500 11px var(--mono);padding:2px 7px;flex:none;color:var(--warn)}
+.warns .ok{color:var(--muted);padding:16px 14px}
+.foot{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;padding:6px 14px 12px}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+</style>
+
+<header class="top">
+  <span class="ave ave-l" aria-hidden="true">{{AVE_TOSTADO}}</span>
+  <span class="ave ave-d" aria-hidden="true">{{AVE_DURAZNO}}</span>
+  <div class="name"><b>Simulador G</b><span id="fname">Ejemplo: placa demo</span></div>
+  <label class="btn pri" for="file">Abrir</label>
+  <input class="file-in" type="file" id="file">
+  <button class="btn" id="sample" type="button">Ejemplo</button>
+</header>
+
+<main class="app">
+  <section class="viewer" aria-label="Vista 3D de la trayectoria">
+    <canvas id="cv"></canvas>
+    <div class="dro" aria-live="off">
+      <span class="k ax">X</span><span class="v" id="dx">0.000</span>
+      <span class="k ax">Y</span><span class="v" id="dy">0.000</span>
+      <span class="k ax">Z</span><span class="v" id="dz">0.000</span>
+      <hr>
+      <span class="k">N</span><span class="v" id="dn">–</span>
+      <span class="k">T</span><span class="v" id="dt">–</span>
+      <span class="k">S</span><span class="v" id="ds">0</span>
+      <span class="k">F</span><span class="v" id="df">0</span>
+    </div>
+    <div class="views" role="group" aria-label="Vistas">
+      <button type="button" data-v="iso" class="on">ISO</button>
+      <button type="button" data-v="xy">XY</button>
+      <button type="button" data-v="xz">XZ</button>
+      <button type="button" data-v="yz">YZ</button>
+      <button type="button" data-v="fit" aria-label="Ajustar a la pieza">FIT</button>
+    </div>
+    <div class="legend"><span class="c"><i></i>Corte</span><span class="r"><i></i>Rápido</span></div>
+  </section>
+
+  <section class="transport" aria-label="Reproducción">
+    <button class="tb" id="bStart" type="button" aria-label="Ir al inicio"><svg viewBox="0 0 24 24"><path d="M5 5h2.5v14H5zM19 5v14L9 12z"/></svg></button>
+    <button class="tb" id="bBack" type="button" aria-label="Bloque anterior"><svg viewBox="0 0 24 24"><path d="M18 5v14l-9-7zM5 5h2.5v14H5z"/></svg></button>
+    <button class="tb play" id="bPlay" type="button" aria-label="Reproducir"><svg viewBox="0 0 24 24" id="iPlay"><path d="M7 4v16l13-8z"/></svg></button>
+    <button class="tb" id="bStep" type="button" aria-label="Bloque siguiente"><svg viewBox="0 0 24 24"><path d="M6 5v14l9-7zM16.5 5H19v14h-2.5z"/></svg></button>
+    <div class="scrub">
+      <input type="range" id="scrub" min="0" max="1000" step="1" value="0" aria-label="Posición en el programa">
+      <div class="times"><span id="tNow">0:00</span><span id="tTot">0:00</span></div>
+    </div>
+    <select class="speed" id="speed" aria-label="Velocidad">
+      <option value="1">1×</option><option value="2">2×</option><option value="5">5×</option>
+      <option value="10" selected>10×</option><option value="25">25×</option><option value="50">50×</option>
+      <option value="100">100×</option><option value="500">500×</option>
+    </select>
+  </section>
+
+  <section class="panel">
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-code" aria-selected="true" data-p="code">Código</button>
+      <button role="tab" id="tab-info" aria-selected="false" data-p="info">Resumen</button>
+      <button role="tab" id="tab-warn" aria-selected="false" data-p="warn">Avisos<span class="badge" id="wcount" hidden>0</span></button>
+    </div>
+    <div class="pane" id="p-code">
+      <div class="bar"><span class="hint" id="codehint">Toca un bloque para ir a él</span><button class="btn" id="bEdit" type="button">Editar</button></div>
+      <div class="code" id="code"></div>
+    </div>
+    <div class="pane" id="p-edit" hidden>
+      <div class="edwrap">
+        <div class="bar"><span class="hint">Pega o escribe tu programa</span><button class="btn" id="bCancel" type="button">Cancelar</button><button class="btn pri" id="bApply" type="button">Simular</button></div>
+        <textarea id="ed" spellcheck="false" autocapitalize="characters" autocomplete="off" aria-label="Programa en código G"></textarea>
+      </div>
+    </div>
+    <div class="pane" id="p-info" hidden><div class="info" id="info"></div></div>
+    <div class="pane" id="p-warn" hidden><ul class="warns" id="warns"></ul></div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Autor: BS
+"use strict";
+const $ = s => document.querySelector(s);
+const LS = {get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+const SAMPLE = `%
+O1001 (PLACA DEMO 100 X 80)
+(T1 D=50. PLANEADOR)
+(T2 D=10. FRESA PLANA 3 FILOS)
+(T3 D=8.5 BROCA HSS)
+N10 G21 G17 G40 G49 G80 G90
+N20 G54
+(--- PLANEADO ---)
+N30 T1 M06
+N40 S1200 M03
+N50 G00 X-35. Y5.
+N60 G43 Z25. H01 M08
+N70 Z2.
+N80 G01 Z0. F300.
+N90 X135. F600.
+N100 Y45.
+N110 X-35.
+N120 Y85.
+N130 X135.
+N140 G00 Z25. M09
+N150 M05
+N160 G91 G28 Z0.
+N170 G90
+(--- CONTORNO EXTERIOR R10 ---)
+N180 T2 M06
+N190 S3500 M03
+N200 G00 X-15. Y-15.
+N210 G43 Z25. H02 M08
+N220 Z2.
+N230 G01 Z-5. F150.
+N240 X-5. Y10. F600.
+N250 Y70.
+N260 G02 X10. Y85. R15.
+N270 G01 X90.
+N280 G02 X105. Y70. R15.
+N290 G01 Y10.
+N300 G02 X90. Y-5. R15.
+N310 G01 X10.
+N320 G02 X-5. Y10. R15.
+N330 G01 Z-10. F150.
+N340 Y70. F600.
+N350 G02 X10. Y85. I15. J0.
+N360 G01 X90.
+N370 G02 X105. Y70. I0. J-15.
+N380 G01 Y10.
+N390 G02 X90. Y-5. I-15. J0.
+N400 G01 X10.
+N410 G02 X-5. Y10. I0. J15.
+N420 G00 Z25.
+(--- CAJA CIRCULAR D40 ENTRADA HELICOIDAL ---)
+N430 X60. Y40.
+N440 Z2.
+N450 G01 Z0. F300.
+N460 G03 X60. Y40. Z-2. I-10. J0. F400.
+N470 G03 X60. Y40. Z-4. I-10. J0.
+N480 G03 X60. Y40. Z-6. I-10. J0.
+N490 G03 X60. Y40. I-10. J0.
+N500 G01 X65.
+N510 G03 X65. Y40. I-15. J0.
+N520 G00 Z25. M09
+N530 M05
+N540 G91 G28 Z0.
+N550 G90
+(--- BARRENOS ---)
+N560 T3 M06
+N570 S900 M03
+N580 G00 X10. Y10.
+N590 G43 Z25. H03 M08
+N600 G98 G83 Z-15. R2. Q3. F120.
+N610 X90.
+N620 Y70.
+N630 X10.
+N640 G80
+N650 G00 Z25. M09
+N660 M05
+N670 G91 G28 Z0.
+N680 G28 X0. Y0.
+N690 G90
+N700 M30
+%`;
+
+/* ============ Intérprete de código G (fresadora / centro de maquinado) ============ */
+function parse(src, rapidRate){
+  const lines = src.split(/\r?\n/);
+  const W = [], seen = new Set();
+  const warn = (li, msg, key) => { if (key){ if (seen.has(key)) return; seen.add(key); } if (W.length < 400) W.push({li, msg}); };
+  const noCom = src.replace(/\([^)]*\)/g, ' ').replace(/;.*$/gm, ' ');
+  const um = noCom.match(/G\s*0*2([01])(?![\d.])/i);
+  const inch = !!um && um[1] === '0';
+  let maxZ = -Infinity;
+  for (const m of noCom.matchAll(/Z\s*([+-]?(?:\d+\.?\d*|\.\d+))/gi)) maxZ = Math.max(maxZ, parseFloat(m[1]));
+  if (!isFinite(maxZ)) maxZ = 0;
+  const homeZ = Math.max(maxZ, 0) + (inch ? 2 : 50);
+  if (inch && rapidRate > 2000) rapidRate = rapidRate / 25.4;
+
+  const tools = {}, used = [], wcsUsed = new Set();
+  const st = {x:0, y:0, z:homeZ, abs:true, plane:17, g1:0, cm:0, F:0, S:0, sp:5, tool:0, next:0, ret:98, perRev:false,
+              cyc:{R:null, Z:null, Q:null, P:0}, cycZ:homeZ, inch};
+  const pos = [], typ = [], lin = [], dur = [], fA = [], sA = [], tA = [];
+  const lineSeg = new Int32Array(lines.length + 1);
+  let endLine = -1;
+
+  function toolComment(c){
+    const t = c.match(/\bT\s*0*(\d+)\b/i); if (!t) return;
+    const n = +t[1]; if (tools[n]) return;
+    const d = c.match(/(?:^|[\s,(])(?:D|DIA|Ø|⌀)\s*[=:]?\s*(\d*\.?\d+)/i);
+    tools[n] = {d: d ? parseFloat(d[1]) : null, desc: c.trim()};
+  }
+  function seg(x, y, z, type, li, chk = true){
+    const len = Math.hypot(x - st.x, y - st.y, z - st.z);
+    if (len < 1e-9){ st.x = x; st.y = y; st.z = z; return; }
+    let r = type === 0 ? rapidRate : (st.perRev ? st.F * st.S : st.F);
+    if (type === 1 && !(r > 0)){ warn(li, 'Avance F no definido: se usa F100 para estimar el tiempo', 'F0'); r = 100; }
+    if (type === 1 && st.sp === 5) warn(li, 'Corte con el husillo detenido (falta M03/M04)', 'sp' + li);
+    if (type === 0 && chk && (z < -1e-6 || (st.z < -1e-6 && Math.hypot(x - st.x, y - st.y) > 1e-6))) warn(li, 'Movimiento rápido por debajo de Z0: revisa posible choque', 'rz' + li);
+    pos.push(st.x, st.y, st.z, x, y, z); typ.push(type); lin.push(li);
+    dur.push(Math.max(len / r * 60, 1e-4)); fA.push(type ? (st.perRev ? st.F * st.S : st.F) : 0); sA.push(st.sp === 5 ? 0 : st.S); tA.push(st.tool);
+    st.x = x; st.y = y; st.z = z;
+  }
+  function dwell(sec, li){
+    pos.push(st.x, st.y, st.z, st.x, st.y, st.z); typ.push(2); lin.push(li);
+    dur.push(Math.max(sec, 1e-4)); fA.push(0); sA.push(st.sp === 5 ? 0 : st.S); tA.push(st.tool);
+  }
+  const secsP = (v, raw) => raw.includes('.') ? v : v / 1000;
+
+  function arc(cw, e, w, li){
+    const s = [st.x, st.y, st.z];
+    let A, B, C, oa, ob;
+    if (st.plane === 17){ A = 0; B = 1; C = 2; oa = w.I || 0; ob = w.J || 0; }
+    else if (st.plane === 18){ A = 2; B = 0; C = 1; oa = w.K || 0; ob = w.I || 0; }
+    else { A = 1; B = 2; C = 0; oa = w.J || 0; ob = w.K || 0; }
+    const sa = s[A], sb = s[B], ea = e[A], eb = e[B];
+    let ca, cb;
+    if ('R' in w){
+      const r = w.R, dx = ea - sa, dy = eb - sb, d = Math.hypot(dx, dy);
+      if (d < 1e-9){ warn(li, 'Arco con R y mismo punto inicial y final: usa I/J/K para círculo completo'); return; }
+      const h2 = r * r - d * d / 4;
+      if (h2 < -1e-6 * Math.max(1, r * r)) warn(li, `Radio R${Math.abs(r)} demasiado pequeño para la distancia entre puntos (${d.toFixed(3)})`);
+      const h = Math.sqrt(Math.max(0, h2)), nx = -dy / d, ny = dx / d;
+      let side = cw ? -1 : 1; if (r < 0) side = -side;
+      ca = (sa + ea) / 2 + side * h * nx; cb = (sb + eb) / 2 + side * h * ny;
+    } else {
+      if (!('I' in w || 'J' in w || 'K' in w)){ warn(li, 'Arco sin R ni I/J/K: se ignora'); return; }
+      ca = sa + oa; cb = sb + ob;
+    }
+    const r0 = Math.hypot(sa - ca, sb - cb), r1 = Math.hypot(ea - ca, eb - cb);
+    const tol = (st.inch ? 0.0005 : 0.01) + 0.002 * r0;
+    if (Math.abs(r0 - r1) > tol) warn(li, `Arco inválido: radio inicial ${r0.toFixed(3)} ≠ final ${r1.toFixed(3)}`);
+    const a0 = Math.atan2(sb - cb, sa - ca), a1 = Math.atan2(eb - cb, ea - ca);
+    let sw = cw ? a0 - a1 : a1 - a0;
+    while (sw <= 1e-7) sw += Math.PI * 2;
+    while (sw > Math.PI * 2 + 1e-7) sw -= Math.PI * 2;
+    const n = Math.max(4, Math.ceil(sw / (Math.PI * 2) * 96));
+    const dir = cw ? -1 : 1;
+    for (let i = 1; i <= n; i++){
+      const t = i / n, ang = a0 + dir * sw * t, r = r0 + (r1 - r0) * t, p = [0, 0, 0];
+      p[A] = ca + r * Math.cos(ang); p[B] = cb + r * Math.sin(ang); p[C] = s[C] + (e[C] - s[C]) * t;
+      if (i === n){ p[A] = ea; p[B] = eb; }
+      seg(p[0], p[1], p[2], 1, li);
+    }
+  }
+
+  function cycle(w, raws, li){
+    const c = st.cyc;
+    if (c.R == null || c.Z == null){ warn(li, 'Ciclo fijo sin R o sin Z definidos'); return; }
+    const reps = Math.max(1, Math.round(w.L ?? w.K ?? 1));
+    const m = st.cm, d = st.inch ? 0.02 : 0.5;
+    for (let k = 0; k < reps; k++){
+      const tx = 'X' in w ? (st.abs ? w.X : st.x + w.X) : st.x;
+      const ty = 'Y' in w ? (st.abs ? w.Y : st.y + w.Y) : st.y;
+      const init = st.cycZ;
+      const rL = st.abs ? c.R : init + c.R;
+      const zL = st.abs ? c.Z : rL + c.Z;
+      if (zL > rL) warn(li, 'El fondo Z del ciclo está por encima del plano R', 'cz' + li);
+      seg(tx, ty, st.z, 0, li);
+      seg(tx, ty, rL, 0, li, false);
+      if (m === 83 || m === 73){
+        const q = Math.abs(c.Q || 0);
+        if (!(q > 0)){ warn(li, 'Ciclo de picoteo sin Q: se simula en una sola pasada', 'q' + li); seg(tx, ty, zL, 1, li); }
+        else {
+          let depth = rL, g = 0;
+          while (depth > zL + 1e-9 && g++ < 5000){
+            const nx = Math.max(zL, depth - q);
+            if (m === 83 && depth < rL) seg(tx, ty, depth + d, 0, li, false);
+            seg(tx, ty, nx, 1, li);
+            if (nx > zL + 1e-9) seg(tx, ty, m === 83 ? rL : nx + d, 0, li, false);
+            depth = nx;
+          }
+        }
+      } else {
+        seg(tx, ty, zL, 1, li);
+        if (c.P && (m === 82 || m === 89 || m === 88 || m === 86)) dwell(c.P, li);
+      }
+      if (m === 84 || m === 74 || m === 85 || m === 89) seg(tx, ty, rL, 1, li); else seg(tx, ty, rL, 0, li, false);
+      if (st.ret === 98 && init > rL) seg(tx, ty, init, 0, li, false);
+    }
+  }
+
+  const IGN = new Set([5.1, 8, 9, 40, 43, 44, 43.4, 49, 61, 61.1, 64, 90.1, 91.1, 187, 15.0]);
+  const CYC = new Set([73, 74, 76, 81, 82, 83, 84, 85, 86, 87, 88, 89]);
+  const re = /([A-Za-z])\s*([+-]?(?:\d+\.?\d*|\.\d+))/g;
+
+  for (let li = 0; li < lines.length; li++){
+    lineSeg[li] = typ.length;
+    if (endLine >= 0) continue;
+    let code = lines[li].replace(/\(([^)]*)\)/g, (_, c) => { toolComment(c); return ' '; });
+    const sc = code.indexOf(';'); if (sc >= 0){ toolComment(code.slice(sc + 1)); code = code.slice(0, sc); }
+    code = code.trim();
+    if (!code || code[0] === '%') continue;
+    if (code[0] === '/') code = code.slice(1);
+    if (code[0] === ':') continue;
+    const rest = code.replace(re, '').replace(/\s+/g, '');
+    if (rest) warn(li, 'Texto no reconocido: ' + rest.slice(0, 24));
+    const w = {}, raws = {}, G = [], M = [];
+    let m; re.lastIndex = 0;
+    while ((m = re.exec(code))){
+      const L = m[1].toUpperCase(), v = parseFloat(m[2]);
+      if (L === 'G') G.push(Math.round(v * 10) / 10); else if (L === 'M') M.push(Math.round(v)); else { w[L] = v; raws[L] = m[2]; }
+    }
+    if ('O' in w && !G.length && !M.length) continue;
+    if ('A' in w || 'B' in w || 'C' in w) warn(li, 'Ejes rotativos A/B/C: no se simulan', 'rot');
+
+    let dw = false, home = false, g53 = false, noMove = false, cycNew = false;
+    for (const g of G){
+      if (g === 0 || g === 1 || g === 2 || g === 3){ st.g1 = g; st.cm = 0; }
+      else if (g === 4) dw = true;
+      else if (g === 17 || g === 18 || g === 19) st.plane = g;
+      else if (g === 20 || g === 21){ if ((g === 20) !== inch) warn(li, 'El programa mezcla G20 y G21', 'units'); }
+      else if (g === 28) home = true;
+      else if (g === 53) g53 = true;
+      else if (g === 10 || g === 92 || g === 52){ noMove = true; warn(li, `G${g} cambia el origen; la simulación no lo aplica`, 'g' + g); }
+      else if ((g >= 54 && g <= 59) || g === 54.1){ const n = 'G' + g; if (wcsUsed.size && !wcsUsed.has(n)) warn(li, `Se usan varios orígenes (${[...wcsUsed, n].join(', ')}); todos se dibujan sobre el mismo cero`, 'wcs'); wcsUsed.add(n); }
+      else if (g === 80) st.cm = 0;
+      else if (CYC.has(g)){ if (!st.cm) st.cycZ = st.z; st.cm = g; cycNew = true; if (g === 76 || g === 87) warn(li, `G${g}: se simula como barrenado simple`, 'g' + g); }
+      else if (g === 90) st.abs = true;
+      else if (g === 91) st.abs = false;
+      else if (g === 98 || g === 99) st.ret = g;
+      else if (g === 94) st.perRev = false;
+      else if (g === 95) st.perRev = true;
+      else if (g === 41 || g === 42) warn(li, 'Compensación G41/G42: se dibuja la trayectoria programada, sin compensar el radio', 'comp');
+      else if ([50, 51, 68, 69, 16, 93].includes(g)) warn(li, `G${g} (escala, rotación, polares o tiempo inverso) no se simula`, 'g' + g);
+      else if (!IGN.has(g)) warn(li, `G${g} no reconocido; se ignora`);
+    }
+    if ('F' in w) st.F = w.F;
+    if ('S' in w) st.S = w.S;
+    if ('T' in w) st.next = Math.round(w.T);
+
+    for (const mm of M){
+      if (mm === 3 || mm === 4) st.sp = mm;
+      else if (mm === 8 || mm === 7) {}
+      else if (mm === 6){
+        if (st.z < homeZ) seg(st.x, st.y, homeZ, 0, li, false);
+        st.tool = st.next; if (!used.includes(st.tool)) used.push(st.tool);
+        if (st.sp !== 5) warn(li, 'Cambio de herramienta con el husillo girando', 'm6sp' + li);
+        st.sp = 5;
+      }
+      else if (mm === 98) warn(li, 'Subprogramas M98: no se expanden', 'm98');
+    }
+
+    const has = k => k in w;
+    const tg = (k, cur) => has(k) ? (st.abs ? w[k] : cur + w[k]) : cur;
+    if (dw){
+      const sec = has('X') ? w.X : has('P') ? secsP(w.P, raws.P) : has('U') ? w.U : 0;
+      dwell(sec, li);
+    } else if (noMove){
+    } else if (home){
+      seg(tg('X', st.x), tg('Y', st.y), tg('Z', st.z), 0, li, false);
+      seg(has('X') ? 0 : st.x, has('Y') ? 0 : st.y, has('Z') ? homeZ : st.z, 0, li, false);
+    } else if (g53){
+      if (has('Z')) seg(st.x, st.y, homeZ, 0, li, false);
+      if (has('X') || has('Y')) warn(li, 'G53 en X/Y: posición de máquina desconocida, no se simula', 'g53');
+    } else if (st.cm){
+      const c = st.cyc;
+      if (has('R')) c.R = w.R;
+      if (has('Z')) c.Z = w.Z;
+      if (has('Q')) c.Q = w.Q;
+      if (has('P')) c.P = secsP(w.P, raws.P);
+      if (has('X') || has('Y') || cycNew) cycle(w, raws, li);
+    } else if (st.g1 === 0 || st.g1 === 1){
+      if (has('X') || has('Y') || has('Z')) seg(tg('X', st.x), tg('Y', st.y), tg('Z', st.z), st.g1, li);
+    } else {
+      if (has('X') || has('Y') || has('Z') || has('I') || has('J') || has('K'))
+        arc(st.g1 === 2, [tg('X', st.x), tg('Y', st.y), tg('Z', st.z)], w, li);
+    }
+
+    for (const mm of M){
+      if (mm === 5) st.sp = 5;
+      else if (mm === 30 || mm === 2) endLine = li;
+    }
+  }
+  lineSeg[lines.length] = typ.length;
+  if (endLine < 0 && typ.length) warn(lines.length - 1, 'El programa no termina con M30 o M02', 'end');
+
+  const n = typ.length, cum = new Float64Array(n);
+  let acc = 0, tCut = 0, tRap = 0, tDw = 0, dCut = 0, dRap = 0;
+  const toolTime = {};
+  const bb = {min:[Infinity, Infinity, Infinity], max:[-Infinity, -Infinity, -Infinity]};
+  const cb = {min:[Infinity, Infinity, Infinity], max:[-Infinity, -Infinity, -Infinity]};
+  for (let i = 0; i < n; i++){
+    acc += dur[i]; cum[i] = acc;
+    const L = Math.hypot(pos[i*6+3] - pos[i*6], pos[i*6+4] - pos[i*6+1], pos[i*6+5] - pos[i*6+2]);
+    if (typ[i] === 0){ tRap += dur[i]; dRap += L; } else if (typ[i] === 1){ tCut += dur[i]; dCut += L; } else tDw += dur[i];
+    toolTime[tA[i]] = (toolTime[tA[i]] || 0) + dur[i];
+    for (let k = 0; k < 2; k++) for (let a = 0; a < 3; a++){
+      const v = pos[i*6 + k*3 + a];
+      bb.min[a] = Math.min(bb.min[a], v); bb.max[a] = Math.max(bb.max[a], v);
+      if (typ[i] === 1){ cb.min[a] = Math.min(cb.min[a], v); cb.max[a] = Math.max(cb.max[a], v); }
+    }
+  }
+  W.sort((a, b) => a.li - b.li);
+  return {lines, n, pos:new Float32Array(pos), typ:Uint8Array.from(typ), lin:Int32Array.from(lin), dur, cum,
+    f:fA, s:sA, t:tA, W, tools, used, lineSeg, homeZ, inch, bb, cb, rapidRate,
+    stats:{total:acc, tCut, tRap, tDw, dCut, dRap}, toolTime};
+}
+
+/* ============ Visor 3D ============ */
+const cv = $('#cv'), viewerEl = $('.viewer');
+const renderer = new THREE.WebGLRenderer({canvas:cv, antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 1e6);
+camera.up.set(0, 0, 1);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1.0));
+const dl = new THREE.DirectionalLight(0xffffff, 0.6); dl.position.set(1, -2, 3); scene.add(dl);
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C_FEED = new THREE.Color('#CF825A'), C_RAPID = new THREE.Color('#7C7470');
+
+let R = null, ghost = null, traced = null, partial = null, grid = null, axes = null, size = 100;
+const toolG = new THREE.Group();
+const cutter = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 28), new THREE.MeshStandardMaterial({color:0xB8B0AB, metalness:.6, roughness:.35}));
+cutter.rotation.x = Math.PI / 2; cutter.position.z = .5;
+const holder = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 28), new THREE.MeshStandardMaterial({color:0x4A4542, metalness:.4, roughness:.5}));
+holder.rotation.x = Math.PI / 2;
+const cutG = new THREE.Group(); cutG.add(cutter);
+const holdG = new THREE.Group(); holdG.add(holder);
+toolG.add(cutG, holdG); scene.add(toolG);
+
+function applyTheme(){
+  scene.background = new THREE.Color(css('--view') || '#FBF9F8');
+  if (ghost) ghost.material.opacity = css('--bg').toUpperCase() === '#000000' ? .32 : .26;
+  if (R) buildGrid();
+  requestRender();
+}
+
+const ctl = {az:-Math.PI * .3, el:.55, r:200, tgt:new THREE.Vector3()};
+function applyCam(){
+  const ce = Math.cos(ctl.el);
+  camera.position.set(ctl.tgt.x + ctl.r * ce * Math.cos(ctl.az), ctl.tgt.y + ctl.r * ce * Math.sin(ctl.az), ctl.tgt.z + ctl.r * Math.sin(ctl.el));
+  camera.near = ctl.r / 500; camera.far = ctl.r * 50; camera.updateProjectionMatrix();
+  camera.lookAt(ctl.tgt);
+}
+function fit(){
+  if (!R || !R.n){ ctl.tgt.set(0, 0, 0); ctl.r = 200; applyCam(); return; }
+  const b = R.cb.min[0] <= R.cb.max[0] ? R.cb : R.bb, c = [0, 1, 2].map(a => (b.min[a] + b.max[a]) / 2);
+  ctl.tgt.set(c[0], c[1], c[2]);
+  const ext = Math.max(b.max[0] - b.min[0], b.max[1] - b.min[1], b.max[2] - b.min[2], 1e-3);
+  const asp = Math.max(.6, Math.min(camera.aspect, 1));
+  ctl.r = ext * .58 / Math.tan(camera.fov * Math.PI / 360) / asp + ext * .1;
+  applyCam(); requestRender();
+}
+function setView(v){
+  document.querySelectorAll('.views button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  if (v === 'iso'){ ctl.az = -Math.PI * .3; ctl.el = .55; }
+  else if (v === 'xy'){ ctl.az = -Math.PI / 2; ctl.el = Math.PI / 2 - 1e-3; }
+  else if (v === 'xz'){ ctl.az = -Math.PI / 2; ctl.el = 0; }
+  else if (v === 'yz'){ ctl.az = 0; ctl.el = 0; }
+  fit();
+}
+
+function niceStep(x){ const p = Math.pow(10, Math.floor(Math.log10(x))), f = x / p; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * p; }
+function buildGrid(){
+  if (grid){ scene.remove(grid); grid.geometry.dispose(); }
+  if (axes){ scene.remove(axes); axes.geometry.dispose(); }
+  const b = R.bb;
+  const ext = Math.max(b.max[0] - b.min[0], b.max[1] - b.min[1], 10 * (R.inch ? .04 : 1));
+  const step = niceStep(ext / 8);
+  const half = Math.ceil(Math.max(Math.abs(b.min[0]), Math.abs(b.max[0]), Math.abs(b.min[1]), Math.abs(b.max[1])) * 1.15 / step) * step;
+  const dark = css('--bg').toUpperCase() === '#000000';
+  grid = new THREE.GridHelper(half * 2, Math.round(half * 2 / step), dark ? 0x3A3431 : 0xD9D1CC, dark ? 0x1E1B1A : 0xEEE8E4);
+  grid.rotation.x = Math.PI / 2;
+  scene.add(grid);
+  axes = new THREE.AxesHelper(step * 2); scene.add(axes);
+}
+
+function buildScene(){
+  for (const o of [ghost, traced, partial]) if (o){ scene.remove(o); o.geometry.dispose(); o.material.dispose(); }
+  const n = R.n, col = new Float32Array(n * 6);
+  for (let i = 0; i < n; i++){ const c = R.typ[i] === 0 ? C_RAPID : C_FEED; col.set([c.r, c.g, c.b, c.r, c.g, c.b], i * 6); }
+  const pa = new THREE.BufferAttribute(R.pos, 3), ca = new THREE.BufferAttribute(col, 3);
+  const g1 = new THREE.BufferGeometry(); g1.setAttribute('position', pa); g1.setAttribute('color', ca);
+  const g2 = new THREE.BufferGeometry(); g2.setAttribute('position', pa); g2.setAttribute('color', ca);
+  ghost = new THREE.LineSegments(g1, new THREE.LineBasicMaterial({vertexColors:true, transparent:true, opacity:.26, depthWrite:false}));
+  traced = new THREE.LineSegments(g2, new THREE.LineBasicMaterial({vertexColors:true}));
+  const g3 = new THREE.BufferGeometry(); g3.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3));
+  partial = new THREE.Line(g3, new THREE.LineBasicMaterial({color:C_FEED}));
+  scene.add(ghost, traced, partial);
+  const b = R.bb;
+  size = Math.max(b.max[0] - b.min[0], b.max[1] - b.min[1], b.max[2] - b.min[2], 1);
+  buildGrid(); applyTheme();
+}
+
+let curTool = -1;
+function setToolShape(t){
+  curTool = t;
+  const info = R.tools[t];
+  let rad = info && info.d ? info.d / 2 : size * .012;
+  rad = Math.max(rad, size * .004);
+  const L = Math.max(rad * 3, size * .06);
+  cutG.scale.set(rad, rad, L);
+  holdG.scale.set(rad * 1.7, rad * 1.7, L * .8);
+  holdG.position.z = L + L * .4;
+}
+
+let needs = false;
+function requestRender(){ if (!needs){ needs = true; requestAnimationFrame(loop); } }
+function resize(){
+  const w = viewerEl.clientWidth, h = viewerEl.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); requestRender();
+}
+new ResizeObserver(resize).observe(viewerEl);
+
+/* Gestos: 1 dedo gira, 2 dedos zoom y desplaza, doble toque ajusta. Ratón: rueda zoom, botón derecho o Shift desplaza. */
+const ptrs = new Map(); let lastTap = 0, gest = null;
+cv.addEventListener('contextmenu', e => e.preventDefault());
+cv.addEventListener('pointerdown', e => {
+  cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  if (ptrs.size === 1){ const now = performance.now(); if (now - lastTap < 280) fit(); lastTap = now; }
+  gest = null;
+});
+function panBy(dx, dy){
+  const wpp = 2 * ctl.r * Math.tan(camera.fov * Math.PI / 360) / viewerEl.clientHeight;
+  const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0);
+  const up = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
+  ctl.tgt.addScaledVector(right, -dx * wpp).addScaledVector(up, dy * wpp);
+}
+cv.addEventListener('pointermove', e => {
+  if (!ptrs.has(e.pointerId)) return;
+  const p = ptrs.get(e.pointerId), dx = e.clientX - p.x, dy = e.clientY - p.y;
+  if (ptrs.size === 1){
+    if (e.shiftKey || (e.buttons & 2) || (e.buttons & 4)) panBy(dx, dy);
+    else { ctl.az -= dx * .008; ctl.el = Math.max(-1.55, Math.min(Math.PI / 2 - 1e-3, ctl.el + dy * .008)); document.querySelectorAll('.views button').forEach(b => b.classList.remove('on')); }
+    p.x = e.clientX; p.y = e.clientY;
+  } else if (ptrs.size === 2){
+    const [a, b] = [...ptrs.values()];
+    const d0 = Math.hypot(a.x - b.x, a.y - b.y), m0 = {x:(a.x + b.x) / 2, y:(a.y + b.y) / 2};
+    p.x = e.clientX; p.y = e.clientY;
+    const d1 = Math.hypot(a.x - b.x, a.y - b.y), m1 = {x:(a.x + b.x) / 2, y:(a.y + b.y) / 2};
+    if (d1 > 0 && d0 > 0) ctl.r *= d0 / d1;
+    panBy(m1.x - m0.x, m1.y - m0.y);
+  }
+  applyCam(); requestRender();
+});
+const up = e => { ptrs.delete(e.pointerId); };
+cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+cv.addEventListener('wheel', e => { e.preventDefault(); ctl.r *= Math.exp(e.deltaY * .0012); applyCam(); requestRender(); }, {passive:false});
+document.querySelectorAll('.views button').forEach(b => b.addEventListener('click', () => b.dataset.v === 'fit' ? fit() : setView(b.dataset.v)));
+
+/* ============ Reproducción ============ */
+let simT = 0, playing = false, lastTs = 0, speed = 10, curLine = -1;
+const fmt = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
+function segAt(t){
+  const c = R.cum; let lo = 0, hi = R.n - 1;
+  while (lo < hi){ const mid = (lo + hi) >> 1; if (c[mid] < t) lo = mid + 1; else hi = mid; }
+  return lo;
+}
+function updateSim(){
+  if (!R || !R.n){ toolG.visible = false; return; }
+  toolG.visible = true;
+  simT = Math.max(0, Math.min(simT, R.stats.total));
+  const i = segAt(simT), t0 = i ? R.cum[i - 1] : 0, fr = Math.max(0, Math.min(1, (simT - t0) / R.dur[i]));
+  const P = R.pos, o = i * 6;
+  const x = P[o] + (P[o + 3] - P[o]) * fr, y = P[o + 1] + (P[o + 4] - P[o + 1]) * fr, z = P[o + 2] + (P[o + 5] - P[o + 2]) * fr;
+  traced.geometry.setDrawRange(0, i * 2);
+  const pp = partial.geometry.attributes.position.array;
+  pp[0] = P[o]; pp[1] = P[o + 1]; pp[2] = P[o + 2]; pp[3] = x; pp[4] = y; pp[5] = z;
+  partial.geometry.attributes.position.needsUpdate = true;
+  partial.material.color = R.typ[i] === 0 ? C_RAPID : C_FEED;
+  toolG.position.set(x, y, z);
+  if (R.t[i] !== curTool) setToolShape(R.t[i]);
+  const d = R.inch ? 4 : 3, f = v => v.toFixed(d);
+  $('#dx').textContent = f(x); $('#dy').textContent = f(y); $('#dz').textContent = f(z);
+  $('#dt').textContent = R.t[i] ? 'T' + R.t[i] : '–';
+  $('#ds').textContent = Math.round(R.s[i]);
+  $('#df').textContent = R.typ[i] === 0 ? 'RÁP' : (+R.f[i].toFixed(R.inch ? 2 : 0)).toString();
+  const nm = R.lines[R.lin[i]].match(/^\s*N(\d+)/i);
+  $('#dn').textContent = nm ? 'N' + nm[1] : 'L' + (R.lin[i] + 1);
+  $('#tNow').textContent = fmt(simT);
+  if (!scrubbing) $('#scrub').value = R.stats.total ? Math.round(simT / R.stats.total * 1000) : 0;
+  highlight(R.lin[i]);
+}
+function loop(ts){
+  needs = false;
+  if (playing){
+    const dt = Math.min(.1, (ts - (lastTs || ts)) / 1000);
+    simT += dt * speed;
+    if (simT >= R.stats.total){ simT = R.stats.total; setPlaying(false); }
+  }
+  lastTs = ts;
+  updateSim();
+  renderer.render(scene, camera);
+  if (playing) requestRender();
+}
+function setPlaying(p){
+  if (!R || !R.n) p = false;
+  if (p && simT >= R.stats.total - 1e-6) simT = 0;
+  playing = p; lastTs = 0;
+  $('#iPlay').innerHTML = p ? '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>' : '<path d="M7 4v16l13-8z"/>';
+  $('#bPlay').setAttribute('aria-label', p ? 'Pausa' : 'Reproducir');
+  requestRender();
+}
+$('#bPlay').onclick = () => setPlaying(!playing);
+$('#bStart').onclick = () => { simT = 0; setPlaying(false); };
+$('#bStep').onclick = () => {
+  if (!R || !R.n) return; setPlaying(false);
+  let i = segAt(simT + 1e-7); const L = R.lin[i];
+  while (i < R.n && R.lin[i] === L) i++;
+  simT = R.cum[i - 1]; requestRender();
+};
+$('#bBack').onclick = () => {
+  if (!R || !R.n) return; setPlaying(false);
+  let i = segAt(Math.max(0, simT - 1e-7)); const L = R.lin[i];
+  while (i > 0 && R.lin[i - 1] === L) i--;
+  const t = i ? R.cum[i - 1] : 0;
+  if (t >= simT - 1e-7 && i > 0){ let j = i - 1; const L2 = R.lin[j]; while (j > 0 && R.lin[j - 1] === L2) j--; simT = j ? R.cum[j - 1] : 0; }
+  else simT = t;
+  requestRender();
+};
+let scrubbing = false;
+$('#scrub').addEventListener('input', e => { scrubbing = true; if (R) simT = e.target.value / 1000 * R.stats.total; requestRender(); });
+$('#scrub').addEventListener('change', () => { scrubbing = false; });
+$('#speed').onchange = e => { speed = +e.target.value; LS.set('simg.speed', speed); };
+{ const s = LS.get('simg.speed'); if (s && [...$('#speed').options].some(o => o.value === s)){ $('#speed').value = s; speed = +s; } }
+
+/* ============ Panel de código ============ */
+const codeEl = $('#code');
+let rows = [], userScrollAt = 0;
+const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;'}[c]));
+function hl(t){
+  return t.split(/(\([^)]*\)|;.*$)/).map((p, k) => k % 2 ? `<span class="cm">${esc(p)}</span>`
+    : esc(p).replace(/\b([GM])\s*(\d+(?:\.\d)?)/gi, (m, L) => `<span class="${L.toUpperCase() === 'G' ? 'g' : 'm'}">${m}</span>`)).join('');
+}
+function renderCode(){
+  const wl = new Set(R.W.map(w => w.li));
+  const big = R.lines.length > 6000;
+  codeEl.innerHTML = R.lines.map((l, i) => `<div class="ln${wl.has(i) ? ' w' : ''}" data-l="${i}"><span class="n">${i + 1}</span><span class="t">${big ? esc(l) : hl(l)}</span></div>`).join('');
+  rows = codeEl.children; curLine = -1;
+}
+function highlight(li){
+  if (li === curLine || !rows.length) return;
+  if (rows[curLine]) rows[curLine].classList.remove('cur');
+  curLine = li;
+  const r = rows[li]; if (!r) return;
+  r.classList.add('cur');
+  if (!$('#p-code').hidden && performance.now() - userScrollAt > 2500){
+    const pane = $('#p-code'), top = r.offsetTop - pane.clientHeight / 2;
+    pane.scrollTop = Math.max(0, top);
+  }
+}
+$('#p-code').addEventListener('touchstart', () => userScrollAt = performance.now(), {passive:true});
+$('#p-code').addEventListener('wheel', () => userScrollAt = performance.now(), {passive:true});
+function jumpToLine(li){
+  if (!R || !R.n) return;
+  let s = R.lineSeg[li];
+  if (s >= R.n) s = R.n - 1;
+  simT = s ? R.cum[s - 1] : 0;
+  setPlaying(false); requestRender();
+}
+codeEl.addEventListener('click', e => { const r = e.target.closest('.ln'); if (r){ userScrollAt = 0; jumpToLine(+r.dataset.l); } });
+
+function showPane(p){
+  document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.p === p));
+  for (const id of ['code', 'edit', 'info', 'warn']) $('#p-' + id).hidden = id !== p;
+  if (p === 'code' && rows[curLine]){ const pane = $('#p-code'); pane.scrollTop = Math.max(0, rows[curLine].offsetTop - pane.clientHeight / 2); }
+}
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => showPane(b.dataset.p));
+$('#bEdit').onclick = () => { $('#ed').value = program; showPane('edit'); $('#ed').focus(); };
+$('#bCancel').onclick = () => showPane('code');
+$('#bApply').onclick = () => { load($('#ed').value, nameNow === 'Ejemplo: placa demo' ? 'Programa editado' : nameNow); showPane('code'); };
+
+/* ============ Resumen y avisos ============ */
+function renderInfo(){
+  const s = R.stats, u = R.inch ? 'in' : 'mm', b = R.cb.min[0] <= R.cb.max[0] ? R.cb : R.bb;
+  const d = R.inch ? 4 : 3, f = v => isFinite(v) ? v.toFixed(d) : '–';
+  const toolsRows = R.used.length ? R.used.map(t => {
+    const ti = R.tools[t] || {};
+    return `<tr><td class="mono">T${t}</td><td class="mono">${ti.d ? ti.d : '–'}</td><td>${esc(ti.desc || '')}</td><td class="mono">${fmt(R.toolTime[t] || 0)}</td></tr>`;
+  }).join('') : '<tr><td colspan="4">Sin cambios de herramienta (M06)</td></tr>';
+  $('#info').innerHTML = `
+    <div class="stats">
+      <div class="stat big"><div class="l">Tiempo de ciclo estimado</div><div class="v">${fmt(s.total)}<small>min:s</small></div></div>
+      <div class="stat"><div class="l">En corte</div><div class="v">${fmt(s.tCut)}</div></div>
+      <div class="stat"><div class="l">En rápidos</div><div class="v">${fmt(s.tRap)}</div></div>
+      <div class="stat"><div class="l">Recorrido de corte</div><div class="v">${(s.dCut / (R.inch ? 1 : 1000)).toFixed(R.inch ? 1 : 2)} ${R.inch ? 'in' : 'm'}</div></div>
+      <div class="stat"><div class="l">Bloques</div><div class="v">${R.lines.length}</div></div>
+    </div>
+    <div><h3>Límites de corte (${u})</h3><div class="tblw"><table class="tbl">
+      <tr><th>Eje</th><th>Mín</th><th>Máx</th><th>Recorrido</th></tr>
+      ${['X', 'Y', 'Z'].map((a, k) => `<tr><td class="mono">${a}</td><td class="mono">${f(b.min[k])}</td><td class="mono">${f(b.max[k])}</td><td class="mono">${f(b.max[k] - b.min[k])}</td></tr>`).join('')}
+    </table></div></div>
+    <div><h3>Herramientas</h3><div class="tblw"><table class="tbl">
+      <tr><th>T</th><th>Ø</th><th>Descripción</th><th>Tiempo</th></tr>${toolsRows}
+    </table></div></div>
+    <div><h3>Ajustes</h3>
+      <div class="set"><label for="rapid">Velocidad de rápidos (${u}/min)</label><input id="rapid" type="number" inputmode="decimal" min="1" value="${Math.round(R.rapidRate)}"></div>
+      <p class="note" style="margin-top:8px">El tiempo es una estimación sin aceleraciones ni cambio de herramienta. G28 se dibuja hacia X0 Y0 y una Z de seguridad. La compensación G41/G42 y los orígenes G54 a G59 no se aplican: se ve la trayectoria tal como está programada. El diámetro de la herramienta se toma de comentarios como (T2 D=10.).</p>
+    </div>`;
+  $('#rapid').onchange = e => { const v = parseFloat(e.target.value); if (v > 0){ rapidMM = R.inch ? v * 25.4 : v; LS.set('simg.rapid', rapidMM); load(program, nameNow, true); showPane('info'); } };
+}
+function renderWarns(){
+  const c = R.W.length;
+  $('#wcount').hidden = !c; $('#wcount').textContent = c;
+  $('#warns').innerHTML = c ? R.W.map(w => `<li><button type="button" data-l="${w.li}">L${w.li + 1}</button><span>${esc(w.msg)}</span></li>`).join('')
+    : '<li class="ok">Sin avisos. Revisa de todas formas alturas, herramientas y orígenes en la máquina.</li>';
+}
+$('#warns').addEventListener('click', e => { const b = e.target.closest('button[data-l]'); if (b){ showPane('code'); userScrollAt = 0; jumpToLine(+b.dataset.l); } });
+
+/* ============ Carga ============ */
+let program = '', nameNow = '', rapidMM = parseFloat(LS.get('simg.rapid')) || 10000;
+function load(src, name, keepTime){
+  program = src; nameNow = name;
+  $('#fname').textContent = name;
+  setPlaying(false);
+  const prevT = simT;
+  R = parse(src, rapidMM);
+  buildScene(); renderCode(); renderInfo(); renderWarns();
+  curTool = -1;
+  simT = keepTime ? prevT : (R.n ? R.stats.total : 0);
+  $('#tTot').textContent = fmt(R.stats.total);
+  if (!keepTime) setView('iso');
+  LS.set('simg.prog', src); LS.set('simg.name', name);
+  requestRender();
+}
+$('#file').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => { load(String(rd.result), f.name); simT = 0; requestRender(); };
+  rd.readAsText(f); e.target.value = '';
+});
+$('#sample').onclick = () => { load(SAMPLE, 'Ejemplo: placa demo'); };
+
+new MutationObserver(applyTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+
+const saved = LS.get('simg.prog');
+load(saved || SAMPLE, saved ? (LS.get('simg.name') || 'Programa guardado') : 'Ejemplo: placa demo');
+resize(); fit();
+</script>
