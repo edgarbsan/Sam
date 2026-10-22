@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Simulación de perro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<!-- Autor: BS -->
+<style>
+/* Composición: escena grande a la izquierda y panel de cuidados a la derecha; una columna en móvil.
+   Lenguaje visual: trazo de tinta negra alrededor de todo, igual que el perro dibujado en el lienzo. */
+:root {
+  --durazno: #CF825A; --tostado: #B46034; --negro: #000000; --blanco: #FFFFFF; --gris: #7C7470;
+  --bg: #FFFFFF; --tx: #000000; --tx2: #5E5752; --acc: #B46034;
+  --line: #000000; --rule: #E6DFDB; --track: #EFE9E5; --ground: #F5F1EE; --hover: #F5F1EE; --ave: #B46034;
+  --font: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000000; --tx: #FFFFFF; --tx2: #B3ACA8; --acc: #CF825A;
+    --line: #7C7470; --rule: #2A2421; --track: #1D1816; --ground: #120F0E; --hover: #1D1816; --ave: #CF825A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #000000; --tx: #FFFFFF; --tx2: #B3ACA8; --acc: #CF825A;
+  --line: #7C7470; --rule: #2A2421; --track: #1D1816; --ground: #120F0E; --hover: #1D1816; --ave: #CF825A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--tx);
+  font: 15px/1.45 var(--font);
+  padding-block: 24px 8px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+h2, .eyebrow { margin: 0; font-size: .72rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--tx2); }
+
+.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; padding-bottom: 18px; }
+.who { min-width: 0; display: grid; gap: 2px; }
+#nombre {
+  font: 700 clamp(2rem, 7vw, 3.1rem)/1.05 var(--font); letter-spacing: -.02em; color: var(--tx);
+  background: transparent; border: 0; border-bottom: 2px dashed var(--rule); border-radius: 0;
+  padding: 0 0 2px; width: min(100%, 11ch); min-width: 0;
+}
+#nombre:hover { border-bottom-color: var(--line); }
+.status { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; border: 2px solid var(--line); border-radius: 4px; padding: 6px 12px; font-weight: 600; font-size: .9rem; }
+.chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--durazno); border: 2px solid var(--line); box-sizing: content-box; }
+#reloj { color: var(--tx2); font-variant-numeric: tabular-nums; font-size: .9rem; }
+
+.grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+@media (min-width: 900px) { .grid { grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; align-items: start; } }
+
+.scene { border: 2px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--bg); }
+#escena { display: block; width: 100%; height: clamp(260px, 46vw, 400px); touch-action: manipulation; cursor: pointer; }
+.hint { margin: 10px 0 0; color: var(--tx2); font-size: .85rem; }
+
+.panel { display: grid; gap: 22px; min-width: 0; }
+.panel > section { display: grid; gap: 12px; min-width: 0; }
+.panel > section + section { border-top: 2px solid var(--rule); padding-top: 20px; }
+
+.meters { display: grid; gap: 14px; }
+.meter { display: grid; gap: 6px; }
+.mh { display: flex; align-items: baseline; justify-content: space-between; font-weight: 600; font-size: .92rem; }
+.mh span { display: inline-flex; align-items: baseline; gap: 8px; }
+.mh em { font-style: normal; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--acc); visibility: hidden; }
+.mh b { font-variant-numeric: tabular-nums; }
+.meter.low em { visibility: visible; }
+.track { height: 14px; border: 2px solid var(--line); border-radius: 3px; background: var(--track); overflow: hidden; }
+.track i { display: block; height: 100%; width: 50%; background: var(--durazno); transition: width .25s linear; }
+.meter.low .track i { background: repeating-linear-gradient(45deg, var(--durazno) 0 6px, var(--tostado) 6px 12px); }
+
+.acts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+button { font: inherit; color: var(--tx); cursor: pointer; }
+.act {
+  min-height: 44px; padding: 8px 10px; background: transparent; border: 2px solid var(--line); border-radius: 4px;
+  font-weight: 600; font-size: .92rem; transition: background .15s, transform .08s;
+}
+.act:hover { background: var(--hover); }
+.act:active { transform: translateY(1px); }
+.act.main { background: var(--tostado); border-color: var(--tostado); color: #FFFFFF; }
+.act.main:hover { filter: brightness(1.08); }
+button:focus-visible, #nombre:focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
+
+.time { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: flex; }
+.seg button { min-height: 40px; min-width: 52px; padding: 6px 12px; background: transparent; border: 2px solid var(--line); font-weight: 600; font-variant-numeric: tabular-nums; }
+.seg button + button { margin-left: -2px; }
+.seg button:first-child { border-radius: 4px 0 0 4px; }
+.seg button:last-child { border-radius: 0 4px 4px 0; }
+.seg button[aria-pressed="true"] { background: var(--tx); color: var(--bg); position: relative; }
+.seg button:not([aria-pressed="true"]):hover { background: var(--hover); }
+.mini { min-height: 40px; padding: 6px 12px; background: transparent; border: 2px solid var(--line); border-radius: 4px; font-weight: 600; }
+.mini:hover { background: var(--hover); }
+
+#registro { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: .86rem; min-height: calc(6 * 1.45em + 5 * 6px); align-content: start; }
+#registro li { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: 10px; }
+#registro time { color: var(--tx2); font-variant-numeric: tabular-nums; }
+#registro li:first-child span { font-weight: 600; }
+
+.foot { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; padding-block: 40px 24px; }
+.foot p { margin: 0; color: var(--tx2); font-size: .85rem; max-width: 52ch; flex: 1 1 240px; }
+.ave { width: 34px; height: auto; flex: none; margin-left: auto; fill: var(--ave); }
+.ave path { fill: var(--ave); }
+
+@media (prefers-reduced-motion: reduce) { .track i, .act { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="who">
+      <label class="eyebrow" for="nombre">Corgi durazno · toca el nombre para cambiarlo</label>
+      <input id="nombre" type="text" maxlength="14" value="Churro" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="status">
+      <span class="chip" aria-live="polite"><i></i><span id="estado">Parado</span></span>
+      <span id="reloj">Día 1 · 08:00</span>
+    </div>
+  </header>
+
+  <main class="grid">
+    <div>
+      <div class="scene">
+        <canvas id="escena" role="img" aria-label="Churro, un corgi color durazno, parado en el jardín"></canvas>
+      </div>
+      <p class="hint">Toca al perro para acariciarlo. Toca cualquier punto del suelo para tirarle la pelota hasta ahí.</p>
+    </div>
+
+    <aside class="panel">
+      <section aria-labelledby="h-nec">
+        <h2 id="h-nec">Necesidades</h2>
+        <div class="meters">
+          <div class="meter" id="m-sat"><div class="mh"><span>Saciedad<em>bajo</em></span><b id="v-sat">78</b></div><div class="track"><i id="b-sat"></i></div></div>
+          <div class="meter" id="m-en"><div class="mh"><span>Energía<em>bajo</em></span><b id="v-en">86</b></div><div class="track"><i id="b-en"></i></div></div>
+          <div class="meter" id="m-mood"><div class="mh"><span>Ánimo<em>bajo</em></span><b id="v-mood">72</b></div><div class="track"><i id="b-mood"></i></div></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-cui">
+        <h2 id="h-cui">Cuidados</h2>
+        <div class="acts">
+          <button class="act main" type="button" data-a="feed">Llenar el plato</button>
+          <button class="act main" type="button" data-a="ball">Tirar pelota</button>
+          <button class="act" type="button" data-a="pet">Acariciar</button>
+          <button class="act" type="button" data-a="bark">Hacerlo ladrar</button>
+          <button class="act" type="button" data-a="sleep" id="b-sleep">Mandar a dormir</button>
+          <button class="act" type="button" data-a="sound" id="b-sound" aria-pressed="true">Sonido: sí</button>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-tie">
+        <h2 id="h-tie">Tiempo</h2>
+        <div class="time">
+          <div class="seg" role="group" aria-label="Velocidad del tiempo">
+            <button type="button" data-ts="1" aria-pressed="true">1×</button>
+            <button type="button" data-ts="4" aria-pressed="false">4×</button>
+            <button type="button" data-ts="12" aria-pressed="false">12×</button>
+          </div>
+          <button class="mini" type="button" id="b-pause">Pausar</button>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-reg">
+        <h2 id="h-reg">Registro</h2>
+        <ol id="registro" aria-live="polite"></ol>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    <p>Simulación libre. Si no lo atiendes, el perro decide solo cuándo comer, jugar o dormir.</p>
+    <svg class="ave" xmlns="http://www.w3.org/2000/svg" viewBox="510 585 735 805" fill="#CF825A" role="img" aria-label="Marca de autor BS"><path fill-rule="evenodd" d="M605.1 1279.8 616.6 1291.4 639.9 1311.7 653.9 1321.4 680.7 1337.9 694.5 1345.3 708.5 1351.3 738.7 1361.7 769.2 1368.8 799.8 1372.9 830.6 1373.0 846.8 1371.8 878.6 1365.9 904.8 1358.5 921.2 1351.4 937.5 1346.3 965 1334.0 979 1327.0 992.7 1318.7 1015.6 1302.0 1037.1 1283.7 1058.6 1261.1 1080.4 1231.1 1098.2 1199.8 1105.4 1184.2 1111.4 1168.2 1120.7 1134.2 1125.9 1099.1 1126 1062.0 1124.9 1043.4 1118.7 1006.5 1114.5 992.0 1104.5 964.0 1098.2 950.2 1082.7 923.3 1065.8 898.1 1040.6 869.9 1009 843.5 982 826.0 937.3 804.6 929.7 797.0 924.3 788.5 922 778.4 922 768.5 924.6 758.9 928.1 752.6 935.7 744.2 943.1 740.0 1103.3 672.4 1221 628.0 1226.6 622.9 1229 616.8 1228.3 609.6 1223.4 603.6 1220.4 601.7 1217 601.0 1181.4 602.0 1110.3 607.0 1029.2 614.0 990.6 618.1 912.6 630.1 873.4 637.1 797 654.2 729.9 672.6 697.8 688.7 683.2 699.1 670.3 712.0 660.5 723.0 647.4 743.2 642 754.0 633.4 778.4 629.1 801.4 628 817.8 630 839.8 632.1 851.6 638.6 875.2 646.2 890.3 619 904.0 608.4 911.0 587.6 928.6 569.7 947.7 555.2 968.5 542.6 991.7 534.2 1017.0 529 1043.3 527 1072.0 527 1087.6 529 1117.6 538.5 1161.8 548.7 1191.5 554.7 1205.5 561.2 1217.5 576.8 1243.4ZM694.5 940.7 708 940.9 717.6 937.7 726.4 931.2 732 925.7 737.8 911.7 738 898.1 735.1 890.0 731.2 883.6 719 870.3 712.6 861.1 707 851.8 702.4 841.7 698.7 830.7 696.9 821.7 696 800.3 696.9 787.4 699.6 776.7 704.2 764.8 709.8 754.6 716.3 744.2 723.6 735.2 742 719.5 758.2 711.4 826.5 690.6 858.2 681.7 959.9 657.8 1048.4 641.9 1077 637.9 1126.4 633.7 1092.9 646.5 917 707.0 902.1 714.4 890.1 725.2 880.1 737.7 870.3 760.8 868 780.0 869 797.9 871.8 807.7 879.5 825.0 889.1 837.8 900.3 848.9 924.6 861.9 949.5 878.2 979.6 904.4 987.2 912.8 995.8 923.4 1018.9 960.0 1030.4 989.8 1038.1 1017.8 1042 1049.6 1041 1081.2 1039.1 1096.3 1031.4 1127.5 1026.6 1141.7 1013.1 1170.6 995.7 1196.7 986.2 1209.0 973.9 1221.3 949.5 1241.8 937.3 1250.3 919 1259.9 902.6 1267.6 894.6 1270.3 877.8 1274.1 841.1 1276.0 812.1 1274.1 789.9 1270.2 771.7 1265.4 735.1 1251.0 718 1240.5 703.5 1229.9 687.9 1217.2 673.6 1203.9 662.3 1189.7 650.6 1172.2 640.1 1155.0 631.4 1135.7 620.8 1097.3 617 1066.6 617 1044.5 618.9 1027.6 623.4 1012.2 629.2 997.8 642.4 976.2 653.1 964.6 673 948.5 690.6 939.5Z"/></svg>
+  </footer>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const cv = $('escena'), ctx = cv.getContext('2d');
+
+/* ---------- constantes ---------- */
+const COAT = '#CF825A', SHADE = '#B46034', WHITE = '#FFFFFF', SOCK2 = '#E4DBD6', INK = '#000000', GRIS = '#7C7470';
+const H = 320, GY = 262, R = 2.5, GRAV = 900;
+const TAU = Math.PI * 2;
+const WALK = 52, RUN = 215, CARRY = 140, MOUTH = 112, OWNER_X = 150;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+/* ---------- estado ---------- */
+let W = 600, scale = 1, dpr = 1;
+let paused = false, ts = 1, soundOn = true, T = 0, clockMin = 8 * 60, uiT = 0;
+let name = 'Churro';
+try { const s = localStorage.getItem('perro-nombre'); if (s) name = s.slice(0, 14); } catch (e) {}
+$('nombre').value = name;
+
+const stats = { sat: 78, en: 86, mood: 72 };
+const dog = { x: 260, dir: 1, v: 0, beh: 'idle', bt: 2, tx: 0, phase: 0, blink: 3, blinking: 0, tw: 0, forced: 0,
+  call: 0, hx: 0, hy: 0, mx: 0, my: 0, wag: 0, pet: 0, fetchT: 0, zT: 0, dust: 0, crumb: 0, heart: 0 };
+const pose = { hipH: 58, shH: 62, hipDX: 0, bnx: -4, bfx: 10, fnx: 4, ffx: -10, legS: 1, hdx: 36, hdy: -38, tilt: 0,
+  jaw: 0, tongue: 0, pant: 0, earA: 0, tail: -2.25, wagAmp: .12, wagFreq: 4 };
+let eye = 0;
+const bowl = { x: 540, food: 55 };
+const ball = { x: 140, y: GY - 9, vx: 0, vy: 0, st: 'rest' };
+const parts = [];
+let bubble = null;
+const grass = [];
+const logs = [];
+let lastPetLog = -99;
+
+const STATUS = { idle: 'Parado', wander: 'Paseando', sit: 'Sentado', sleep: 'Durmiendo', eatGo: 'Va al plato', eat: 'Comiendo',
+  fetchGo: 'Corre tras la pelota', fetchBack: 'Trae la pelota', pet: 'Disfruta las caricias', bark: 'Ladrando', joy: 'Feliz' };
+
+/* ---------- colores del tema ---------- */
+let C = { bg: '#fff', tx: '#000', tx2: '#5E5752', ground: '#F5F1EE' };
+function readColors() {
+  const s = getComputedStyle(document.documentElement), g = n => s.getPropertyValue(n).trim();
+  C = { bg: g('--bg') || C.bg, tx: g('--tx') || C.tx, tx2: g('--tx2') || C.tx2, ground: g('--ground') || C.ground };
+}
+
+/* ---------- tamaño ---------- */
+function resize() {
+  const r = cv.getBoundingClientRect();
+  if (!r.width) return;
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+  scale = r.height / H; W = r.width / scale;
+  bowl.x = W - 66;
+  dog.x = clamp(dog.x, 90, W - 90);
+  if (ball.st === 'rest') ball.x = clamp(ball.x, 20, W - 20);
+  grass.length = 0;
+  let s = 7; for (let x = 18; x < W; x += 34) { s = (s * 9301 + 49297) % 233280; grass.push({ x: x + (s % 17), h: 6 + (s % 5) }); }
+}
+
+/* ---------- sonido ---------- */
+let actx = null;
+function ensureAudio() {
+  try {
+    if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume().catch(() => {});
+  } catch (e) { actx = null; }
+}
+function bark(n = 1) {
+  if (!soundOn || !actx) return;
+  for (let i = 0; i < n; i++) {
+    const t = actx.currentTime + i * 0.24, pitch = 1 + i * 0.06;
+    const o = actx.createOscillator(), f = actx.createBiquadFilter(), g = actx.createGain();
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(430 * pitch, t); o.frequency.exponentialRampToValueAtTime(190 * pitch, t + .17);
+    f.type = 'bandpass'; f.frequency.value = 950; f.Q.value = 1.1;
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.32, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + .21);
+    o.connect(f); f.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + .23);
+    const len = Math.floor(actx.sampleRate * .1), buf = actx.createBuffer(1, len, actx.sampleRate), d = buf.getChannelData(0);
+    for (let k = 0; k < len; k++) d[k] = (Math.random() * 2 - 1) * (1 - k / len);
+    const ns = actx.createBufferSource(), nf = actx.createBiquadFilter(), ng = actx.createGain();
+    ns.buffer = buf; nf.type = 'bandpass'; nf.frequency.value = 1600; ng.gain.value = .16;
+    ns.connect(nf); nf.connect(ng); ng.connect(actx.destination); ns.start(t);
+  }
+}
+
+/* ---------- registro y avisos ---------- */
+function fmtClock() {
+  const day = Math.floor(clockMin / 1440) + 1, m = Math.floor(clockMin % 1440);
+  return { day, hm: String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0') };
+}
+function log(msg) {
+  logs.unshift({ t: fmtClock().hm, msg }); if (logs.length > 6) logs.pop();
+  const ol = $('registro'); ol.textContent = '';
+  for (const e of logs) {
+    const li = document.createElement('li'), tm = document.createElement('time'), sp = document.createElement('span');
+    tm.textContent = e.t; sp.textContent = e.msg; li.append(tm, sp); ol.append(li);
+  }
+}
+function say(text, life = 1.7) { if (bubble && bubble.text === text && bubble.t < bubble.life) return; bubble = { text, t: 0, life }; }
+
+/* ---------- comportamiento ---------- */
+function setBeh(b, bt = 0) {
+  dog.beh = b; dog.bt = bt;
+  $('estado').textContent = STATUS[b] || b;
+  cv.setAttribute('aria-label', name + ', un corgi color durazno. ' + (STATUS[b] || b) + '.');
+  $('b-sleep').textContent = b === 'sleep' ? 'Despertar' : 'Mandar a dormir';
+}
+function sleepNow(forced) {
+  setBeh('sleep'); dog.forced = forced ? 6 : 0; dog.zT = 0;
+  log(name + ' se echó a dormir.');
+}
+function wake(msg) { setBeh('idle', 1.2); if (msg !== false) log(name + ' despertó.'); }
+function goEat() { setBeh('eatGo', 10); }
+function decide() {
+  if (stats.en < 18) return sleepNow(false);
+  if (stats.sat < 60 && bowl.food > 0) return goEat();
+  if (stats.sat < 35 && dog.call <= 0 && bowl.food <= 0) {
+    say('¿Hay comida?'); log(name + ' tiene hambre. Llénale el plato.'); dog.call = 22;
+  }
+  const r = Math.random();
+  if (r < .5) { dog.tx = rand(100, W - 100); setBeh('wander', 9); }
+  else if (r < .75) setBeh('sit', rand(3, 6));
+  else setBeh('idle', rand(1.5, 3.5));
+}
+function throwBall(tx) {
+  if (stats.en < 14) { say('Zzz…'); log(name + ' no tiene energía para correr. Déjalo descansar.'); return; }
+  if (dog.beh === 'sleep') wake(false);
+  const Tf = .9, x0 = 14, y0 = GY - 72;
+  ball.st = 'air'; ball.x = x0; ball.y = y0;
+  ball.vx = (clamp(tx, 60, W - 30) - x0) / Tf;
+  ball.vy = (GY - 9 - y0 - .5 * GRAV * Tf * Tf) / Tf;
+  setBeh('fetchGo', 0); dog.fetchT = 0;
+  log('Lanzaste la pelota.');
+}
+function petDog() {
+  if (dog.beh === 'fetchBack') return;
+  if (dog.beh === 'sleep') log(name + ' despertó con las caricias.');
+  setBeh('pet', 2.4);
+  stats.mood = clamp(stats.mood + 10, 0, 100);
+  if (T - lastPetLog > 3) { log('Acariciaste a ' + name + '.'); lastPetLog = T; }
+}
+function feed() {
+  bowl.food = 100; log('Llenaste el plato.');
+  if (dog.beh !== 'sleep' && dog.beh !== 'fetchGo' && dog.beh !== 'fetchBack' && stats.sat < 90) goEat();
+  else if (stats.sat >= 90) say('Aún no tengo hambre');
+}
+function woof() { ensureAudio(); setBeh('bark', .75); say('¡Guau!'); bark(2); log(name + ' ladró.'); }
+
+function walkTo(tx, sp) {
+  const dx = tx - dog.x;
+  if (Math.abs(dx) < 6) return true;
+  dog.dir = dx > 0 ? 1 : -1; vt = sp * (stats.en < 25 ? .75 : 1); return false;
+}
+let vt = 0;
+
+function emit(k, x, y, vx, vy, l, s = 1) { parts.push({ k, x, y, vx, vy, t: 0, l, s }); }
+
+function update(dt) {
+  T += dt; const sdt = dt * ts;
+  clockMin += sdt;
+  const sleeping = dog.beh === 'sleep', running = dog.beh === 'fetchGo' || dog.beh === 'fetchBack';
+  stats.sat = clamp(stats.sat - (sleeping ? .2 : .6) * sdt, 0, 100);
+  stats.en = clamp(stats.en + (sleeping ? 3 : running ? -2.2 : -.45) * sdt, 0, 100);
+  const tgt = 30 + stats.sat * .45 + stats.en * .25;
+  stats.mood = clamp(stats.mood + (tgt - stats.mood) * Math.min(1, .05 * sdt), 0, 100);
+  dog.call -= sdt;
+
+  vt = 0; dog.bt -= dt;
+  switch (dog.beh) {
+    case 'idle': if (dog.bt <= 0) decide(); break;
+    case 'wander': if (walkTo(dog.tx, WALK) || dog.bt <= 0) setBeh('idle', rand(1, 3)); break;
+    case 'sit': if (dog.bt <= 0) setBeh('idle', .4); break;
+    case 'sleep':
+      dog.forced -= dt; dog.zT -= dt;
+      if (dog.zT <= 0) { emit('z', dog.x + dog.dir * 105, GY - 40, 10, -22, 2.4); dog.zT = 1.1; }
+      if (stats.en >= 96 && dog.forced <= 0) wake();
+      break;
+    case 'eatGo':
+      if (bowl.food <= 0 || dog.bt <= 0) { setBeh('idle', 1); break; }
+      if (walkTo(bowl.x - 104, WALK * 1.4)) { dog.dir = 1; setBeh('eat'); log(name + ' come.'); }
+      break;
+    case 'eat': {
+      const k = 16 * dt;
+      bowl.food = Math.max(0, bowl.food - k); stats.sat = Math.min(100, stats.sat + k);
+      dog.crumb -= dt; if (dog.crumb <= 0) { emit('crumb', bowl.x + rand(-10, 10), GY - 26, rand(-40, 40), rand(-140, -80), .6); dog.crumb = .16; }
+      if (bowl.food <= 0 || stats.sat >= 100) { stats.mood = clamp(stats.mood + 6, 0, 100); log(name + ' terminó de comer.'); setBeh('idle', 1.2); }
+      break;
+    }
+    case 'fetchGo': {
+      dog.fetchT += dt;
+      if (ball.st === 'carried') { setBeh('fetchBack'); break; }
+      if (Math.abs(ball.x - dog.x) > 30) dog.dir = ball.x > dog.x ? 1 : -1;
+      const tx = clamp(ball.x - dog.dir * (MOUTH - 12), 90, W - 90);
+      const near = Math.abs(ball.x - (dog.x + dog.dir * MOUTH)) < 16 && ball.y > GY - 30;
+      if (near) { ball.st = 'carried'; ball.vx = ball.vy = 0; log(name + ' recogió la pelota.'); setBeh('fetchBack'); break; }
+      walkTo(tx, RUN);
+      if (dog.fetchT > 12) setBeh('idle', 1);
+      break;
+    }
+    case 'fetchBack':
+      if (walkTo(OWNER_X, CARRY)) {
+        dog.dir = -1; ball.st = 'air'; ball.x = dog.mx; ball.y = dog.my; ball.vx = -50; ball.vy = -90;
+        stats.mood = clamp(stats.mood + 18, 0, 100); stats.en = clamp(stats.en - 6, 0, 100);
+        say('¡Guau!'); bark(1); log(name + ' dejó la pelota. ¡Buen perro!');
+        setBeh('joy', 1.8);
+      }
+      break;
+    case 'pet':
+      dog.heart -= dt; if (dog.heart <= 0) { emit('heart', dog.hx + rand(-14, 14), dog.hy - 26, rand(-10, 10), -34, 1.3, rand(.8, 1.2)); dog.heart = .28; }
+      if (dog.bt <= 0) setBeh('idle', 1);
+      break;
+    case 'joy':
+      dog.heart -= dt; if (dog.heart <= 0) { emit('heart', dog.hx + rand(-14, 14), dog.hy - 26, rand(-10, 10), -34, 1.3, rand(.8, 1.2)); dog.heart = .3; }
+      if (dog.bt <= 0) setBeh('idle', 1.2);
+      break;
+    case 'bark': if (dog.bt <= 0) setBeh('idle', 1); break;
+  }
+
+  /* movimiento */
+  dog.v += (vt - dog.v) * Math.min(1, dt * 6);
+  if (vt === 0 && dog.v < 1) dog.v = 0;
+  dog.x = clamp(dog.x + dog.dir * dog.v * dt, 90, W - 90);
+  const run = clamp((dog.v - 60) / 120, 0, 1), A = lerp(17, 32, run);
+  dog.phase += dog.v * dt / (4 * A) * TAU;
+  if (dog.v > 120) { dog.dust -= dt; if (dog.dust <= 0) { emit('dust', dog.x - dog.dir * 70, GY - 4, -dog.dir * 20, -16, .5); dog.dust = .13; } }
+
+  /* pelota */
+  if (ball.st === 'air') {
+    ball.vy += GRAV * dt; ball.x += ball.vx * dt; ball.y += ball.vy * dt;
+    if (ball.y >= GY - 9) { ball.y = GY - 9; ball.vy = -ball.vy * .5; ball.vx *= .8; if (Math.abs(ball.vy) < 70) ball.vy = 0; }
+    if (ball.x < 9) { ball.x = 9; ball.vx = Math.abs(ball.vx) * .6; }
+    if (ball.x > W - 9) { ball.x = W - 9; ball.vx = -Math.abs(ball.vx) * .6; }
+    if (ball.vy === 0 && ball.y >= GY - 9) { ball.vx *= Math.pow(.15, dt); if (Math.abs(ball.vx) < 6) { ball.vx = 0; ball.st = 'rest'; } }
+  }
+
+  /* partículas y globo */
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i]; p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; if (p.k === 'crumb') p.vy += 500 * dt;
+    if (p.t > p.l) parts.splice(i, 1);
+  }
+  if (bubble) { bubble.t += dt; if (bubble.t > bubble.life) bubble = null; }
+
+  /* postura objetivo */
+  updatePose(dt);
+
+  /* parpadeo y orejas */
+  dog.blink -= dt; if (dog.blink <= 0) { dog.blinking = .13; dog.blink = rand(2.5, 5); }
+  dog.blinking -= dt;
+  if (Math.random() < dt * .35) dog.tw = 1; dog.tw *= Math.exp(-dt * 5);
+  dog.wag += pose.wagFreq * dt;
+}
+
+function updatePose(dt) {
+  const m = stats.mood, b = dog.beh;
+  const t = { hipH: 58, shH: 62, hipDX: 0, bnx: -4, bfx: 10, fnx: 4, ffx: -10, legS: 1, hdx: 36, hdy: -38, tilt: 0,
+    jaw: 0, tongue: 0, pant: 0, earA: 0, tail: -2.25, wagAmp: .12, wagFreq: 4 };
+  let e = 0;
+  if (m >= 70) Object.assign(t, { wagAmp: .4, wagFreq: 11, earA: -.15 });
+  else if (m < 35) Object.assign(t, { tail: -2.75, wagAmp: .04, wagFreq: 2, earA: -.75, hdy: -30 });
+  if (stats.en < 30) t.pant = .5;
+  switch (b) {
+    case 'sit': Object.assign(t, { hipH: 30, shH: 70, hipDX: 22, bnx: 36, bfx: 46, fnx: 2, ffx: -10, hdx: 30, hdy: -48, tilt: -.12, tail: -2.95 }); break;
+    case 'sleep': Object.assign(t, { hipH: 28, shH: 29, hipDX: -2, bnx: 24, bfx: 34, fnx: 40, ffx: 30, legS: .7, hdx: 36, hdy: -2, tilt: .25, earA: -1.1, tail: -2.95, wagAmp: 0, pant: 0 }); e = 1; break;
+    case 'eat': Object.assign(t, { hdx: 44, hdy: 12, tilt: .95, earA: -.2, wagAmp: .3, wagFreq: 9 }); break;
+    case 'bark': Object.assign(t, { hdx: 38, hdy: -46, tilt: -.38, jaw: 1, earA: 0 }); break;
+    case 'pet': Object.assign(t, { hdy: -30, tilt: .18, earA: -.55, wagAmp: .55, wagFreq: 15 }); e = 2; break;
+    case 'joy': Object.assign(t, { tilt: -.1, jaw: .35, tongue: 1, earA: -.4, wagAmp: .55, wagFreq: 15 }); e = 2; break;
+    case 'fetchGo': Object.assign(t, { hipH: 52, shH: 56, hdy: -40, tilt: -.08, earA: -.6, pant: 1, wagAmp: .2, wagFreq: 10 }); break;
+    case 'fetchBack': Object.assign(t, { hipH: 54, shH: 58, hdy: -40, tilt: -.1, earA: -.4, jaw: .3, pant: 0, wagAmp: .35, wagFreq: 12 }); break;
+    case 'wander': break;
+  }
+  if (b === 'eatGo') { t.wagAmp = .3; t.wagFreq = 9; }
+  const k = Math.min(1, dt * 7);
+  for (const key in t) pose[key] += (t[key] - pose[key]) * k;
+  eye = e;
+}
+
+/* ---------- dibujo ---------- */
+function roundRectPath(x, y, w, h, r) {
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h);
+}
+function ring(path, fill) {            // contorno liso + relleno exacto (permite recortar parches dentro)
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.strokeStyle = INK; ctx.lineWidth = R * 2; ctx.stroke(path);
+  ctx.fillStyle = fill; ctx.fill(path);
+}
+function shape(path, fill) {           // contorno + relleno con esquinas redondeadas
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.strokeStyle = INK; ctx.lineWidth = R * 2 + 3; ctx.stroke(path);
+  ctx.strokeStyle = fill; ctx.lineWidth = 3; ctx.stroke(path);
+  ctx.fillStyle = fill; ctx.fill(path);
+}
+function limb(pts, w, fill) {
+  const p = new Path2D(); p.moveTo(pts[0], pts[1]);
+  for (let i = 2; i < pts.length; i += 2) p.lineTo(pts[i], pts[i + 1]);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.strokeStyle = INK; ctx.lineWidth = w + R * 2; ctx.stroke(p);
+  ctx.strokeStyle = fill; ctx.lineWidth = w; ctx.stroke(p);
+}
+function disc(x, y, rx, ry, fill, rot = 0) {
+  const p = new Path2D(); p.ellipse(x, y, rx, ry, rot, 0, TAU); ring(p, fill);
+}
+function stadium(A, rA, B, rB) {
+  const dx = B.x - A.x, dy = B.y - A.y, d = Math.hypot(dx, dy), th = Math.atan2(dy, dx), ph = Math.acos(clamp((rA - rB) / d, -1, 1));
+  const p = new Path2D();
+  p.arc(B.x, B.y, rB, th - ph, th + ph, false);
+  p.arc(A.x, A.y, rA, th + ph, th - ph, false);
+  p.closePath();
+  return { p, th };
+}
+function ik(jx, jy, fx, fy, L, s) {
+  let dx = fx - jx, dy = fy - jy, d = Math.hypot(dx, dy);
+  const mx = 2 * L - .5;
+  if (d > mx) { fx = jx + dx * mx / d; fy = jy + dy * mx / d; d = mx; dx = fx - jx; dy = fy - jy; }
+  const ang = Math.atan2(dy, dx) + s * Math.acos(clamp(d / (2 * L), -1, 1));
+  return { kx: jx + L * Math.cos(ang), ky: jy + L * Math.sin(ang), fx, fy };
+}
+const gaitX = ph => { const u = ((ph % TAU) + TAU) % TAU; return u < Math.PI ? 1 - 2 * u / Math.PI : -1 + 2 * (u - Math.PI) / Math.PI; };
+const gaitLift = ph => { const u = ((ph % TAU) + TAU) % TAU; return u < Math.PI ? 0 : Math.sin(u - Math.PI); };
+
+function drawLeg(jx, jy, dx, ph, s, far, g, A, Lf) {
+  const fx = jx + dx + gaitX(ph) * A * g, fy = -gaitLift(ph) * Lf * g;
+  const k = ik(jx, jy, fx, fy, 34 * pose.legS, s);
+  limb([jx, jy, k.kx, k.ky], 21, far ? SHADE : COAT);
+  limb([k.kx, k.ky, k.fx, k.fy - 4], 16, far ? SOCK2 : WHITE);
+  disc(k.fx + 4, k.fy - 4, 10.5, 6, far ? SOCK2 : WHITE);
+}
+
+function drawEar(x, y, ang, fill, inner) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+  const p = new Path2D(); p.moveTo(-13, 6); p.quadraticCurveTo(-15, -20, 1, -36); p.quadraticCurveTo(16, -22, 14, 6); p.closePath();
+  shape(p, fill);
+  if (inner) { const q = new Path2D(); q.moveTo(-6, 3); q.quadraticCurveTo(-7, -14, 1, -25); q.quadraticCurveTo(9, -14, 8, 3); q.closePath(); ctx.fillStyle = inner; ctx.fill(q); }
+  ctx.restore();
+}
+
+function drawDog() {
+  const p = pose, d = dog;
+  const spd = Math.abs(d.v), g = clamp(spd / 40, 0, 1), run = clamp((spd - 60) / 120, 0, 1);
+  const A = lerp(17, 32, run), Lf = lerp(7, 15, run);
+  const bob = -g * Math.abs(Math.sin(d.phase)) * lerp(1.5, 4, run);
+  const sleeping = d.beh === 'sleep';
+  const br = 1 + (sleeping ? .03 * Math.sin(T * 2.2) : .012 * Math.sin(T * 3));
+  const hipX = -42 + p.hipDX, shX = 38;
+  const hy = -p.hipH + bob, sy = -p.shH + bob;
+  const Ac = { x: hipX, y: hy - 4 }, Bc = { x: shX, y: sy - 4 };
+  const rA = 30 * br, rB = 32 * br;
+  const trot = spd > 120;
+  const ph = trot ? [0, Math.PI, Math.PI, 0] : [0, TAU * .25, Math.PI, TAU * .75];   // pata trasera cercana, delantera cercana, trasera lejana, delantera lejana
+
+  /* sombra */
+  ctx.save(); ctx.translate(d.x, GY);
+  ctx.fillStyle = 'rgba(124,116,112,.28)'; ctx.beginPath();
+  ctx.ellipse(d.dir * 8, 1, sleeping ? 100 : 86, 7, 0, 0, TAU); ctx.fill();
+  ctx.scale(d.dir, 1);
+
+  /* cola */
+  const wag = Math.sin(d.wag) * p.wagAmp;
+  const t0 = { x: Ac.x + rA * .8 * Math.cos(p.tail), y: Ac.y + rA * .8 * Math.sin(p.tail) };
+  const a1 = p.tail + wag * .6, a2 = a1 - .55 + wag * .5;
+  const t1 = { x: t0.x + 17 * Math.cos(a1), y: t0.y + 17 * Math.sin(a1) };
+  const t2 = { x: t1.x + 15 * Math.cos(a2), y: t1.y + 15 * Math.sin(a2) };
+  limb([t0.x, t0.y, t1.x, t1.y, t2.x, t2.y], 14, COAT);
+
+  /* patas (detrás del cuerpo) */
+  drawLeg(hipX + 6, hy, p.bfx, d.phase + ph[2], -1, true, g, A, Lf);
+  drawLeg(shX - 6, sy, p.ffx, d.phase + ph[3], 1, true, g, A, Lf);
+  drawLeg(hipX - 2, hy, p.bnx, d.phase + ph[0], -1, false, g, A, Lf);
+  drawLeg(shX + 2, sy, p.fnx, d.phase + ph[1], 1, false, g, A, Lf);
+
+  /* cuello */
+  const hb = g * Math.sin(d.phase * 2) * 1.6 + (d.beh === 'eat' ? Math.sin(T * 12) * 3 : 0);
+  const HC = { x: Bc.x + p.hdx + (d.beh === 'eat' ? Math.sin(T * 12) * 2 : 0), y: sy + p.hdy + hb };
+  limb([Bc.x, Bc.y, HC.x - 4, HC.y + 6], 30, COAT);
+
+  /* cuerpo */
+  const body = stadium(Ac, rA, Bc, rB), th = body.th;
+  ring(body.p, COAT);
+  ctx.save(); ctx.clip(body.p);
+  const mid = { x: (Ac.x + Bc.x) / 2, y: (Ac.y + Bc.y) / 2 }, dist = Math.hypot(Bc.x - Ac.x, Bc.y - Ac.y);
+  const nx = -Math.sin(th), ny = Math.cos(th);
+  const belly = new Path2D(); belly.ellipse(mid.x + nx * rB * 1.02, mid.y + ny * rB * 1.02, dist / 2 + rB * .95, rB * .62, th, 0, TAU);
+  ctx.fillStyle = WHITE; ctx.fill(belly);
+  const saddle = new Path2D(); saddle.ellipse(mid.x - nx * rB * .7 - 4, mid.y - ny * rB * .7, dist * .36, 13, th, 0, TAU);
+  ctx.fillStyle = SHADE; ctx.fill(saddle);
+  ctx.restore();
+
+  /* collar */
+  const vx = HC.x - Bc.x, vy = HC.y - Bc.y, vl = Math.hypot(vx, vy), ux = vx / vl, uy = vy / vl;
+  const cc = { x: Bc.x + ux * 27, y: Bc.y + uy * 27 };
+  limb([cc.x - uy * 17, cc.y + ux * 17, cc.x + uy * 17, cc.y - ux * 17], 8, WHITE);
+  disc(cc.x + uy * 15 + ux * 6, cc.y - ux * 15 + uy * 6, 6, 6, SHADE);
+
+  /* cabeza */
+  const ha = p.tilt + g * .04 * Math.sin(d.phase * 2);
+  ctx.save(); ctx.translate(HC.x, HC.y); ctx.rotate(ha);
+  const flick = Math.sin(T * 38) * .16 * d.tw, sway = Math.sin(T * 1.3) * .03;
+  drawEar(-19, -16, p.earA - .15 + flick, COAT, SHADE);
+  disc(0, 0, 26, 26, COAT);
+
+  /* boca: interior, mandíbula, lengua */
+  const jawOpen = clamp(p.jaw + p.pant * (.22 + .14 * Math.sin(T * 15)), 0, 1), ja = jawOpen * .62;
+  const hx = 15, hyj = 17;
+  if (ja > .04) {
+    const jt = { x: hx + Math.cos(ja) * 23 - Math.sin(ja) * 2, y: hyj + Math.sin(ja) * 23 + Math.cos(ja) * 2 };
+    const mo = new Path2D(); mo.moveTo(hx, hyj - 3); mo.lineTo(38, 18); mo.lineTo(jt.x, jt.y); mo.closePath();
+    ctx.fillStyle = INK; ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.stroke(mo); ctx.fill(mo);
+  }
+  ctx.save(); ctx.translate(hx, hyj); ctx.rotate(ja);
+  limb([0, 0, 22, 2], 10, WHITE);
+  const tg = clamp(Math.max(p.tongue, p.pant * .8) + (ja > .1 ? .2 : 0), 0, 1.2);
+  if (ja > .06 && tg > .1) limb([6, 0, 15 + tg * 6, 3 + tg * 6], 8, SHADE);
+  ctx.restore();
+
+  /* hocico y nariz */
+  limb([11, 9, 37, 10], 23, WHITE);
+  ctx.fillStyle = INK; ctx.beginPath(); ctx.ellipse(46, 3, 6.8, 5.4, -.2, 0, TAU); ctx.fill();
+  ctx.fillStyle = WHITE; ctx.beginPath(); ctx.arc(44.5, 1.4, 1.4, 0, TAU); ctx.fill();
+  if (ja <= .04) {
+    ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.beginPath();
+    const smile = stats.mood >= 60 ? -3 : stats.mood < 35 ? 3 : 0;
+    ctx.moveTo(24, 16.5); ctx.quadraticCurveTo(32, 16.5 - smile, 40, 15 - smile * .4); ctx.stroke();
+  }
+
+  /* ojo */
+  const closed = eye === 1 || (eye === 0 && dog.blinking > 0);
+  ctx.strokeStyle = INK; ctx.fillStyle = INK; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
+  if (eye === 2) { ctx.beginPath(); ctx.arc(11, -3, 5.2, Math.PI * 1.08, Math.PI * 1.92); ctx.stroke(); }
+  else if (closed) { ctx.beginPath(); ctx.arc(11, -7, 5.2, Math.PI * .1, Math.PI * .9); ctx.stroke(); }
+  else {
+    ctx.beginPath(); ctx.arc(11, -6, 4.8, 0, TAU); ctx.fill();
+    ctx.fillStyle = WHITE; ctx.beginPath(); ctx.arc(12.6, -7.6, 1.7, 0, TAU); ctx.fill();
+  }
+
+  /* oreja cercana */
+  drawEar(-4, -20, p.earA + flick + sway, SHADE, COAT);
+  ctx.restore();
+
+  /* posiciones para pelota, globos y corazones */
+  const cs = Math.cos(ha), sn = Math.sin(ha);
+  const loc = (x, y) => ({ x: HC.x + x * cs - y * sn, y: HC.y + x * sn + y * cs });
+  const mouth = loc(50, 11), hd = loc(0, 0);
+  d.mx = d.x + d.dir * mouth.x; d.my = GY + mouth.y; d.hx = d.x + d.dir * hd.x; d.hy = GY + hd.y;
+  ctx.restore();
+}
+
+function heartPath(x, y, s) {
+  const p = new Path2D();
+  p.moveTo(x, y + s * .5); p.bezierCurveTo(x - s * 1.1, y - s * .1, x - s * .6, y - s * 1.1, x, y - s * .5);
+  p.bezierCurveTo(x + s * .6, y - s * 1.1, x + s * 1.1, y - s * .1, x, y + s * .5); p.closePath(); return p;
+}
+
+function drawBall(x, y) {
+  const p = new Path2D(); p.arc(x, y, 9, 0, TAU); ring(p, SHADE);
+  ctx.save(); ctx.clip(p); ctx.strokeStyle = WHITE; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(x - 9, y, 9, -1.1, 1.1); ctx.stroke();
+  ctx.beginPath(); ctx.arc(x + 9, y, 9, Math.PI - 1.1, Math.PI + 1.1); ctx.stroke(); ctx.restore();
+}
+
+const KIBBLE = [[-16, 0], [-8, 0], [0, 0], [8, 0], [16, 0], [-12, -6], [-4, -7], [4, -7], [12, -6], [-6, -13], [3, -13]];
+function drawBowl() {
+  ctx.save(); ctx.translate(bowl.x, GY);
+  const rim = new Path2D(); rim.ellipse(0, -22, 30, 6, 0, 0, TAU);
+  ring(rim, '#2A2421');
+  const n = Math.ceil(bowl.food / 100 * KIBBLE.length);
+  for (let i = 0; i < n; i++) {
+    const k = KIBBLE[i], p = new Path2D(); p.arc(k[0], -23 + k[1], 5, 0, TAU);
+    ctx.strokeStyle = INK; ctx.lineWidth = 1.6; ctx.stroke(p); ctx.fillStyle = i % 2 ? COAT : SHADE; ctx.fill(p);
+  }
+  const body = new Path2D(); body.moveTo(-30, -22); body.quadraticCurveTo(0, -12, 30, -22); body.lineTo(22, 0); body.lineTo(-22, 0); body.closePath();
+  shape(body, GRIS);
+  ctx.restore();
+}
+
+function drawBubble() {
+  if (!bubble) return;
+  const u = bubble.t / bubble.life, a = u < .1 ? u / .1 : u > .8 ? (1 - u) / .2 : 1;
+  ctx.save(); ctx.globalAlpha = clamp(a, 0, 1);
+  ctx.font = "700 15px 'Space Grotesk', system-ui, sans-serif";
+  const w = ctx.measureText(bubble.text).width + 24, h = 30;
+  const x = clamp(dog.hx - w / 2, 6, W - w - 6), y = Math.max(6, dog.hy - 66 - h);
+  roundRectPath(x, y, w, h, 6); ctx.fillStyle = C.bg; ctx.fill(); ctx.strokeStyle = C.tx; ctx.lineWidth = 2; ctx.stroke();
+  const tx = clamp(dog.hx, x + 12, x + w - 12);
+  ctx.beginPath(); ctx.moveTo(tx - 6, y + h); ctx.lineTo(tx, y + h + 8); ctx.lineTo(tx + 6, y + h);
+  ctx.fillStyle = C.bg; ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.bg; ctx.fillRect(tx - 5, y + h - 2, 10, 4);
+  ctx.fillStyle = C.tx; ctx.textBaseline = 'middle'; ctx.fillText(bubble.text, x + 12, y + h / 2 + 1);
+  ctx.restore();
+}
+
+function draw() {
+  ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = C.ground; ctx.fillRect(0, GY, W, H - GY);
+  ctx.strokeStyle = GRIS; ctx.lineWidth = 2; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(0, GY); ctx.lineTo(W, GY); ctx.stroke();
+  ctx.lineWidth = 1.6; ctx.beginPath();
+  for (const g of grass) { ctx.moveTo(g.x, GY); ctx.lineTo(g.x - 3, GY - g.h); ctx.moveTo(g.x, GY); ctx.lineTo(g.x + 3, GY - g.h - 1); }
+  ctx.stroke();
+
+  drawBowl();
+  if (ball.st !== 'carried') drawBall(ball.x, ball.y);
+  drawDog();
+  if (ball.st === 'carried') drawBall(dog.mx, dog.my + 3);
+
+  for (const p of parts) {
+    const u = p.t / p.l; ctx.save(); ctx.globalAlpha = clamp(1 - u * u, 0, 1);
+    if (p.k === 'heart') { const hp = heartPath(p.x, p.y, 9 * p.s); ring(hp, COAT); }
+    else if (p.k === 'z') { ctx.fillStyle = C.tx2; ctx.font = "700 " + (14 + u * 12) + "px 'Space Grotesk', system-ui, sans-serif"; ctx.fillText('z', p.x, p.y); }
+    else if (p.k === 'dust') { ctx.fillStyle = GRIS; ctx.beginPath(); ctx.arc(p.x, p.y, 3 + u * 6, 0, TAU); ctx.fill(); }
+    else if (p.k === 'crumb') { ctx.fillStyle = SHADE; ctx.fillRect(p.x, p.y, 4, 4); }
+    ctx.restore();
+  }
+  drawBubble();
+}
+
+/* ---------- interfaz ---------- */
+function paintUI() {
+  for (const k of ['sat', 'en', 'mood']) {
+    const v = stats[k];
+    $('b-' + k).style.width = v.toFixed(1) + '%';
+    $('v-' + k).textContent = Math.round(v);
+    $('m-' + k).classList.toggle('low', v < 25);
+  }
+  const c = fmtClock(); $('reloj').textContent = 'Día ' + c.day + ' · ' + c.hm;
+}
+
+function pointerWorld(e) {
+  const r = cv.getBoundingClientRect();
+  return { x: (e.clientX - r.left) / scale, y: (e.clientY - r.top) / scale };
+}
+cv.addEventListener('pointerdown', e => {
+  ensureAudio();
+  const p = pointerWorld(e);
+  const onDog = Math.abs(p.x - dog.x) < 95 && p.y > GY - 135 && p.y < GY + 12;
+  if (onDog) petDog(); else throwBall(p.x);
+});
+
+document.addEventListener('pointerdown', ensureAudio, { once: true });
+document.querySelector('.acts').addEventListener('click', e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  ensureAudio();
+  switch (b.dataset.a) {
+    case 'feed': feed(); break;
+    case 'ball': throwBall(rand(W * .45, W - 110)); break;
+    case 'pet': petDog(); break;
+    case 'bark': woof(); break;
+    case 'sleep': if (dog.beh === 'sleep') wake(); else sleepNow(true); break;
+    case 'sound': soundOn = !soundOn; b.setAttribute('aria-pressed', soundOn); b.textContent = 'Sonido: ' + (soundOn ? 'sí' : 'no'); if (soundOn) bark(1); break;
+  }
+});
+document.querySelector('.seg').addEventListener('click', e => {
+  const b = e.target.closest('[data-ts]'); if (!b) return;
+  ts = +b.dataset.ts;
+  for (const x of document.querySelectorAll('.seg button')) x.setAttribute('aria-pressed', x === b);
+});
+$('b-pause').addEventListener('click', e => { paused = !paused; e.currentTarget.textContent = paused ? 'Reanudar' : 'Pausar'; });
+$('nombre').addEventListener('input', e => {
+  name = e.target.value.trim() || 'Churro';
+  try { localStorage.setItem('perro-nombre', name); } catch (err) {}
+  cv.setAttribute('aria-label', name + ', un corgi color durazno. ' + (STATUS[dog.beh] || '') + '.');
+});
+
+/* ---------- arranque ---------- */
+new ResizeObserver(resize).observe(cv);
+window.addEventListener('resize', resize);
+resize();
+dog.x = W * .42; ball.x = W * .2;
+readColors();
+if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { paused = true; $('b-pause').textContent = 'Reanudar'; }
+setBeh('idle', 1.5);
+log(name + ' está en el jardín.');
+paintUI();
+//@debug window.__sim = { stats, dog, pose, bowl, ball, throwBall, petDog, sleepNow, goEat, setBeh, woof, feed, get W() { return W; }, setTs(v) { ts = v; } };
+
+let last = performance.now(), colT = 0;
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (!paused) update(dt);
+  colT -= dt; if (colT <= 0) { readColors(); colT = .5; }
+  uiT -= dt; if (uiT <= 0) { paintUI(); uiT = .12; }
+  draw();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
