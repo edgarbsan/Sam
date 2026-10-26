@@ -1,0 +1,371 @@
+<title>Partitura al Diapasón</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Noto+Music&display=swap">
+<style>
+/* Layout: una columna de lectura (~860px) con el demo del diapasón como pieza central a todo el ancho de la columna */
+:root{
+  --durazno:#CF825A; --tostado:#B46034; --negro:#000000; --blanco:#FFFFFF; --gris:#7C7470;
+  --bg:#FFFFFF; --tx:#000000; --tx2:#5E5752; --acc:#B46034; --line:#E6E1DE; --soft:#F7F4F2;
+  --ebano:#1B1817; --ebano-borde:#1B1817; --cuerda:#D9D2CC; --cinta:#7C7470; --sobre-ebano:#B3ACA8;
+  --nota:#000000; --pentagrama:#7C7470; --ave:#B46034;
+  --f-display:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --f-music:"Noto Music","Bravura Text","Segoe UI Symbol",serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#000000; --tx:#FFFFFF; --tx2:#B3ACA8; --acc:#CF825A; --line:#2A2624; --soft:#121010;
+  --ebano:#1E1A19; --ebano-borde:#4A4441; --nota:#FFFFFF; --pentagrama:#7C7470; --ave:#CF825A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000000; --tx:#FFFFFF; --tx2:#B3ACA8; --acc:#CF825A; --line:#2A2624; --soft:#121010;
+  --ebano:#1E1A19; --ebano-borde:#4A4441; --nota:#FFFFFF; --pentagrama:#7C7470; --ave:#CF825A; color-scheme:dark}
+
+*{box-sizing:border-box}
+svg.ave{fill:var(--ave)}
+body{background:var(--bg);color:var(--tx);font-family:var(--f-display);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:880px;margin:0 auto;padding-block:40px 64px;display:flex;flex-direction:column;gap:64px}
+h1,h2,h3{text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:1.6rem;font-weight:600;color:var(--durazno)}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0;max-width:66ch}
+.eyebrow{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--tx2)}
+.muted{color:var(--tx2)}
+section{display:flex;flex-direction:column;gap:20px}
+
+header.top{display:flex;flex-direction:column;gap:18px}
+.brandrow{display:flex;align-items:center;gap:14px}
+.brandrow svg{width:40px;height:auto;flex:none}
+.lead{font-size:1.15rem}
+.alerta{border-left:3px solid var(--durazno);padding:4px 0 4px 16px;max-width:66ch}
+.alerta strong{color:var(--acc)}
+
+/* ---------- Demo ---------- */
+.app{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.app-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--soft)}
+.app-bar .file{font-family:var(--f-mono);font-size:.8rem;color:var(--tx2);min-width:0;overflow-wrap:anywhere;flex:1}
+.btn{font:inherit;font-size:.9rem;font-weight:500;border-radius:6px;padding:7px 14px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--tx)}
+.btn:hover{border-color:var(--gris)}
+.btn.primario{background:var(--tostado);border-color:var(--tostado);color:var(--blanco)}
+.btn.primario:hover{filter:brightness(1.08)}
+.btn:focus-visible,.nota-click:focus-visible{outline:2px solid var(--durazno);outline-offset:2px}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.sheet{overflow-x:auto;padding:12px 8px 0}
+.sheet svg{display:block;min-width:620px;width:100%;height:auto}
+.board-wrap{overflow-x:auto;padding:4px 8px 8px}
+.board-wrap svg{display:block;min-width:560px;width:100%;height:auto}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
+.controls label{font-size:.85rem;color:var(--tx2);display:flex;align-items:center;gap:8px;margin-left:auto}
+.controls input[type=range]{accent-color:var(--durazno);width:110px}
+.ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.ficha div{background:var(--bg);padding:10px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.ficha span{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--tx2)}
+.ficha b{font-size:1.1rem;font-weight:600;font-variant-numeric:tabular-nums}
+.nota-click{cursor:pointer}
+
+/* ---------- Pipeline ---------- */
+.pipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;counter-reset:paso}
+.paso{border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:6px;position:relative;min-width:0}
+.paso::before{counter-increment:paso;content:counter(paso);font-family:var(--f-mono);font-size:.75rem;color:var(--tx2)}
+.paso p{font-size:.88rem;color:var(--tx2)}
+.chip{align-self:flex-start;font-family:var(--f-mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid currentColor}
+.chip.alto{color:var(--acc)}
+.chip.bajo{color:var(--tx2)}
+.paso.riesgo{border-color:var(--durazno)}
+.atajo{font-size:.92rem;background:var(--soft);border-radius:8px;padding:12px 16px}
+
+/* ---------- Ambigüedad ---------- */
+.opciones{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.opcion{border-top:2px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:4px}
+.opcion.elegida{border-top-color:var(--durazno)}
+.opcion b{font-family:var(--f-mono);font-size:.8rem}
+.opcion p{font-size:.9rem;color:var(--tx2)}
+
+/* ---------- Orientación ---------- */
+.orient{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.orient figure{margin:0;border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.orient svg{width:100%;height:auto;max-height:220px}
+.orient figcaption{font-size:.9rem;color:var(--tx2)}
+.orient figcaption b{color:var(--tx)}
+
+/* ---------- Fases ---------- */
+.fases{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.fase{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.fase .id{font-family:var(--f-mono);font-size:.8rem;color:var(--tx2)}
+.fase .id b{display:block;font-size:1.3rem;color:var(--durazno);font-family:var(--f-display)}
+.fase ul{margin:6px 0 0;padding-left:18px;color:var(--tx2);font-size:.92rem}
+.fase > div{min-width:0}
+@media (max-width:520px){.fase{grid-template-columns:1fr;gap:4px}}
+
+/* ---------- Decisiones ---------- */
+.decisiones{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.decision{background:var(--soft);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.decision p{font-size:.9rem;color:var(--tx2)}
+.decision .rec{font-size:.85rem;color:var(--tx)}
+.decision .rec::before{content:"Mi propuesta: ";color:var(--acc);font-weight:600}
+
+footer{display:flex;align-items:center;gap:12px;color:var(--tx2);font-size:.85rem;border-top:1px solid var(--line);padding-top:20px}
+footer svg{width:24px;height:auto;flex:none}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<main>
+  <header class="top">
+    <div class="brandrow"><svg class="ave" xmlns="http://www.w3.org/2000/svg" viewBox="510 585 735 805" fill="#CF825A" role="img" aria-label="Marca de autor BS"><path fill-rule="evenodd" d="M605.1 1279.8 616.6 1291.4 639.9 1311.7 653.9 1321.4 680.7 1337.9 694.5 1345.3 708.5 1351.3 738.7 1361.7 769.2 1368.8 799.8 1372.9 830.6 1373.0 846.8 1371.8 878.6 1365.9 904.8 1358.5 921.2 1351.4 937.5 1346.3 965 1334.0 979 1327.0 992.7 1318.7 1015.6 1302.0 1037.1 1283.7 1058.6 1261.1 1080.4 1231.1 1098.2 1199.8 1105.4 1184.2 1111.4 1168.2 1120.7 1134.2 1125.9 1099.1 1126 1062.0 1124.9 1043.4 1118.7 1006.5 1114.5 992.0 1104.5 964.0 1098.2 950.2 1082.7 923.3 1065.8 898.1 1040.6 869.9 1009 843.5 982 826.0 937.3 804.6 929.7 797.0 924.3 788.5 922 778.4 922 768.5 924.6 758.9 928.1 752.6 935.7 744.2 943.1 740.0 1103.3 672.4 1221 628.0 1226.6 622.9 1229 616.8 1228.3 609.6 1223.4 603.6 1220.4 601.7 1217 601.0 1181.4 602.0 1110.3 607.0 1029.2 614.0 990.6 618.1 912.6 630.1 873.4 637.1 797 654.2 729.9 672.6 697.8 688.7 683.2 699.1 670.3 712.0 660.5 723.0 647.4 743.2 642 754.0 633.4 778.4 629.1 801.4 628 817.8 630 839.8 632.1 851.6 638.6 875.2 646.2 890.3 619 904.0 608.4 911.0 587.6 928.6 569.7 947.7 555.2 968.5 542.6 991.7 534.2 1017.0 529 1043.3 527 1072.0 527 1087.6 529 1117.6 538.5 1161.8 548.7 1191.5 554.7 1205.5 561.2 1217.5 576.8 1243.4ZM694.5 940.7 708 940.9 717.6 937.7 726.4 931.2 732 925.7 737.8 911.7 738 898.1 735.1 890.0 731.2 883.6 719 870.3 712.6 861.1 707 851.8 702.4 841.7 698.7 830.7 696.9 821.7 696 800.3 696.9 787.4 699.6 776.7 704.2 764.8 709.8 754.6 716.3 744.2 723.6 735.2 742 719.5 758.2 711.4 826.5 690.6 858.2 681.7 959.9 657.8 1048.4 641.9 1077 637.9 1126.4 633.7 1092.9 646.5 917 707.0 902.1 714.4 890.1 725.2 880.1 737.7 870.3 760.8 868 780.0 869 797.9 871.8 807.7 879.5 825.0 889.1 837.8 900.3 848.9 924.6 861.9 949.5 878.2 979.6 904.4 987.2 912.8 995.8 923.4 1018.9 960.0 1030.4 989.8 1038.1 1017.8 1042 1049.6 1041 1081.2 1039.1 1096.3 1031.4 1127.5 1026.6 1141.7 1013.1 1170.6 995.7 1196.7 986.2 1209.0 973.9 1221.3 949.5 1241.8 937.3 1250.3 919 1259.9 902.6 1267.6 894.6 1270.3 877.8 1274.1 841.1 1276.0 812.1 1274.1 789.9 1270.2 771.7 1265.4 735.1 1251.0 718 1240.5 703.5 1229.9 687.9 1217.2 673.6 1203.9 662.3 1189.7 650.6 1172.2 640.1 1155.0 631.4 1135.7 620.8 1097.3 617 1066.6 617 1044.5 618.9 1027.6 623.4 1012.2 629.2 997.8 642.4 976.2 653.1 964.6 673 948.5 690.6 939.5Z"/></svg><span class="eyebrow">Concepto v0.1 · 26 oct 2026</span></div>
+    <h1>Partitura al Diapasón</h1>
+    <p class="lead">Cargas la partitura de una canción y el programa te muestra, nota por nota, dónde poner el dedo en el diapasón del violín: qué cuerda, qué dedo y en qué posición.</p>
+    <p class="alerta"><strong>El punto débil de la idea es el PDF.</strong> Un PDF es un dibujo de la partitura, no una lista de notas. Para leerlo hace falta reconocimiento óptico de música (OMR), que se equivoca con escaneos, ligaduras y digitaciones impresas. El plan pone un paso de corrección y acepta MusicXML como entrada directa para no depender del OMR.</p>
+  </header>
+
+  <section aria-labelledby="s-demo">
+    <span class="eyebrow">Ejemplo visual 1 · Pantalla principal</span>
+    <h2 id="s-demo">Así se vería al usarlo</h2>
+    <p class="muted">Prototipo funcional con la primera frase de la <em>Oda a la alegría</em> (Beethoven, dominio público) en Re mayor. Toca una nota de la partitura, avanza con las flechas o pulsa Reproducir.</p>
+
+    <div class="app">
+      <div class="app-bar">
+        <button class="btn" disabled title="Disponible en la versión real">Cargar PDF</button>
+        <span class="file">oda-a-la-alegria.pdf · Re mayor · 4/4 · compases 1–4</span>
+      </div>
+      <div class="sheet"><svg id="pentagrama" viewBox="0 0 820 130" role="img" aria-label="Pentagrama con la primera frase de la Oda a la alegría"></svg></div>
+      <div class="board-wrap"><svg id="diapason" viewBox="0 0 820 190" role="img" aria-label="Diapasón del violín con la nota actual marcada"></svg></div>
+      <div class="ficha" aria-live="polite">
+        <div><span>Nota</span><b id="f-nota">—</b></div>
+        <div><span>Cuerda</span><b id="f-cuerda">—</b></div>
+        <div><span>Dedo</span><b id="f-dedo">—</b></div>
+        <div><span>Posición</span><b id="f-pos">—</b></div>
+        <div><span>Distancia</span><b id="f-mm">—</b></div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="b-prev" aria-label="Nota anterior">←</button>
+        <button class="btn primario" id="b-play">Reproducir</button>
+        <button class="btn" id="b-next" aria-label="Nota siguiente">→</button>
+        <span class="muted" id="contador" style="font-family:var(--f-mono);font-size:.8rem">1 / 15</span>
+        <label for="tempo">Tempo <input type="range" id="tempo" min="50" max="140" value="90"> <span id="tempo-v" style="font-family:var(--f-mono)">90</span></label>
+      </div>
+    </div>
+    <p class="muted" style="font-size:.88rem">Las líneas punteadas son las cintas guía de primera posición que usan los principiantes. La distancia se mide desde la cejuela con un tiro de cuerda de 328 mm (violín 4/4).</p>
+  </section>
+
+  <section aria-labelledby="s-flujo">
+    <span class="eyebrow">Ejemplo visual 2 · Cómo funciona por dentro</span>
+    <h2 id="s-flujo">Del PDF al dedo</h2>
+    <div class="pipe">
+      <div class="paso"><h3>PDF</h3><p>Partitura que carga el usuario: exportada de MuseScore, descargada de IMSLP o escaneada.</p><span class="chip bajo">Entrada</span></div>
+      <div class="paso riesgo"><h3>Reconocimiento (OMR)</h3><p>Audiveris, de código abierto, convierte la imagen en notas.</p><span class="chip alto">Riesgo alto</span></div>
+      <div class="paso"><h3>Corrección</h3><p>Pantalla donde revisas y arreglas las notas que el OMR leyó mal.</p><span class="chip bajo">Manual</span></div>
+      <div class="paso"><h3>MusicXML</h3><p>Formato estándar de notas, ritmos, armadura y digitaciones.</p><span class="chip bajo">Estándar</span></div>
+      <div class="paso riesgo"><h3>Digitación</h3><p>El algoritmo decide cuerda, dedo y posición para cada nota.</p><span class="chip alto">Riesgo medio</span></div>
+      <div class="paso"><h3>Diapasón</h3><p>Dibujo, avance nota por nota y sonido sincronizado.</p><span class="chip bajo">Salida</span></div>
+    </div>
+    <p class="atajo"><b>Atajo:</b> si ya tienes la canción en MuseScore o en MusicXML, entra directo al paso 4 y te saltas el OMR. Por eso propongo que la primera versión acepte MusicXML y deje el PDF para la segunda.</p>
+  </section>
+
+  <section aria-labelledby="s-amb">
+    <span class="eyebrow">Ejemplo visual 3 · El problema de fondo</span>
+    <h2 id="s-amb">Una misma nota, varios lugares</h2>
+    <p>En el violín casi todas las notas se pueden tocar en más de una cuerda. La partitura dice <em>qué</em> suena, pero casi nunca <em>dónde</em>. Este es el La4 (440 Hz) en tres lugares:</p>
+    <div class="board-wrap"><svg id="ambiguo" viewBox="0 0 820 190" role="img" aria-label="Tres maneras de tocar La4 en el diapasón"></svg></div>
+    <div class="opciones">
+      <div class="opcion elegida"><b>A · Cuerda La al aire</b><p>Sin dedo. Lo que elige el programa por defecto en primera posición.</p></div>
+      <div class="opcion"><b>B · Cuerda Re, dedo 4</b><p>Primera posición. Se usa para evitar cambiar de cuerda o para hacer vibrato.</p></div>
+      <div class="opcion"><b>C · Cuerda Sol, posición alta</b><p>Sonido más oscuro. Solo si la partitura lo pide (por ejemplo, <i>sul G</i>).</p></div>
+    </div>
+    <p class="muted">Regla inicial que propongo: primera posición, cuerda más aguda posible y cuerda al aire cuando exista. Si la partitura trae digitación o indicación de cuerda impresa, se respeta. Las posiciones altas se dejan para una fase posterior.</p>
+  </section>
+
+  <section aria-labelledby="s-orient">
+    <span class="eyebrow">Ejemplo visual 4 · Decisión de diseño</span>
+    <h2 id="s-orient">¿Cómo dibujamos el diapasón?</h2>
+    <div class="orient">
+      <figure>
+        <svg id="o-horiz" viewBox="0 0 300 130" aria-hidden="true"></svg>
+        <figcaption><b>A · Horizontal, estilo tablatura.</b> Mi arriba, Sol abajo, cejuela a la izquierda. Cabe debajo de la partitura y se lee igual que ella, de izquierda a derecha. Es la del ejemplo 1.</figcaption>
+      </figure>
+      <figure>
+        <svg id="o-vert" viewBox="0 0 300 220" aria-hidden="true"></svg>
+        <figcaption><b>B · Vertical, vista del violinista.</b> Como lo ves al bajar la mirada con el violín al hombro: Sol a la izquierda, Mi a la derecha, cejuela arriba. Más natural para principiantes, pero ocupa una columna al lado de la partitura.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="s-fases">
+    <span class="eyebrow">Planificación</span>
+    <h2 id="s-fases">Plan por fases</h2>
+    <div class="fases">
+      <div class="fase"><div class="id"><b>Fase 1</b>MVP</div><div><h3>MusicXML al diapasón, primera posición</h3><ul><li>Cargar archivo .musicxml o .mxl y dibujar la partitura.</li><li>Digitación automática en primera posición.</li><li>Avance nota por nota, reproducción con tempo ajustable.</li></ul></div></div>
+      <div class="fase"><div class="id"><b>Fase 2</b>PDF</div><div><h3>Lectura de PDF con corrección</h3><ul><li>Audiveris convierte el PDF en MusicXML.</li><li>Editor para marcar y corregir notas dudosas.</li><li>Mejores resultados con PDF digitales; los escaneos pedirán más corrección.</li></ul></div></div>
+      <div class="fase"><div class="id"><b>Fase 3</b>Técnica</div><div><h3>Posiciones y digitación real</h3><ul><li>Posiciones 2ª a 5ª y cambios de posición.</li><li>Respetar digitación y cuerda impresas en la partitura.</li><li>Dobles cuerdas y acordes.</li></ul></div></div>
+      <div class="fase"><div class="id"><b>Fase 4</b>Opcional</div><div><h3>Práctica con micrófono</h3><ul><li>El programa escucha tu violín y avanza cuando tocas la nota correcta.</li><li>Indicador de afinación por nota.</li></ul></div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="s-dec">
+    <span class="eyebrow">Antes de programar</span>
+    <h2 id="s-dec">Decisiones que necesito de ti</h2>
+    <div class="decisiones">
+      <div class="decision"><h3>Plataforma</h3><p>¿Web (navegador, tablet en el atril), escritorio o app móvil?</p><span class="rec">Web, funciona en tablet y computadora sin instalar.</span></div>
+      <div class="decision"><h3>Tipo de PDF</h3><p>¿Tus partituras son PDF digitales (MuseScore, IMSLP limpio) o escaneos y fotos?</p><span class="rec">Empezar con digitales; define cuánto pesa la fase 2.</span></div>
+      <div class="decision"><h3>Nivel del violinista</h3><p>¿Para quién es? Principiante, intermedio o avanzado cambia cuántas posiciones mostrar.</p><span class="rec">Principiante primero: solo primera posición.</span></div>
+      <div class="decision"><h3>Vista del diapasón</h3><p>Horizontal tipo tablatura (A) o vertical del violinista (B).</p><span class="rec">A, porque se lee junto a la partitura.</span></div>
+      <div class="decision"><h3>Nombre de notas</h3><p>Do-Re-Mi, C-D-E o ambos.</p><span class="rec">Do-Re-Mi con el cifrado en pequeño.</span></div>
+      <div class="decision"><h3>Nombre del programa</h3><p>«Partitura al Diapasón» es provisional.</p><span class="rec">Tú decides.</span></div>
+    </div>
+  </section>
+
+  <footer><svg class="ave" xmlns="http://www.w3.org/2000/svg" viewBox="510 585 735 805" fill="#CF825A" role="img" aria-label="Marca de autor BS"><path fill-rule="evenodd" d="M605.1 1279.8 616.6 1291.4 639.9 1311.7 653.9 1321.4 680.7 1337.9 694.5 1345.3 708.5 1351.3 738.7 1361.7 769.2 1368.8 799.8 1372.9 830.6 1373.0 846.8 1371.8 878.6 1365.9 904.8 1358.5 921.2 1351.4 937.5 1346.3 965 1334.0 979 1327.0 992.7 1318.7 1015.6 1302.0 1037.1 1283.7 1058.6 1261.1 1080.4 1231.1 1098.2 1199.8 1105.4 1184.2 1111.4 1168.2 1120.7 1134.2 1125.9 1099.1 1126 1062.0 1124.9 1043.4 1118.7 1006.5 1114.5 992.0 1104.5 964.0 1098.2 950.2 1082.7 923.3 1065.8 898.1 1040.6 869.9 1009 843.5 982 826.0 937.3 804.6 929.7 797.0 924.3 788.5 922 778.4 922 768.5 924.6 758.9 928.1 752.6 935.7 744.2 943.1 740.0 1103.3 672.4 1221 628.0 1226.6 622.9 1229 616.8 1228.3 609.6 1223.4 603.6 1220.4 601.7 1217 601.0 1181.4 602.0 1110.3 607.0 1029.2 614.0 990.6 618.1 912.6 630.1 873.4 637.1 797 654.2 729.9 672.6 697.8 688.7 683.2 699.1 670.3 712.0 660.5 723.0 647.4 743.2 642 754.0 633.4 778.4 629.1 801.4 628 817.8 630 839.8 632.1 851.6 638.6 875.2 646.2 890.3 619 904.0 608.4 911.0 587.6 928.6 569.7 947.7 555.2 968.5 542.6 991.7 534.2 1017.0 529 1043.3 527 1072.0 527 1087.6 529 1117.6 538.5 1161.8 548.7 1191.5 554.7 1205.5 561.2 1217.5 576.8 1243.4ZM694.5 940.7 708 940.9 717.6 937.7 726.4 931.2 732 925.7 737.8 911.7 738 898.1 735.1 890.0 731.2 883.6 719 870.3 712.6 861.1 707 851.8 702.4 841.7 698.7 830.7 696.9 821.7 696 800.3 696.9 787.4 699.6 776.7 704.2 764.8 709.8 754.6 716.3 744.2 723.6 735.2 742 719.5 758.2 711.4 826.5 690.6 858.2 681.7 959.9 657.8 1048.4 641.9 1077 637.9 1126.4 633.7 1092.9 646.5 917 707.0 902.1 714.4 890.1 725.2 880.1 737.7 870.3 760.8 868 780.0 869 797.9 871.8 807.7 879.5 825.0 889.1 837.8 900.3 848.9 924.6 861.9 949.5 878.2 979.6 904.4 987.2 912.8 995.8 923.4 1018.9 960.0 1030.4 989.8 1038.1 1017.8 1042 1049.6 1041 1081.2 1039.1 1096.3 1031.4 1127.5 1026.6 1141.7 1013.1 1170.6 995.7 1196.7 986.2 1209.0 973.9 1221.3 949.5 1241.8 937.3 1250.3 919 1259.9 902.6 1267.6 894.6 1270.3 877.8 1274.1 841.1 1276.0 812.1 1274.1 789.9 1270.2 771.7 1265.4 735.1 1251.0 718 1240.5 703.5 1229.9 687.9 1217.2 673.6 1203.9 662.3 1189.7 650.6 1172.2 640.1 1155.0 631.4 1135.7 620.8 1097.3 617 1066.6 617 1044.5 618.9 1027.6 623.4 1012.2 629.2 997.8 642.4 976.2 653.1 964.6 673 948.5 690.6 939.5Z"/></svg>Concepto y planificación. Sin código de producción todavía.</footer>
+</main>
+
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const L=328;                               // tiro de cuerda violín 4/4 (mm)
+  const CUERDAS=[{n:"Mi",c:"E5",m:76},{n:"La",c:"A4",m:69},{n:"Re",c:"D4",m:62},{n:"Sol",c:"G3",m:55}];
+  const ES=["Do","Do♯","Re","Re♯","Mi","Fa","Fa♯","Sol","Sol♯","La","La♯","Si"];
+  const EN=["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
+  const DEDO={0:"0 · al aire",1:"1 bajo",2:"1",3:"2 bajo",4:"2 alto",5:"3",6:"3 alto",7:"4"};
+  const DEDO_CORTO={0:"0",1:"1",2:"1",3:"2",4:"2",5:"3",6:"3",7:"4"};
+  const mm=n=>L*(1-Math.pow(2,-n/12));
+  const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e};
+  const nombre=m=>({es:ES[m%12]+Math.floor(m/12-1),en:EN[m%12]+Math.floor(m/12-1)});
+
+  // Regla de primera posición: cuerda más aguda donde la nota cae entre 0 y 6 semitonos; 7 = dedo 4 si no hay otra.
+  function digitar(m){
+    for(let i=0;i<4;i++){const o=m-CUERDAS[i].m;if(o>=0&&o<=6)return{cuerda:i,off:o}}
+    for(let i=0;i<4;i++){const o=m-CUERDAS[i].m;if(o===7)return{cuerda:i,off:o}}
+    return{cuerda:0,off:m-76};
+  }
+
+  // ---------- Diapasón horizontal ----------
+  const X0=90,X1=800,MAXMM=190;
+  const xmm=d=>X0+d*(X1-X0)/MAXMM;
+  const yC=(i,x)=>{const t=(x-X0)/(X1-X0);const a=44+i*30,b=32+i*38;return a+(b-a)*t};
+  function diapason(svg,marcas,cintas){
+    svg.innerHTML="";
+    el("path",{d:`M${X0} 30 L${X1} 16 L${X1} 160 L${X0} 146 Z`,fill:"var(--ebano)",stroke:"var(--ebano-borde)","stroke-width":1},svg);
+    el("rect",{x:X0-6,y:28,width:6,height:120,fill:"var(--cuerda)",rx:1},svg);
+    if(cintas){
+      [[2,"1"],[4,"2"],[5,"3"],[7,"4"]].forEach(([n,d])=>{const x=xmm(mm(n));
+        el("line",{x1:x,y1:32,x2:x,y2:146,stroke:"var(--cinta)","stroke-dasharray":"3 4","stroke-width":1},svg);
+        const t=el("text",{x:x,y:176,"text-anchor":"middle","font-size":11,"font-family":"var(--f-mono)",fill:"var(--tx2)"},svg);t.textContent=d;});
+      const t=el("text",{x:X1,y:176,"text-anchor":"end","font-size":10,"font-family":"var(--f-mono)",fill:"var(--tx2)"},svg);t.textContent="cintas guía · dedo";
+    }else{
+      [0,50,100,150].forEach(d=>{const x=xmm(d);el("line",{x1:x,y1:162,x2:x,y2:168,stroke:"var(--tx2)"},svg);
+        const t=el("text",{x:x,y:182,"text-anchor":"middle","font-size":10,"font-family":"var(--f-mono)",fill:"var(--tx2)"},svg);t.textContent=d+" mm";});
+    }
+    CUERDAS.forEach((c,i)=>{
+      const act=marcas.some(k=>k.cuerda===i&&k.activa);
+      el("line",{x1:X0-6,y1:yC(i,X0),x2:X1,y2:yC(i,X1),stroke:act?"var(--durazno)":"var(--cuerda)","stroke-width":1+i*.45},svg);
+      const t=el("text",{x:X0-24,y:yC(i,X0)+4,"text-anchor":"end","font-size":12,"font-weight":act?700:500,fill:act?"var(--acc)":"var(--tx2)","font-family":"var(--f-display)"},svg);
+      t.textContent=c.n+" "+c.c;
+    });
+    marcas.forEach(k=>{
+      const x=k.off===0?X0-3:xmm((mm(k.off)+mm(k.off-1))/2), y=yC(k.cuerda,x);
+      el("circle",{cx:x,cy:y,r:12,fill:k.activa?"var(--durazno)":"none",stroke:"var(--durazno)","stroke-width":2},svg);
+      const t=el("text",{x:x,y:y+4.5,"text-anchor":"middle","font-size":12,"font-weight":700,"font-family":"var(--f-mono)",fill:k.activa?"var(--negro)":"var(--durazno)"},svg);
+      t.textContent=k.label;
+      if(k.letra){const l=el("text",{x:x,y:y-17,"text-anchor":"middle","font-size":12,"font-weight":700,fill:"var(--acc)"},svg);l.textContent=k.letra;}
+    });
+  }
+
+  // ---------- Pentagrama ----------
+  const MEL=[[66,1],[66,1],[67,1],[69,1],[69,1],[67,1],[66,1],[64,1],[62,1],[62,1],[64,1],[66,1],[66,1.5],[64,.5],[64,2]];
+  const DIA={0:0,1:0,2:1,3:1,4:2,5:3,6:3,7:4,8:4,9:5,10:5,11:6};
+  const BASE=100,ESP=12;              // y de la línea inferior (Mi4), espacio entre líneas
+  const yN=m=>{const idx=Math.floor(m/12-1)*7+DIA[m%12];return BASE-(idx-30)*ESP/2};
+  const svgP=document.getElementById("pentagrama");
+  const cabezas=[];
+  function pentagrama(){
+    for(let i=0;i<5;i++)el("line",{x1:8,y1:BASE-i*ESP,x2:812,y2:BASE-i*ESP,stroke:"var(--pentagrama)","stroke-width":1},svgP);
+    const c=el("text",{x:12,y:BASE-ESP+1,"font-size":66,"font-family":"var(--f-music)",fill:"var(--nota)"},svgP);c.textContent="\u{1D11E}";
+    [[68,BASE-4*ESP],[80,BASE-2.5*ESP]].forEach(([x,y])=>{const s=el("text",{x:x,y:y+6,"font-size":20,"font-family":"var(--f-music)",fill:"var(--nota)","text-anchor":"middle"},svgP);s.textContent="♯";});
+    ["4","4"].forEach((d,i)=>{const t=el("text",{x:116,y:BASE-ESP*(i?0:2)-3,"font-size":24,"font-weight":700,"text-anchor":"middle",fill:"var(--nota)"},svgP);t.textContent=d;});
+    let x=154,beat=0;
+    MEL.forEach(([m,d],i)=>{
+      const y=yN(m), g=el("g",{class:"nota-click",tabindex:0,role:"button","aria-label":"Nota "+(i+1)+": "+nombre(m).es},svgP);
+      el("rect",{x:x-14,y:BASE-5*ESP-10,width:28,height:6*ESP+20,fill:"transparent"},g);
+      const h=el("ellipse",{cx:x,cy:y,rx:6.6,ry:4.8,transform:`rotate(-20 ${x} ${y})`,fill:d===2?"none":"var(--nota)",stroke:"var(--nota)","stroke-width":d===2?1.8:1},g);
+      const st=el("line",{x1:x+6,y1:y-1,x2:x+6,y2:y-36,stroke:"var(--nota)","stroke-width":1.3},g);
+      let fl=null; if(d===.5)fl=el("path",{d:`M${x+6} ${y-36} q 4 9 10 13 q -3 -4 -10 -7 z`,fill:"var(--nota)",stroke:"var(--nota)","stroke-width":1},g);
+      let dot=null; if(d===1.5)dot=el("circle",{cx:x+12,cy:y-3,r:1.8,fill:"var(--nota)"},g);
+      cabezas.push({h,st,fl,dot,d});
+      g.addEventListener("click",()=>{parar();ir(i)});
+      g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();parar();ir(i)}});
+      beat+=d; x+= d===.5?28:d===1.5?50:42;
+      if(beat%4===0&&i<MEL.length-1){el("line",{x1:x-14,y1:BASE-4*ESP,x2:x-14,y2:BASE,stroke:"var(--pentagrama)","stroke-width":1.2},svgP);x+=10;}
+    });
+    el("line",{x1:x-10,y1:BASE-4*ESP,x2:x-10,y2:BASE,stroke:"var(--pentagrama)","stroke-width":1.2},svgP);
+    el("line",{x1:x-5,y1:BASE-4*ESP,x2:x-5,y2:BASE,stroke:"var(--nota)","stroke-width":3.5},svgP);
+    svgP.setAttribute("viewBox",`0 0 ${x+8} 130`);
+    svgP.querySelectorAll("line").forEach(l=>{if(+l.getAttribute("x2")===812)l.setAttribute("x2",x-5)});
+  }
+
+  // ---------- Estado ----------
+  let actual=0,timer=null,ctx=null;
+  const $=id=>document.getElementById(id);
+  function ir(i){
+    actual=(i+MEL.length)%MEL.length;
+    cabezas.forEach((c,j)=>{const on=j===actual,col=on?"var(--durazno)":"var(--nota)";
+      c.h.setAttribute("stroke",col);if(c.d!==2)c.h.setAttribute("fill",col);c.st.setAttribute("stroke",col);
+      if(c.fl){c.fl.setAttribute("fill",col);c.fl.setAttribute("stroke",col)} if(c.dot)c.dot.setAttribute("fill",col);});
+    const m=MEL[actual][0],f=digitar(m),n=nombre(m);
+    diapason($("diapason"),[{cuerda:f.cuerda,off:f.off,label:DEDO_CORTO[f.off],activa:true}],true);
+    $("f-nota").textContent=n.es+" ("+n.en+")";
+    $("f-cuerda").textContent=CUERDAS[f.cuerda].n;
+    $("f-dedo").textContent=DEDO[f.off];
+    $("f-pos").textContent=f.off===0?"—":"1ª";
+    $("f-mm").textContent=f.off===0?"0 mm":Math.round(mm(f.off))+" mm";
+    $("contador").textContent=(actual+1)+" / "+MEL.length;
+  }
+  function sonar(m,seg){
+    if(!ctx)return;
+    const t=ctx.currentTime,o=ctx.createOscillator(),g=ctx.createGain(),fl=ctx.createBiquadFilter();
+    o.type="sawtooth";o.frequency.value=440*Math.pow(2,(m-69)/12);
+    fl.type="lowpass";fl.frequency.value=2200;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.04);g.gain.setValueAtTime(.12,t+seg*.8);g.gain.linearRampToValueAtTime(0,t+seg*.95);
+    o.connect(fl).connect(g).connect(ctx.destination);o.start(t);o.stop(t+seg);
+  }
+  function parar(){clearTimeout(timer);timer=null;$("b-play").textContent="Reproducir";}
+  function paso(i){
+    if(i>=MEL.length){parar();return}
+    ir(i);const seg=MEL[i][1]*60/+$("tempo").value;sonar(MEL[i][0],seg);
+    timer=setTimeout(()=>paso(i+1),seg*1000);
+  }
+  $("b-play").addEventListener("click",()=>{
+    if(timer){parar();return}
+    try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();ctx.resume&&ctx.resume()}catch(e){ctx=null}
+    $("b-play").textContent="Detener";paso(actual===MEL.length-1?0:actual);
+  });
+  $("b-prev").addEventListener("click",()=>{parar();ir(actual-1)});
+  $("b-next").addEventListener("click",()=>{parar();ir(actual+1)});
+  $("tempo").addEventListener("input",e=>$("tempo-v").textContent=e.target.value);
+
+  pentagrama();ir(0);
+
+  // ---------- Ambigüedad: La4 ----------
+  diapason($("ambiguo"),[
+    {cuerda:1,off:0,label:"0",activa:true,letra:"A"},
+    {cuerda:2,off:7,label:"4",activa:false,letra:"B"},
+    {cuerda:3,off:14,label:"4",activa:false,letra:"C"}],false);
+
+  // ---------- Miniaturas de orientación ----------
+  (function(){
+    const s=$("o-horiz");
+    el("path",{d:"M30 22 L290 14 L290 116 L30 108 Z",fill:"var(--ebano)"},s);
+    ["Mi","La","Re","Sol"].forEach((n,i)=>{const y0=34+i*24,y1=26+i*29;
+      el("line",{x1:30,y1:y0,x2:290,y2:y1,stroke:i===2?"var(--durazno)":"var(--cuerda)","stroke-width":1+i*.4},s);
+      const t=el("text",{x:24,y:y0+4,"text-anchor":"end","font-size":10,fill:"var(--tx2)"},s);t.textContent=n;});
+    el("circle",{cx:118,cy:80,r:9,fill:"var(--durazno)"},s);
+    const t=el("text",{x:118,y:84,"text-anchor":"middle","font-size":10,"font-weight":700,fill:"var(--negro)"},s);t.textContent="2";
+    const v=$("o-vert");
+    el("path",{d:"M118 20 L182 20 L196 210 L104 210 Z",fill:"var(--ebano)"},v);
+    ["Sol","Re","La","Mi"].forEach((n,i)=>{const x0=126+i*16,x1=114+i*24;
+      el("line",{x1:x0,y1:20,x2:x1,y2:210,stroke:i===1?"var(--durazno)":"var(--cuerda)","stroke-width":2.2-i*.4},v);
+      const t=el("text",{x:x0,y:13,"text-anchor":"middle","font-size":10,fill:"var(--tx2)"},v);t.textContent=n;});
+    el("circle",{cx:139.5,cy:96,r:9,fill:"var(--durazno)"},v);
+    const t2=el("text",{x:139.5,y:100,"text-anchor":"middle","font-size":10,"font-weight":700,fill:"var(--negro)"},v);t2.textContent="2";
+  })();
+})();
+</script>
