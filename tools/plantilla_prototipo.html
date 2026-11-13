@@ -1,0 +1,421 @@
+<title>Campanella al Diapasón</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: partitura real a todo el ancho, debajo el diapasón vertical (vista del violinista) junto a la ficha de la nota */
+:root{
+  --durazno:#CF825A; --tostado:#B46034; --negro:#000000; --blanco:#FFFFFF; --gris:#7C7470;
+  --bg:#FFFFFF; --tx:#000000; --tx2:#5E5752; --acc:#B46034; --line:#E6E1DE; --soft:#F7F4F2; --ave:#B46034;
+  --ebano:#1B1817; --ebano-borde:#1B1817; --cuerda:#D9D2CC; --cinta:#7C7470; --cuerpo:#EFE9E5;
+  --f-display:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#000000; --tx:#FFFFFF; --tx2:#B3ACA8; --acc:#CF825A; --line:#2A2624; --soft:#121010; --ave:#CF825A;
+  --ebano:#1E1A19; --ebano-borde:#4A4441; --cuerpo:#151211; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000000; --tx:#FFFFFF; --tx2:#B3ACA8; --acc:#CF825A; --line:#2A2624; --soft:#121010; --ave:#CF825A;
+  --ebano:#1E1A19; --ebano-borde:#4A4441; --cuerpo:#151211; color-scheme:dark}
+
+*{box-sizing:border-box}
+svg.ave{fill:var(--ave)}
+body{background:var(--bg);color:var(--tx);font-family:var(--f-display);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:980px;margin:0 auto;padding-block:40px 64px;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:1.5rem;font-weight:600;color:var(--durazno)}
+h3{font-size:1.02rem;font-weight:600}
+p{margin:0;max-width:66ch}
+.eyebrow{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--tx2)}
+.muted{color:var(--tx2)}
+section{display:flex;flex-direction:column;gap:18px}
+header.top{display:flex;flex-direction:column;gap:16px}
+.brandrow{display:flex;align-items:center;gap:14px}
+.brandrow svg{width:40px;height:auto;flex:none}
+.lead{font-size:1.12rem}
+
+/* ---------- App ---------- */
+.app{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.app-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--soft)}
+.app-bar .file{font-family:var(--f-mono);font-size:.78rem;color:var(--tx2);min-width:0;overflow-wrap:anywhere;flex:1}
+.btn{font:inherit;font-size:.9rem;font-weight:500;border-radius:6px;padding:7px 14px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--tx)}
+.btn:hover{border-color:var(--gris)}
+.btn.primario{background:var(--tostado);border-color:var(--tostado);color:var(--blanco)}
+.btn.primario:hover{filter:brightness(1.08)}
+.btn:focus-visible{outline:2px solid var(--durazno);outline-offset:2px}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.score-wrap{overflow-x:auto;padding:10px 12px 4px}
+.score-wrap svg{display:block;min-width:1300px;width:100%;height:auto;color:var(--tx)}
+.pill{fill:var(--bg);stroke:var(--cinta);stroke-width:2}
+.pill.on{fill:var(--durazno);stroke:var(--durazno)}
+.pill-t{fill:var(--tx);font-family:var(--f-mono);font-weight:600;text-anchor:middle;dominant-baseline:central}
+.pill-t.on{fill:#000}
+.cambio{fill:var(--acc);font-family:var(--f-display);font-weight:700;text-anchor:middle}
+.ring{fill:rgba(207,130,90,.22);stroke:var(--durazno);stroke-width:5}
+.hit{fill:transparent;cursor:pointer}
+.cuerpo{display:grid;grid-template-columns:minmax(230px,300px) 1fr;gap:24px;padding:12px 16px 20px;border-top:1px solid var(--line);align-items:start}
+@media (max-width:640px){.cuerpo{grid-template-columns:1fr}.cuerpo .board{max-width:300px;margin:0 auto}}
+.board svg{display:block;width:100%;height:auto}
+.board text{font-family:var(--f-display)}
+.lado{display:flex;flex-direction:column;gap:16px;min-width:0}
+.ficha{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+@media (max-width:420px){.ficha{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ficha div{background:var(--bg);padding:10px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.ficha span{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--tx2)}
+.ficha b{font-size:1.1rem;font-weight:600;font-variant-numeric:tabular-nums}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.controls .num{font-family:var(--f-mono);font-size:.8rem;color:var(--tx2);min-width:4.5em}
+.tempo{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--tx2);margin-left:auto}
+.tempo input{accent-color:var(--durazno);width:110px}
+.dig{border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.dig .estado{font-family:var(--f-mono);font-size:.78rem;color:var(--tx2)}
+.dig .estado b{color:var(--acc)}
+.dig .fila{display:flex;flex-wrap:wrap;gap:8px}
+.leyenda{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.82rem;color:var(--tx2)}
+.leyenda i{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--durazno);vertical-align:-2px;margin-right:6px}
+.leyenda i.banda{border-radius:2px;background:rgba(207,130,90,.25);border:1px solid var(--durazno)}
+.leyenda i.pil{background:var(--bg);border:2px solid var(--cinta)}
+
+/* ---------- Hallazgos ---------- */
+.datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.dato{border-top:2px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.dato.ok{border-top-color:var(--durazno)}
+.dato b{font-family:var(--f-mono);font-size:.8rem;letter-spacing:.04em}
+.dato p{font-size:.9rem;color:var(--tx2)}
+.preguntas{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.pregunta{background:var(--soft);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.pregunta p{font-size:.92rem;color:var(--tx2)}
+footer{display:flex;align-items:center;gap:12px;color:var(--tx2);font-size:.85rem;border-top:1px solid var(--line);padding-top:20px}
+footer svg{width:24px;height:auto;flex:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<main>
+  <header class="top">
+    <div class="brandrow">{{AVE}}<span class="eyebrow">Prototipo 2 · 13 nov 2026</span></div>
+    <h1>Campanella al Diapasón</h1>
+    <p class="lead">El tema de <em>La Campanella</em> leído directamente de tu PDF. Toca una nota de la partitura para ver dónde va el dedo en el diapasón, o pulsa Reproducir.</p>
+  </header>
+
+  <section aria-labelledby="s-demo">
+    <span class="eyebrow">Tema · compases 1 a 9, primera vuelta</span>
+    <h2 id="s-demo">Partitura y diapasón</h2>
+    <div class="app">
+      <div class="app-bar">
+        <button class="btn" disabled title="Disponible en la versión real">Cargar PDF</button>
+        <span class="file">Violin_Concerto_No_2_La_Campanella_Paganini.pdf · Re mayor · 6/8 · 33 compases</span>
+      </div>
+      <div class="score-wrap" id="score-wrap">{{PARTITURA_SVG}}</div>
+      <div class="cuerpo">
+        <div class="board"><svg id="diapason" viewBox="0 0 300 620" role="img" aria-label="Diapasón del violín en vista vertical con la nota actual marcada"></svg></div>
+        <div class="lado">
+          <div class="ficha" aria-live="polite">
+            <div><span>Nota</span><b id="f-nota">—</b></div>
+            <div><span>Compás</span><b id="f-comp">—</b></div>
+            <div><span>Cuerda</span><b id="f-cuerda">—</b></div>
+            <div><span>Dedo</span><b id="f-dedo">—</b></div>
+            <div><span>Posición</span><b id="f-pos">—</b></div>
+            <div><span>Desde la cejuela</span><b id="f-mm">—</b></div>
+          </div>
+          <div class="controls">
+            <button class="btn" id="b-prev" aria-label="Nota anterior">←</button>
+            <button class="btn primario" id="b-play">Reproducir</button>
+            <button class="btn" id="b-next" aria-label="Nota siguiente">→</button>
+            <span class="num" id="contador">1 / 1</span>
+            <label class="tempo" for="tempo">Corcheas por minuto <input type="range" id="tempo" min="90" max="300" value="170"> <span id="tempo-v" style="font-family:var(--f-mono)">170</span></label>
+          </div>
+          <div class="dig">
+            <h3>Digitación</h3>
+            <p class="estado" id="dig-estado">Calculada para toda la frase.</p>
+            <div class="fila">
+              <button class="btn" id="b-otra">Otra digitación para esta nota</button>
+              <button class="btn" id="b-reset" disabled>Volver a la calculada</button>
+            </div>
+            <p class="muted" style="font-size:.85rem">Al cambiar una nota, el programa recalcula las demás alrededor de tu elección.</p>
+          </div>
+          <div class="leyenda">
+            <span><i></i>Dedo (0 es cuerda al aire)</span>
+            <span><i class="banda"></i>Bloque de la mano, dedos 1 a 4</span>
+            <span><i class="pil"></i>Digitación sobre la partitura; la letra «5ª» marca un cambio de posición</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="muted" style="font-size:.88rem">Las distancias se miden desde la cejuela con un tiro de cuerda de 328 mm (violín 4/4). El diapasón está a escala, por eso las posiciones altas se ven muy juntas.</p>
+  </section>
+
+  <section aria-labelledby="s-lectura">
+    <span class="eyebrow">Qué se leyó del PDF</span>
+    <h2 id="s-lectura">Lectura de tu archivo</h2>
+    <div class="datos">
+      <div class="dato ok"><b>{{N_NOTAS}} NOTAS LEÍDAS</b><p>{{N_REG}} notas normales y {{N_ADORNO}} notas de adorno, de {{RANGO}}. Las tomé de las posiciones exactas del PDF, sin reconocimiento de imagen.</p></div>
+      <div class="dato ok"><b>RITMO DEL TEMA VERIFICADO</b><p>Los {{N_COMP_OK}} compases completos del tema suman 6/8 cada uno, y el compás 1 es una anacrusa de 4 corcheas. Las alturas las revisé contra la partitura en los compases 1 a 10.</p></div>
+      <div class="dato"><b>PENDIENTE: TRESILLOS</b><p>Los compases con tresillos, sextillos y nonillos (del 11 al 33) todavía no tienen el ritmo bien calculado. Por eso este prototipo toca solo el tema.</p></div>
+      <div class="dato"><b>SIN DIGITACIÓN NI ARMÓNICOS</b><p>Este PDF no trae dedos ni armónicos impresos. La digitación que ves la calcula el programa, y no hay una impresa con la que compararla.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="s-preg">
+    <span class="eyebrow">Para afinar</span>
+    <h2 id="s-preg">Lo que necesito de ti</h2>
+    <div class="preguntas">
+      <div class="pregunta"><h3>¿Es tu digitación?</h3><p>Recorre el tema y usa «Otra digitación» donde toques distinto. Dime en qué compases y qué posición usas, porque eso me enseña qué regla le falta al cálculo.</p></div>
+      <div class="pregunta"><h3>Armónicos</h3><p>Como el PDF no los marca, propongo que tú marques con un toque qué notas se tocan en armónico y el diapasón las dibuje con un rombo. ¿Te sirve así?</p></div>
+      <div class="pregunta"><h3>Siguiente paso</h3><p>Terminar el ritmo de tresillos y nonillos para tocar la pieza completa, o cargar un segundo PDF para probar que la lectura funciona con otra edición.</p></div>
+    </div>
+  </section>
+
+  <footer>{{AVE}}Prototipo. La digitación es una propuesta y todavía no está validada por un violinista.</footer>
+</main>
+
+<script>
+(function(){
+  const NOTAS={{NOTAS_JSON}};
+  const STAFF_TOP=[375,748];            // y de la línea superior de cada pentagrama en el PDF
+  const FILA=[200,573];                 // y de la fila de dedos sobre cada pentagrama
+  const NS="http://www.w3.org/2000/svg";
+  const $=id=>document.getElementById(id);
+  const el=(t,a,p,txt)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);if(txt!=null)e.textContent=txt;return e};
+
+  const CUERDAS=[{n:"Sol",c:"G3",m:55},{n:"Re",c:"D4",m:62},{n:"La",c:"A4",m:69},{n:"Mi",c:"E5",m:76}];
+  const ES={C:"Do",D:"Re",E:"Mi",F:"Fa",G:"Sol",A:"La",B:"Si"};
+  const L=328, KMAX=16, OMAX=26;
+  const mmDe=n=>L*(1-Math.pow(2,-n/12));
+  const posDe=k=>Math.floor((k+1)/2)+1;
+  const ord=p=>p+"ª";
+  const dedoDe=d=>d<=2?1:d<=4?2:d<=6?3:4;
+  const nombreEs=n=>{const m=n.match(/^([A-G])(#|b)?(\d)$/);return ES[m[1]]+(m[2]==="#"?"♯":m[2]==="b"?"♭":"")+m[3]};
+  const nombreEn=n=>n.replace("#","♯").replace(/b(?=\d)/,"♭");
+
+  // ---------- Digitación ----------
+  // Un estado es (cuerda s, bloque de la mano k, dedo f). k desplaza la mano k semitonos sobre la primera posición:
+  // dedo 1 en k+1 o k+2, dedo 2 en k+3 o k+4, dedo 3 en k+5 o k+6, dedo 4 en k+7.
+  function estados(m){
+    const r=[];
+    CUERDAS.forEach((c,s)=>{
+      const o=m-c.m; if(o<0||o>OMAX)return;
+      if(o===0){for(let k=0;k<=KMAX;k++)r.push({s,k,o,f:0});}
+      else for(let k=Math.max(0,o-7);k<=Math.min(o-1,KMAX);k++)r.push({s,k,o,f:dedoDe(o-k)});
+    });
+    return r;
+  }
+  function costeNodo(e){
+    let c=0.12*e.k;
+    if(e.f===0)c+=0.4; else if(e.f===4)c+=0.8; else if(e.f===3)c+=0.15;
+    return c;
+  }
+  function costeTrans(a,b,ma,mb){
+    let c=0;
+    const dk=Math.abs(a.k-b.k);
+    if(dk>0){const base=2+0.45*dk; c+=(a.f===0||b.f===0)?base*0.5:base;}
+    c+=0.6*Math.abs(a.s-b.s);
+    if(ma===mb&&(a.s!==b.s||a.k!==b.k))c+=3;
+    return c;
+  }
+  function calcular(fijos){
+    const N=NOTAS.length;
+    const E=NOTAS.map((q,i)=>{
+      let es=estados(q.m); const f=fijos[i];
+      if(f){const filtrado=es.filter(e=>e.s===f.s&&(f.abierta?e.f===0:e.k===f.k)); if(filtrado.length)es=filtrado;}
+      return es;
+    });
+    const coste=[E[0].map(costeNodo)], atras=[[]];
+    for(let i=1;i<N;i++){
+      const ci=[],ai=[];
+      E[i].forEach(b=>{
+        let mejor=Infinity,ja=0;
+        E[i-1].forEach((a,j)=>{const c=coste[i-1][j]+costeTrans(a,b,NOTAS[i-1].m,NOTAS[i].m); if(c<mejor){mejor=c;ja=j}});
+        ci.push(mejor+costeNodo(b)); ai.push(ja);
+      });
+      coste.push(ci); atras.push(ai);
+    }
+    let j=0,min=Infinity; coste[N-1].forEach((c,x)=>{if(c<min){min=c;j=x}});
+    const camino=new Array(N);
+    for(let i=N-1;i>=0;i--){camino[i]=E[i][j]; j=atras[i][j];}
+    return {camino,total:min};
+  }
+  const clave=e=>e.f===0?e.s+":a":e.s+":"+e.k;
+  function opciones(i,fijos){
+    const vistos=new Map();
+    estados(NOTAS[i].m).forEach(e=>{
+      const k=clave(e); if(vistos.has(k))return;
+      const f=Object.assign({},fijos,{[i]:{s:e.s,k:e.k,abierta:e.f===0}});
+      vistos.set(k,{clave:k,fijo:f[i],total:calcular(f).total});
+    });
+    return [...vistos.values()].sort((a,b)=>a.total-b.total).slice(0,6);
+  }
+
+  // ---------- Estado ----------
+  let actual=0,timer=null,ctx=null,fijos={},plan=calcular(fijos).camino,ops=null;
+  const hits=[],pills=[],textos=[];
+  let ring;
+
+  // ---------- Capa sobre la partitura ----------
+  function capa(){
+    const svg=document.getElementById("partitura");
+    const g=el("g",{id:"capa"},svg);
+    ring=el("circle",{class:"ring",r:24,cx:-100,cy:-100},g);
+    NOTAS.forEach((q,i)=>{
+      const adorno=q.g, w=adorno?26:36, fs=adorno?15:21;
+      const y=FILA[q.s]+(adorno?34:0);
+      const gp=el("g",{},g);
+      pills[i]=el("rect",{class:"pill",x:q.cx-w/2,y:y-w/2,width:w,height:w,rx:w/2},gp);
+      textos[i]=el("text",{class:"pill-t",x:q.cx,y:y+1,"font-size":fs},gp,"");
+      hits[i]=el("circle",{class:"hit",cx:q.cx,cy:q.y,r:adorno?15:26},g);
+      hits[i].addEventListener("click",()=>{parar();ir(i)});
+    });
+  }
+  function pintarPlan(){
+    let ultimaK=null;
+    document.querySelectorAll(".cambio").forEach(e=>e.remove());
+    const g=document.getElementById("capa");
+    NOTAS.forEach((q,i)=>{
+      const e=plan[i];
+      textos[i].textContent=e.f;
+      if(e.f!==0){
+        if(ultimaK===null||posDe(e.k)!==posDe(ultimaK)){
+          el("text",{class:"cambio",x:q.cx,y:FILA[q.s]-30,"font-size":q.g?15:21},g,ord(posDe(e.k)));
+        }
+        ultimaK=e.k;
+      }
+    });
+  }
+  function resaltar(){
+    pills.forEach((p,i)=>{const on=i===actual;p.classList.toggle("on",on);textos[i].classList.toggle("on",on)});
+    const q=NOTAS[actual]; ring.setAttribute("cx",q.cx); ring.setAttribute("cy",q.y);
+    const w=$("score-wrap"), svg=$("partitura"), r=svg.getBoundingClientRect(), vb=svg.viewBox.baseVal;
+    const px=(q.cx-vb.x)/vb.width*r.width;
+    if(px<w.scrollLeft+40||px>w.scrollLeft+w.clientWidth-40)w.scrollTo({left:Math.max(0,px-w.clientWidth/2),behavior:"smooth"});
+  }
+
+  // ---------- Diapasón vertical ----------
+  const CX=150,SX=3.6,SY=1.55,Y0=56;
+  const yMm=mm=>Y0+mm*SY;
+  const wMm=mm=>24+16*Math.min(mm,330)/270;
+  const xCu=(s,mm)=>CX+(s-1.5)*((wMm(mm)-5)/3)*SX;
+  const POSIC={1:2,3:5,5:9,7:12,9:16};          // posición -> semitonos del dedo 1 sobre la cuerda al aire
+  function bordes(mm){const h=wMm(mm)/2*SX;return [CX-h,CX+h]}
+  function diapason(){
+    const sv=$("diapason"); sv.innerHTML="";
+    const e=plan[actual], q=NOTAS[actual], prev=actual>0?plan[actual-1]:null;
+    // cuerpo y puente
+    el("rect",{x:56,y:yMm(262),width:188,height:yMm(352)-yMm(262),rx:18,fill:"var(--cuerpo)"},sv);
+    // mástil
+    const [a0,b0]=bordes(0),[a1,b1]=bordes(270);
+    el("polygon",{points:`${a0},${yMm(0)} ${b0},${yMm(0)} ${b1},${yMm(270)} ${a1},${yMm(270)}`,fill:"var(--ebano)",stroke:"var(--ebano-borde)","stroke-width":1},sv);
+    // bloque de la mano
+    if(e.f!==0||true){
+      const m0=mmDe(e.k+0.5),m1=mmDe(Math.min(e.k+7.5,26));
+      const [p0,p1]=bordes(m0),[p2,p3]=bordes(m1);
+      el("polygon",{points:`${p0},${yMm(m0)} ${p1},${yMm(m0)} ${p3},${yMm(m1)} ${p2},${yMm(m1)}`,fill:"rgba(207,130,90,.2)",stroke:"var(--durazno)","stroke-width":1,"stroke-dasharray":"4 3"},sv);
+    }
+    // guías de posición a la izquierda
+    Object.entries(POSIC).forEach(([p,n])=>{
+      const m=mmDe(n),y=yMm(m),[bx]=bordes(m);
+      el("line",{x1:bx-6,y1:y,x2:bx,y2:y,stroke:"var(--cinta)","stroke-width":1.5},sv);
+      el("text",{x:bx-10,y:y+4,"text-anchor":"end","font-size":12,fill:"var(--tx2)","font-family":"var(--f-mono)"},sv,ord(+p));
+    });
+    // cejuela y puente
+    el("rect",{x:a0-3,y:yMm(0)-5,width:b0-a0+6,height:6,fill:"var(--cinta)",rx:2},sv);
+    el("line",{x1:xCu(0,L)-12,y1:yMm(L),x2:xCu(3,L)+12,y2:yMm(L),stroke:"var(--cinta)","stroke-width":5,"stroke-linecap":"round"},sv);
+    // cuerdas
+    CUERDAS.forEach((c,s)=>{
+      const act=s===e.s;
+      el("line",{x1:xCu(s,0),y1:yMm(0),x2:xCu(s,L),y2:yMm(L),stroke:act?"var(--durazno)":"var(--cuerda)","stroke-width":[2.2,1.8,1.4,1][s]+(act?.4:0)},sv);
+      el("text",{x:xCu(s,0),y:28,"text-anchor":"middle","font-size":12,"font-weight":act?700:500,fill:act?"var(--acc)":"var(--tx2)"},sv,c.n);
+    });
+    // nota anterior
+    const pos=x=>x.f===0?[xCu(x.s,0),yMm(0)-17]:[xCu(x.s,mmDe(x.o)),yMm(mmDe(x.o))];
+    const [cx,cy]=pos(e);
+    if(prev){
+      const [px,py]=pos(prev);
+      el("line",{x1:px,y1:py,x2:cx,y2:cy,stroke:"var(--cinta)","stroke-width":1.5,"stroke-dasharray":"3 4"},sv);
+      el("circle",{cx:px,cy:py,r:6,fill:"none",stroke:"var(--cinta)","stroke-width":1.5},sv);
+    }
+    // nota actual
+    if(e.f===0){
+      el("circle",{cx,cy,r:10,fill:"var(--bg)",stroke:"var(--durazno)","stroke-width":2.5},sv);
+      el("text",{x:cx,y:cy+4.5,"text-anchor":"middle","font-size":13,"font-weight":700,fill:"var(--tx)","font-family":"var(--f-mono)"},sv,"0");
+    }else{
+      el("circle",{cx,cy,r:12,fill:"var(--durazno)"},sv);
+      el("text",{x:cx,y:cy+4.5,"text-anchor":"middle","font-size":14,"font-weight":700,fill:"#000","font-family":"var(--f-mono)"},sv,String(e.f));
+    }
+    const lx=bordes(f2mm(e))[1]+12;
+    el("text",{x:lx,y:cy+4,"font-size":13,"font-weight":600,fill:"var(--tx)","font-family":"var(--f-mono)"},sv,nombreEs(q.n));
+  }
+
+  function f2mm(e){return e.f===0?0:mmDe(e.o)}
+  // ---------- Ficha ----------
+  function ficha(){
+    const q=NOTAS[actual],e=plan[actual];
+    $("f-nota").textContent=nombreEs(q.n)+" ("+nombreEn(q.n)+")"+(q.g?" · adorno":"");
+    $("f-comp").textContent=q.c;
+    $("f-cuerda").textContent=CUERDAS[e.s].n+" ("+CUERDAS[e.s].c+")";
+    $("f-dedo").textContent=e.f===0?"0 · al aire":String(e.f);
+    $("f-pos").textContent=e.f===0?"—":ord(posDe(e.k));
+    $("f-mm").textContent=e.f===0?"0 mm":Math.round(mmDe(e.o))+" mm";
+    $("contador").textContent=(actual+1)+" / "+NOTAS.length;
+    ops=opciones(actual,fijos);
+    const k=clave(e), idx=Math.max(0,ops.findIndex(o=>o.clave===k));
+    const fijada=!!fijos[actual], n=Object.keys(fijos).length;
+    $("dig-estado").innerHTML=(fijada?"<b>Elegida por ti</b> · ":"Calculada · ")+"opción "+(idx+1)+" de "+ops.length+" para esta nota"+(n?" · "+n+" nota"+(n>1?"s":"")+" fijada"+(n>1?"s":""):"");
+    $("b-reset").disabled=!n;
+  }
+  function ir(i){
+    actual=(i+NOTAS.length)%NOTAS.length;
+    resaltar(); diapason(); ficha();
+  }
+
+  // ---------- Controles ----------
+  $("b-otra").addEventListener("click",()=>{
+    parar();
+    const k=clave(plan[actual]);
+    const idx=Math.max(0,ops.findIndex(o=>o.clave===k));
+    const sig=ops[(idx+1)%ops.length];
+    fijos[actual]=sig.fijo; plan=calcular(fijos).camino;
+    pintarPlan(); ir(actual);
+  });
+  $("b-reset").addEventListener("click",()=>{parar();fijos={};plan=calcular(fijos).camino;pintarPlan();ir(actual)});
+  $("b-prev").addEventListener("click",()=>{parar();ir(actual-1)});
+  $("b-next").addEventListener("click",()=>{parar();ir(actual+1)});
+  $("tempo").addEventListener("input",e=>$("tempo-v").textContent=e.target.value);
+  document.addEventListener("keydown",e=>{
+    if(e.target.tagName==="INPUT")return;
+    if(e.key==="ArrowRight"){parar();ir(actual+1)} else if(e.key==="ArrowLeft"){parar();ir(actual-1)}
+  });
+
+  // ---------- Sonido ----------
+  function sonar(m,seg){
+    if(!ctx)return;
+    const t=ctx.currentTime,o=ctx.createOscillator(),g=ctx.createGain(),fl=ctx.createBiquadFilter();
+    o.type="sawtooth";o.frequency.value=440*Math.pow(2,(m-69)/12);
+    fl.type="lowpass";fl.frequency.value=2400;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.03);g.gain.setValueAtTime(.12,t+seg*.8);g.gain.linearRampToValueAtTime(0,t+seg*.97);
+    o.connect(fl).connect(g).connect(ctx.destination);o.start(t);o.stop(t+seg);
+  }
+  const GRACIA=0.07;
+  function duracion(i){
+    const q=NOTAS[i],porCorchea=60/+$("tempo").value;
+    if(q.g)return GRACIA;
+    let previas=0; for(let j=i-1;j>=0&&NOTAS[j].g;j--)previas++;
+    const base=q.d/4*porCorchea;
+    return Math.max(base*0.5,base-previas*GRACIA);
+  }
+  function parar(){clearTimeout(timer);timer=null;$("b-play").textContent="Reproducir"}
+  function paso(i){
+    if(i>=NOTAS.length){parar();return}
+    ir(i);const seg=duracion(i);sonar(NOTAS[i].m,seg);
+    timer=setTimeout(()=>paso(i+1),seg*1000);
+  }
+  $("b-play").addEventListener("click",()=>{
+    if(timer){parar();return}
+    try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();ctx.resume&&ctx.resume()}catch(e){ctx=null}
+    $("b-play").textContent="Detener";paso(actual===NOTAS.length-1?0:actual);
+  });
+
+  capa(); pintarPlan(); ir(0);
+  window.__campanella={NOTAS,calcular,get plan(){return plan}};
+})();
+</script>
