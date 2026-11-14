@@ -44,47 +44,30 @@ figcaption{font-size:12px;color:var(--gris);letter-spacing:.04em}
 .reco strong{color:var(--fg);font-weight:600}
 footer{display:flex;align-items:center;gap:12px}
 footer svg{width:32px;height:36px}
+.rejilla{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px 12px}
+.rejilla h3{margin:0;font-family:var(--display);font-size:17px;font-weight:600}
+.rejilla p{margin:0;font-size:13px;color:var(--soft)}
+.rejilla .num{font-family:var(--display);font-size:12px;letter-spacing:.14em;color:var(--durazno)}
+.rejilla figcaption{display:flex;flex-direction:column;gap:2px}
+@media (max-width:760px){.rejilla{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 
 <main class="wrap">
   <header>
-    <p class="eyebrow">Historia de terror · Diseño de personaje · Ronda 4 · Conceptualización</p>
+    <p class="eyebrow">Historia de terror · Diseño de personaje · Ronda 5 · Conceptualización</p>
     <h1>Owen Reed<span>.</span></h1>
-    <p class="lede">Playera durazno, chamarra gris y tres cortes de cabello. Todo está dibujado con código, igual que el video.</p>
+    <p class="lede">Ocho peinados nuevos para elegir. Todo está dibujado con código, igual que el video.</p>
   </header>
 
   <div class="ficha">
-    <div><p class="label">Ya decidido</p><p>Estilo recorte, sin barba, piel clara. Playera durazno bajo chamarra gris.</p></div>
-    <div><p class="label">Lo que se elige ahora</p><p>El corte de cabello. También reduje la cabeza para que aparente entre 25 y 30 años.</p></div>
-    <div><p class="label">Regla de color</p><p>El durazno es solo de Owen. La sangre va en café oscuro.</p></div>
+    <div><p class="label">Ya decidido</p><p>Estilo recorte, sin barba, piel clara. Playera durazno bajo chamarra gris, audífonos oscuros.</p></div>
+    <div><p class="label">Lo que se elige ahora</p><p>El peinado. Son ocho opciones nuevas, todas distintas entre sí y de largo corto o medio.</p></div>
+    <div><p class="label">Cómo elegir</p><p>Dime un número, o combina: «el 3 pero más corto», «el 6 con raya». Lo ajusto en la siguiente ronda.</p></div>
   </div>
   <section>
-    <h2><small>Peinado 1</small>Corto texturizado</h2>
-    <div class="trio"><figure><canvas data-style="recorte" data-variant="playera" data-hair="texturizado" data-view="full" data-mood="calm" width="960" height="1280" aria-label="Owen, Corto texturizado, Cuerpo completo"></canvas><figcaption>Cuerpo completo</figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="texturizado" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen, Corto texturizado, En calma, con su música"></canvas><figcaption>En calma, con su música</figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="texturizado" data-view="bust" data-mood="alert" width="960" height="1280" aria-label="Owen, Corto texturizado, En alerta, audífonos al cuello"></canvas><figcaption>En alerta, audífonos al cuello</figcaption></figure></div>
-    <div class="veredicto">
-      <div><p class="label">A favor</p><p>Despeinado sin esfuerzo, se ve natural en un viajero cansado. Tiene forma propia a contraluz.</p></div>
-      <div><p class="label">En contra</p><p>Es un corte muy común.</p></div>
-    </div>
-  </section>
-  <section>
-    <h2><small>Peinado 2</small>Corto con fleco</h2>
-    <div class="trio"><figure><canvas data-style="recorte" data-variant="playera" data-hair="fleco" data-view="full" data-mood="calm" width="960" height="1280" aria-label="Owen, Corto con fleco, Cuerpo completo"></canvas><figcaption>Cuerpo completo</figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="fleco" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen, Corto con fleco, En calma, con su música"></canvas><figcaption>En calma, con su música</figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="fleco" data-view="bust" data-mood="alert" width="960" height="1280" aria-label="Owen, Corto con fleco, En alerta, audífonos al cuello"></canvas><figcaption>En alerta, audífonos al cuello</figcaption></figure></div>
-    <div class="veredicto">
-      <div><p class="label">A favor</p><p>El fleco enmarca los ojos y ayuda a leer sus gestos.</p></div>
-      <div><p class="label">En contra</p><p>Lo hace ver un poco más joven.</p></div>
-    </div>
-  </section>
-  <section>
-    <h2><small>Peinado 3</small>Desvanecido a los lados</h2>
-    <div class="trio"><figure><canvas data-style="recorte" data-variant="playera" data-hair="fade" data-view="full" data-mood="calm" width="960" height="1280" aria-label="Owen, Desvanecido a los lados, Cuerpo completo"></canvas><figcaption>Cuerpo completo</figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="fade" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen, Desvanecido a los lados, En calma, con su música"></canvas><figcaption>En calma, con su música</figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="fade" data-view="bust" data-mood="alert" width="960" height="1280" aria-label="Owen, Desvanecido a los lados, En alerta, audífonos al cuello"></canvas><figcaption>En alerta, audífonos al cuello</figcaption></figure></div>
-    <div class="veredicto">
-      <div><p class="label">A favor</p><p>Limpio y práctico, encaja con alguien que trabaja en campo.</p></div>
-      <div><p class="label">En contra</p><p>Arriba queda poco volumen y la silueta se reconoce menos.</p></div>
-    </div>
-  </section>
-  <section class="reco">
-    <p class="label">Mi recomendación</p>
-    <p><strong>El texturizado (1).</strong> Se ve de la edad correcta y da una silueta que se reconoce de espaldas, que es como aparece en la escena de la ventana.</p>
+    <h2><small>Ronda 5</small>Ocho peinados para Owen</h2>
+    <p class="lede">Los audífonos van al cuello para que se vea el peinado completo. Con ellos puestos, la diadema tapa parte del cabello.</p>
+    <div class="rejilla"><figure><canvas data-style="recorte" data-variant="playera" data-hair="rapado" data-phones="neck" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen con peinado rapado"></canvas><figcaption><span class="num">1</span><h3>Rapado</h3><p>Casi sin pelo. Limpio y práctico, deja todo el rostro a la vista.</p></figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="raya" data-phones="neck" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen con peinado raya de lado clásico"></canvas><figcaption><span class="num">2</span><h3>Raya de lado clásico</h3><p>Ordenado, de oficina. Contrasta con lo desordenado del mundo.</p></figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="tupe" data-phones="neck" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen con peinado tupé"></canvas><figcaption><span class="num">3</span><h3>Tupé</h3><p>Volumen al frente, peinado hacia arriba. Da carácter y altura.</p></figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="cortinas" data-phones="neck" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen con peinado cortinas"></canvas><figcaption><span class="num">4</span><h3>Cortinas</h3><p>Raya al centro, cae a los lados. Aire de los noventa, algo descuidado.</p></figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="atras" data-phones="neck" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen con peinado peinado hacia atrás"></canvas><figcaption><span class="num">5</span><h3>Peinado hacia atrás</h3><p>Frente despejada, con la raya de los surcos del peine. Serio y seguro.</p></figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="rizado" data-phones="neck" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen con peinado rizado corto"></canvas><figcaption><span class="num">6</span><h3>Rizado corto</h3><p>Rizos pegados a la cabeza. Se ve joven y natural.</p></figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="recto" data-phones="neck" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen con peinado flequillo recto"></canvas><figcaption><span class="num">7</span><h3>Flequillo recto</h3><p>Corte parejo sobre la frente. Muy gráfico, casi de dibujo animado.</p></figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="undercut" data-phones="neck" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen con peinado undercut"></canvas><figcaption><span class="num">8</span><h3>Undercut</h3><p>Costados rapados y copete largo hacia atrás. Moderno y con mucha silueta.</p></figcaption></figure></div>
   </section>
 
   <footer>
@@ -103,6 +86,16 @@ function addCapsule(p,x0,y0,x1,y1,r0,r1){const a=Math.atan2(y1-y0,x1-x0),s=Math.
 function limb(pts,r){const p=new Path2D();for(let i=0;i<pts.length-1;i++)addCapsule(p,pts[i][0],pts[i][1],pts[i+1][0],pts[i+1][1],r[i],r[i+1]);return p;}
 function ell(x,y,rx,ry,rot){const p=new Path2D();p.ellipse(x,y,rx,ry,rot||0,0,TAU);return p;}
 function rrect(x,y,w,h,r){const p=new Path2D();p.moveTo(x+r,y);p.lineTo(x+w-r,y);p.arcTo(x+w,y,x+w,y+r,r);p.lineTo(x+w,y+h-r);p.arcTo(x+w,y+h,x+w-r,y+h,r);p.lineTo(x+r,y+h);p.arcTo(x,y+h,x,y+h-r,r);p.lineTo(x,y+r);p.arcTo(x,y,x+r,y,r);p.closePath();return p;}
+const HAIRS={
+  rapado:[['hair','M158 88 C156 54 186 44 200 44 C226 44 246 56 242 88 C240 72 230 62 200 60 C172 62 160 74 158 88 Z'],['fade','M157 88 C156 98 157 108 159 114 L162 114 C161 104 161 94 162 86 Z M243 88 C244 98 243 108 241 114 L238 114 C239 104 239 94 238 86 Z']],
+  raya:[['hair','M153 98 C145 52 182 31 212 33 C248 35 259 66 247 98 C244 82 238 72 226 67 C214 62 196 58 182 64 C168 70 160 84 157 98 Z'],['hairl','M184 38 C178 50 176 58 178 66',2.4]],
+  tupe:[['hair','M155 94 C146 58 166 38 194 30 C214 22 238 30 245 52 C250 68 249 84 245 96 C243 82 237 72 227 68 C208 64 184 66 171 75 C162 81 158 88 155 94 Z M170 44 C178 20 214 14 236 32 C216 28 190 32 170 44 Z']],
+  cortinas:[['hair','M151 114 C143 54 184 31 214 33 C249 37 259 68 249 114 C247 98 243 84 233 75 C223 84 208 86 200 76 C192 86 177 84 167 75 C157 84 153 98 151 114 Z']],
+  atras:[['hair','M157 84 C152 50 188 35 214 37 C244 39 252 62 244 84 C240 68 230 58 206 56 C184 56 166 66 157 84 Z'],['hairl','M172 62 C190 52 214 50 234 58',2.2],['hairl','M168 70 C190 58 216 56 238 66',2.2]],
+  rizado:[['hair','M156 94 C150 62 170 48 200 46 C230 48 250 62 244 94 C242 80 234 70 200 68 C166 70 158 80 156 94 Z'],...[[162,70,12],[172,54,13],[188,46,13],[206,44,13],[224,48,13],[238,58,12],[244,74,11],[158,88,9],[242,90,9]].map(([x,y,r])=>['hair','M'+(x-r)+' '+y+' a'+r+' '+r+' 0 1 0 '+(2*r)+' 0 a'+r+' '+r+' 0 1 0 '+(-2*r)+' 0 Z'])],
+  recto:[['hair','M155 98 C147 50 185 33 214 35 C247 37 257 64 246 98 C244 86 241 78 238 72 L162 72 C159 78 157 88 155 98 Z']],
+  undercut:[['hair','M163 82 C158 42 198 22 232 34 C252 43 252 64 241 76 C230 63 206 58 184 66 C172 70 166 76 163 82 Z'],['fade','M157 88 C156 98 157 108 159 114 L162 114 C161 104 161 94 162 84 Z M243 88 C244 98 243 108 241 114 L238 114 C239 104 239 94 238 84 Z']]
+};
 function mir(p){const q=new Path2D();q.addPath(p,new DOMMatrix([-1,0,0,1,400,0]));return q;}
 
 /* Owen, vista de frente. Caja de 400 × 620 unidades; el eje del cuerpo está en x = 200. */
@@ -126,9 +119,7 @@ function owen(o){
     add('skin',ell(156,101,6,11));add('skin',ell(244,101,6,11));
   }
   add('skin',new Path2D('M157 90 C155 44 245 44 243 90 C243 118 234 140 214 150 C205 154 195 154 186 150 C166 140 157 118 157 90 Z'),{face:true});
-  if(o.hair==='fade'){add('hair',new Path2D('M158 86 C154 50 186 36 212 38 C240 40 248 60 243 86 C240 72 232 62 222 58 C206 64 186 62 170 58 C164 66 160 76 158 86 Z'));add('fade',new Path2D('M157 88 C156 98 157 108 159 114 L162 114 C161 104 161 94 162 86 Z M243 88 C244 98 243 108 241 114 L238 114 C239 104 239 94 238 86 Z'));}
-  else if(o.hair==='fleco'){add('hair',new Path2D('M155 98 C146 46 188 30 214 32 C246 34 256 60 246 98 C244 82 238 74 230 72 C222 78 214 80 206 80 L200 74 L192 82 C182 82 170 80 162 76 C158 82 156 90 155 98 Z'));}
-  else{add('hair',new Path2D('M155 94 C148 48 186 30 214 32 C246 36 256 62 246 94 C243 78 236 68 228 64 C220 70 208 70 200 64 C190 72 176 72 166 66 C160 74 157 84 155 94 Z M180 40 L186 28 L196 38 Z M200 36 L208 24 L214 38 Z M220 40 L230 30 L232 46 Z'));}
+  for(const [role,d,w] of (HAIRS[o.hair]||HAIRS.raya)){add(role,new Path2D(d),w?{stroke:w}:undefined);}
   if(o.phones==='on'){
     add('band',new Path2D('M151 92 C145 22 255 22 249 92'),{stroke:10});
     add('cup',ell(151,101,13,23));add('cup',ell(249,101,13,23));
@@ -183,7 +174,7 @@ function bgTrazo(c){
 }
 
 /* ---------- estilos ---------- */
-const CUT={fade:'#5E5753',pants:'#141211',shoe:'#070606',hoodie:'#7C7470',sleeve:'#2B2725',jacket:'#383330',strap:'#100E0E',neck:'#CDC5BE',skin:'#E8E1DB',hair:'#1B1817',band:DURAZNO,cup:DURAZNO,cushion:TOSTADO};
+const CUT={fade:'#5E5753',hairl:'#4a4441',pants:'#141211',shoe:'#070606',hoodie:'#7C7470',sleeve:'#2B2725',jacket:'#383330',strap:'#100E0E',neck:'#CDC5BE',skin:'#E8E1DB',hair:'#1B1817',band:DURAZNO,cup:DURAZNO,cushion:TOSTADO};
 function paint(c,sh,col){if(sh.stroke){c.strokeStyle=col;c.lineWidth=sh.stroke;c.lineCap='round';c.stroke(sh.path);}else{c.fillStyle=col;c.fill(sh.path);}}
 
 function drawSilueta(c,shapes){
@@ -231,7 +222,7 @@ function render(cv){
   const style=cv.dataset.style,view=cv.dataset.view,mood=cv.dataset.mood;
   const c=cv.getContext('2d');c.setTransform(K,0,0,K,0,0);c.clearRect(0,0,LW,LH);
   (style==='silueta'?bgSilueta:style==='recorte'?bgRecorte:bgTrazo)(c);
-  const shapes=owen({phones:mood==='alert'?'neck':'on',hair:cv.dataset.hair});
+  const shapes=owen({phones:cv.dataset.phones||(mood==='alert'?'neck':'on'),hair:cv.dataset.hair});
   let scale=1;
   c.save();
   if(view==='full'){c.translate(40,10);}else{scale=2.35;c.translate(LW/2,300);c.scale(scale,scale);c.translate(-200,-122);}
