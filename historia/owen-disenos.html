@@ -54,18 +54,18 @@ footer svg{width:32px;height:36px}
 
 <main class="wrap">
   <header>
-    <p class="eyebrow">Historia de terror · Diseño de personaje · Ronda 7 · Conceptualización</p>
+    <p class="eyebrow">Historia de terror · Diseño de personaje · Ronda 8 · Conceptualización</p>
     <h1>Owen Reed<span>.</span></h1>
     <p class="lede">Owen con el corte de tu foto de referencia. Todo está dibujado con código, igual que el video.</p>
   </header>
 
   <div class="ficha">
     <div><p class="label">Referencia</p><p>El corte de tu foto: copete corto y texturizado, peinado hacia un lado, con los costados desvanecidos hasta la piel.</p></div>
-    <div><p class="label">Qué cambió</p><p>El pelo pasa a castaño ceniza, como en la foto. Con el negro, la textura y el desvanecido no se verían.</p></div>
-    <div><p class="label">Ventaja</p><p>Un pelo más claro separa la cabeza de la diadema negra, y se arregla el problema del buzz cut.</p></div>
+    <div><p class="label">Qué cambió</p><p>Pelo negro. El copete se levanta al frente y se peina hacia atrás y a un lado. Los costados pasan de negro a gris y luego a piel.</p></div>
+    <div><p class="label">Punto por resolver</p><p>Con pelo negro, la diadema negra vuelve a fundirse con la cabeza. Unos audífonos grises lo resuelven.</p></div>
   </div>
   <section>
-    <h2><small>Ronda 7</small>Owen con tu corte de referencia</h2>
+    <h2><small>Ronda 8</small>Owen con tu corte de referencia</h2>
     <div class="trio"><figure><canvas data-style="recorte" data-variant="playera" data-hair="fadequiff" data-view="full" data-mood="calm" width="960" height="1280" aria-label="Owen con copete y costados desvanecidos, cuerpo completo, con audífonos"></canvas><figcaption>Cuerpo completo, con audífonos</figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="fadequiff" data-phones="none" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen con copete y costados desvanecidos, en calma, sin audífonos"></canvas><figcaption>En calma, sin audífonos</figcaption></figure><figure><canvas data-style="recorte" data-variant="playera" data-hair="fadequiff" data-phones="neck" data-view="bust" data-mood="alert" width="960" height="1280" aria-label="Owen con copete y costados desvanecidos, en alerta, audífonos al cuello"></canvas><figcaption>En alerta, audífonos al cuello</figcaption></figure></div>
     <div class="veredicto">
       <div><p class="label">A favor</p><p>Es el corte con más carácter de todos los que hemos visto. El copete da silueta y el desvanecido deja la cara limpia.</p></div>
@@ -90,7 +90,7 @@ function limb(pts,r){const p=new Path2D();for(let i=0;i<pts.length-1;i++)addCaps
 function ell(x,y,rx,ry,rot){const p=new Path2D();p.ellipse(x,y,rx,ry,rot||0,0,TAU);return p;}
 function rrect(x,y,w,h,r){const p=new Path2D();p.moveTo(x+r,y);p.lineTo(x+w-r,y);p.arcTo(x+w,y,x+w,y+r,r);p.lineTo(x+w,y+h-r);p.arcTo(x+w,y+h,x+w-r,y+h,r);p.lineTo(x+r,y+h);p.arcTo(x,y+h,x,y+h-r,r);p.lineTo(x,y+r);p.arcTo(x,y,x+r,y,r);p.closePath();return p;}
 const HAIRS={
-  fadequiff:[['fadeB','M156 92 C154 102 155 110 158 118 L164 118 C162 108 161 98 163 84 Z M244 92 C246 102 245 110 242 118 L236 118 C238 108 239 98 237 84 Z'],['fadeA','M158 80 C156 88 157 96 159 104 L164 104 C163 96 163 88 165 78 Z M242 80 C244 88 243 96 241 104 L236 104 C237 96 237 88 235 78 Z'],['hairq','M162 82 C156 58 172 40 200 34 C228 28 249 40 247 68 C246 76 244 82 242 90 C239 76 232 68 222 64 C204 59 184 63 172 73 C167 77 164 80 162 82 Z M165 70 C164 48 196 34 228 38 C208 38 186 48 172 66 Z'],['hairh','M182 46 C196 40 214 40 228 46',2.4],['hairh','M176 54 C194 47 218 47 236 56',2.4],['hairh','M172 62 C192 54 220 54 242 64',2.4],['hairh','M176 70 C190 64 206 62 222 64',2]],
+  fadequiff:[['fadeB','M155 94 C153 104 155 112 158 120 L165 120 C162 110 161 100 163 86 Z M245 94 C247 104 245 112 242 120 L235 120 C238 110 239 100 237 86 Z'],['fadeA','M157 80 C155 88 156 96 158 104 L165 104 C163 96 163 88 166 78 Z M243 80 C245 88 244 96 242 104 L235 104 C237 96 237 88 234 78 Z'],['hairq','M163 86 C156 60 166 40 192 32 C218 24 244 34 248 58 C249 70 246 80 242 88 C238 76 230 68 220 64 C206 60 190 62 178 70 C170 74 166 80 163 86 Z M157 76 C148 56 162 34 190 28 C177 38 171 52 173 67 C167 69 161 72 157 76 Z'],['hairh','M164 66 C167 52 178 41 193 35',2.2],['hairh','M174 50 C192 38 218 36 240 45',2.2],['hairh','M170 60 C190 48 222 46 245 57',2.2],['hairh','M176 69 C195 59 220 57 242 67',2],['hairh','M200 34 C214 30 228 32 238 38',1.8]],
   buzz:[['buzz','M157 92 C153 52 186 39 200 39 C226 39 247 52 243 92 C241 78 236 68 227 63 C210 59 190 59 173 63 C164 68 159 78 157 92 Z'],['fade','M156 90 C155 100 156 108 158 113 L161 113 C160 104 160 96 161 88 Z M244 90 C245 100 244 108 242 113 L239 113 C240 104 240 96 239 88 Z']],
   rapado:[['hair','M158 88 C156 54 186 44 200 44 C226 44 246 56 242 88 C240 72 230 62 200 60 C172 62 160 74 158 88 Z'],['fade','M157 88 C156 98 157 108 159 114 L162 114 C161 104 161 94 162 86 Z M243 88 C244 98 243 108 241 114 L238 114 C239 104 239 94 238 86 Z']],
   raya:[['hair','M153 98 C145 52 182 31 212 33 C248 35 259 66 247 98 C244 82 238 72 226 67 C214 62 196 58 182 64 C168 70 160 84 157 98 Z'],['hairl','M184 38 C178 50 176 58 178 66',2.4]],
@@ -179,7 +179,7 @@ function bgTrazo(c){
 }
 
 /* ---------- estilos ---------- */
-const CUT={hairq:'#6B5E56',fadeA:'#A89C94',fadeB:'#CBC2BB',hairh:'#8E8178',buzz:'#2F2A28',fade:'#5E5753',hairl:'#4a4441',pants:'#141211',shoe:'#070606',hoodie:'#7C7470',sleeve:'#2B2725',jacket:'#383330',strap:'#100E0E',neck:'#CDC5BE',skin:'#E8E1DB',hair:'#1B1817',band:DURAZNO,cup:DURAZNO,cushion:TOSTADO};
+const CUT={hairq:'#141211',fadeA:'#4A4441',fadeB:'#9C918A',hairh:'#4A4441',buzz:'#2F2A28',fade:'#5E5753',hairl:'#4a4441',pants:'#141211',shoe:'#070606',hoodie:'#7C7470',sleeve:'#2B2725',jacket:'#383330',strap:'#100E0E',neck:'#CDC5BE',skin:'#E8E1DB',hair:'#1B1817',band:DURAZNO,cup:DURAZNO,cushion:TOSTADO};
 function paint(c,sh,col){if(sh.stroke){c.strokeStyle=col;c.lineWidth=sh.stroke;c.lineCap='round';c.stroke(sh.path);}else{c.fillStyle=col;c.fill(sh.path);}}
 
 function drawSilueta(c,shapes){
