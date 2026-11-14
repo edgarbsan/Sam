@@ -1,0 +1,534 @@
+<title>Personajes del Capítulo 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Autor: BS -->
+<style>
+/* Layout: hoja de personaje sobre fondo de sala oscura. Una columna de 1080px; cada estilo es una fila con tres láminas y su veredicto debajo. */
+:root{
+  --negro:#000000; --blanco:#FFFFFF; --gris:#7C7470; --durazno:#CF825A; --tostado:#B46034;
+  --bg:#000000; --fg:#FFFFFF; --soft:rgba(255,255,255,.78); --line:#26221F; --panel:#0B0A0A;
+  --display:"Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --body:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme:dark;
+}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-block:36px 48px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:40px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{margin:0;font-family:var(--display);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gris)}
+h1{margin:0;font-family:var(--display);font-weight:600;font-size:clamp(34px,6vw,54px);line-height:1.05;letter-spacing:-.01em;text-wrap:balance}
+h1 span{color:var(--durazno)}
+.lede{margin:4px 0 0;max-width:62ch;color:var(--soft)}
+h2{margin:0;font-family:var(--display);font-weight:600;font-size:26px;line-height:1.15;text-wrap:balance}
+h2 small{display:block;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--durazno);margin-bottom:4px}
+.label{margin:0 0 8px;font-family:var(--display);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--durazno)}
+section{display:flex;flex-direction:column;gap:18px}
+.ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:18px 28px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:22px}
+.ficha div{min-width:0}
+.ficha p{margin:0;color:var(--soft)}
+.paleta{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0;padding:0;list-style:none}
+.paleta li{display:flex;align-items:center;gap:8px;color:var(--soft);font-size:13px}
+.paleta i{width:16px;height:16px;border-radius:50%;border:1px solid #4a4541;display:inline-block}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+figure{margin:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+figure canvas{display:block;width:100%;aspect-ratio:3/4;max-width:100%;border:1px solid var(--line);background:#000}
+figcaption{font-size:12px;color:var(--gris);letter-spacing:.04em}
+.veredicto{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:18px 28px}
+.veredicto div{min-width:0}
+.veredicto p{margin:0;color:var(--soft)}
+.reco{border-top:1px solid var(--line);padding-top:26px}
+.reco p{margin:0;max-width:68ch;color:var(--soft)}
+.reco p + p{margin-top:10px}
+.reco strong{color:var(--fg);font-weight:600}
+footer{display:flex;align-items:center;gap:12px}
+footer svg{width:32px;height:36px}
+.rejilla{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px 12px}
+.rejilla h3{margin:0;font-family:var(--display);font-size:17px;font-weight:600}
+.rejilla p{margin:0;font-size:13px;color:var(--soft)}
+.rejilla .num{font-family:var(--display);font-size:12px;letter-spacing:.14em;color:var(--durazno)}
+.rejilla figcaption{display:flex;flex-direction:column;gap:2px}
+@media (max-width:760px){.rejilla{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.det-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 12px}
+.det-grid h3{margin:0 0 6px;font-family:var(--display);font-size:16px;font-weight:600}
+.det{margin:0;padding:0 0 0 16px;font-size:13px;color:var(--soft);display:flex;flex-direction:column;gap:3px}
+.muestras{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px 22px}
+.muestras li{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--soft)}
+.muestras i{width:22px;height:22px;border-radius:50%;border:1px solid #4a4541;flex:none}
+.muestras b{color:var(--fg);font-weight:600}
+@media (max-width:760px){.det-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.det-grid{grid-template-columns:minmax(0,1fr)}}
+.lineup{display:block;width:100%;aspect-ratio:2160/760;max-width:100%;border:1px solid var(--line)}
+.cast-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px 14px}
+.pistas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 14px}
+.card figcaption{display:flex;flex-direction:column;gap:6px}
+.card figcaption h3{margin:0;font-family:var(--display);font-size:17px;font-weight:600}
+.card figcaption p{margin:0;font-size:13px;color:var(--soft)}
+.card figcaption b{color:var(--fg);font-weight:600}
+.card .num{font-family:var(--display);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--durazno)}
+@media (max-width:760px){.cast-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.cast-grid,.pistas{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow">Historia de terror · Diseño de personaje · Capítulo 1 · Personajes · Ronda 1 · Conceptualización</p>
+    <h1>Personajes<span>.</span></h1>
+    <p class="lede">Los nueve personajes de la escena, a escala y en el mismo estilo que Owen. Todo está dibujado con código, igual que el video.</p>
+  </header>
+
+  <div class="ficha">
+    <div><p class="label">Qué es esto</p><p>Los nueve personajes del Capítulo 1 en el mismo estilo recorte de Owen: los seis del piso de arriba, el inspector, el anciano de abajo y el hombre pálido ya convertido.</p></div>
+    <div><p class="label">Regla de silueta</p><p>Cada uno se reconoce por la forma, no por el color: abrigo largo, capucha, gorra, maletín, bastón. Se leen aun cuando la escena es oscura y llueve.</p></div>
+    <div><p class="label">Regla de color</p><p>El durazno es solo de Owen. Los demás usan tonos apagados. El rojo oscuro es exclusivo de la sangre.</p></div>
+  </div>
+  <section>
+    <h2><small>Alturas</small>Todos juntos, a escala</h2>
+    <canvas data-lineup width="2160" height="760" class="lineup" aria-label="Los personajes del Capítulo 1 alineados por altura"></canvas>
+    <p class="lede">De izquierda a derecha: Owen, la madre, el hijo, el adolescente, el señor del paraguas, el ejecutivo, el hombre pálido, el inspector, el anciano y el hombre pálido convertido.</p>
+  </section>
+  <section>
+    <h2><small>Rostros</small>Un personaje por tarjeta</h2>
+    <div class="cast-grid"><figure class="card"><canvas data-style="recorte" data-char="madre" data-view="bust" width="960" height="1280" aria-label="La madre"></canvas><figcaption><span class="num">Treinta y tantos años</span><h3>La madre</h3><p><b>Silueta.</b> Abrigo largo verde oliva y bufanda clara. Silueta alargada, de las más altas por el abrigo.</p><p><b>Pista.</b> Una curita en el dedo. En la escena 2.2 se enfoca y nadie la toma en cuenta; en el 7.3 se agarra del pasamanos con sangre ajena.</p><p><b>Color.</b> Sin durazno. Verde oliva apagado, que se distingue del gris de Owen.</p></figcaption></figure><figure class="card"><canvas data-style="recorte" data-char="hijo" data-view="bust" width="960" height="1280" aria-label="El hijo"></canvas><figcaption><span class="num">Unos 4 años</span><h3>El hijo</h3><p><b>Silueta.</b> Impermeable amarillo con capucha caída. Es el único color cálido que no es de Owen, y se lee desde lejos en el piso de arriba.</p><p><b>Pista.</b> No dice palabras. Su madre le canta bajito, y de eso depende la tercera vez que se ve la regla.</p><p><b>Color.</b> Amarillo apagado, no brillante, para no competir con el durazno.</p></figcaption></figure><figure class="card"><canvas data-style="recorte" data-char="teen" data-view="bust" width="960" height="1280" aria-label="El adolescente"></canvas><figcaption><span class="num">Unos 16 años</span><h3>El adolescente</h3><p><b>Silueta.</b> Sudadera azul pizarra y tenis blancos. Sostiene el celular en alto.</p><p><b>Pista.</b> Graba la lluvia y después la escalera. Su video es el gancho para el Cap 2.</p><p><b>Color.</b> Azul pizarra, frío, lo contrario del durazno.</p></figcaption></figure><figure class="card"><canvas data-style="recorte" data-char="senor" data-view="bust" width="960" height="1280" aria-label="El señor del paraguas"></canvas><figcaption><span class="num">Unos 70 años</span><h3>El señor del paraguas</h3><p><b>Silueta.</b> Abrigo café, gorra plana y paraguas largo. Ligeramente encorvado.</p><p><b>Pista.</b> Su paraguas sirve de pasador en la barricada de Owen: tiene que verse largo y firme desde la primera escena.</p><p><b>Color.</b> Café oscuro. Distinto al café de la sangre: más claro y sin rojo.</p></figcaption></figure><figure class="card"><canvas data-style="recorte" data-char="ejecutivo" data-view="bust" width="960" height="1280" aria-label="El ejecutivo"></canvas><figcaption><span class="num">Unos 45 años</span><h3>El ejecutivo</h3><p><b>Silueta.</b> Traje azul grisáceo, corbata azul, maletín y teléfono al oído. El más alto del grupo.</p><p><b>Pista.</b> Habla fuerte. Después sus gritos atraen al zombie, mientras Owen y la madre se quedan quietos.</p><p><b>Color.</b> Azul grisáceo. La corbata es azul, nunca roja, para que el rojo oscuro sea solo sangre.</p></figcaption></figure><figure class="card"><canvas data-style="recorte" data-char="palido" data-view="bust" width="960" height="1280" aria-label="El hombre pálido"></canvas><figcaption><span class="num">Unos 35 años</span><h3>El hombre pálido</h3><p><b>Silueta.</b> Sudadera gris y chaqueta verde olivo. Piel gris verdosa, ojeras y sudor.</p><p><b>Pista.</b> Mano vendada con la gasa manchada de sangre. Respira lento y se controla: es el portador.</p><p><b>Color.</b> Verde olivo apagado y piel más pálida que la de los demás.</p></figcaption></figure><figure class="card"><canvas data-style="recorte" data-char="inspector" data-view="bust" width="960" height="1280" aria-label="El inspector"></canvas><figcaption><span class="num">Unos 40 años</span><h3>El inspector</h3><p><b>Silueta.</b> Chaqueta negra corta, camisa gris y credencial colgada al cuello. Es la silueta más corta de los adultos de traje.</p><p><b>Pista.</b> El detonante: pide el boleto y le jala el brazo al hombre pálido. Su placa es lo primero que debe leerse.</p><p><b>Color.</b> Negro y gris. Sin color, para que parezca burocrático.</p></figcaption></figure><figure class="card"><canvas data-style="recorte" data-char="anciano" data-view="bust" width="960" height="1280" aria-label="El anciano de abajo"></canvas><figcaption><span class="num">Unos 75 años</span><h3>El anciano de abajo</h3><p><b>Silueta.</b> Cárdigan marrón claro, lentes y bastón. Pelo blanco a los lados.</p><p><b>Pista.</b> Primer caso de la regla: se queda paralizado y el zombie pasa de largo. Tiene que verse muy quieto.</p><p><b>Color.</b> Marrón claro y blanco hueso.</p></figcaption></figure><figure class="card"><canvas data-style="recorte" data-char="zombie" data-view="bust" width="960" height="1280" aria-label="El hombre pálido, convertido"></canvas><figcaption><span class="num">Mismo personaje</span><h3>El hombre pálido, convertido</h3><p><b>Silueta.</b> Brazos adelantados, ojos blancos con venas, boca abierta con sangre y manchas en el pecho.</p><p><b>Pista.</b> Se convierte en segundos, frente a todos. Es lo que Owen ve por el reflejo y por el espejo de la escalera.</p><p><b>Color.</b> La piel pasa de gris verdosa a gris más oscura; las venas son moradas, no rojas.</p></figcaption></figure></div>
+  </section>
+  <section>
+    <h2><small>Pistas visuales</small>Las dos manos que cuentan la historia</h2>
+    <div class="pistas">
+      <figure class="card"><canvas data-style="recorte" data-char="madre" data-view="hands" width="960" height="1280" aria-label="Mano de la madre con una curita"></canvas><figcaption><h3>La curita de la madre</h3><p>Pequeña y discreta. En el acto I es un detalle, en el III es la revelación.</p></figcaption></figure>
+      <figure class="card"><canvas data-style="recorte" data-char="palido" data-view="hands" width="960" height="1280" aria-label="Mano vendada del hombre pálido"></canvas><figcaption><h3>La mano vendada</h3><p>Gasa blanca con una mancha de sangre. Es la primera señal de que algo anda mal.</p></figcaption></figure>
+    </div>
+  </section>
+  <section class="reco">
+    <p class="label">Mi recomendación</p>
+    <p><strong>Revisa primero la altura y la silueta de cada uno.</strong> Si en el lineup dos personajes se confunden, hay que cambiar la forma, no el color. El que más cuidado necesita es el inspector, que por la ropa se parece al ejecutivo. Lo separé con una chaqueta más corta y la credencial; si no basta, le agrego un chaleco o una gorra.</p>
+  </section>
+
+  <footer>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 54" fill="#CF825A" role="img" aria-label="Pincelada BS"><path fill-rule="evenodd" d="M21.27 53.99 20.42 54 19.67 53.98 18.88 53.91 18.13 53.82 17.34 53.70 16.65 53.57 15.68 53.34 15.01 53.15 13.44 52.62 12.60 52.30 11.92 51.99 11.07 51.56 10.37 51.17 9.23 50.46 8.57 50 7.97 49.55 7.20 48.91 6.37 48.19 5.70 47.52 5.13 46.88 4.66 46.30 4.13 45.63 3.51 44.79 3.15 44.25 2.68 43.48 2.19 42.61 1.92 42.07 1.65 41.48 1.35 40.74 1.05 39.89 0.82 39.18 0.49 37.92 0.31 37.04 0.20 36.40 0.07 35.35 0 34.06 0 32.61 0.09 31.36 0.24 30.22 0.47 29.20 0.67 28.52 0.93 27.77 1.18 27.17 1.47 26.53 1.84 25.88 2.18 25.33 2.58 24.75 3.02 24.20 3.31 23.86 3.90 23.25 4.45 22.74 4.79 22.44 5.46 21.92 6.16 21.44 6.76 21.09 7.38 20.76 7.64 20.60 7.85 20.39 7.94 20.27 8.01 20.14 8.05 20 8.09 19.80 8.09 19.65 8.07 19.45 8 19.21 7.75 18.50 7.59 17.98 7.42 17.25 7.31 16.61 7.24 16.11 7.20 15.61 7.19 14.61 7.22 14.06 7.28 13.62 7.37 13.03 7.51 12.39 7.69 11.77 7.81 11.38 8 10.92 8.22 10.42 8.55 9.80 8.89 9.24 9.32 8.63 9.72 8.12 10.03 7.79 10.63 7.19 11.15 6.73 11.72 6.31 12.22 5.99 12.92 5.60 13.46 5.34 14.11 5.07 14.77 4.84 15.25 4.69 17.66 4.04 19.79 3.49 21.69 3.06 24.29 2.50 25.22 2.33 26.75 2.07 30.08 1.71 32.50 1.33 34.18 1.11 36.87 0.82 40.40 0.47 43.29 0.21 45.78 0.04 46.88 0 47.18 0.03 47.33 0.07 47.46 0.12 47.67 0.26 47.77 0.37 47.86 0.49 47.96 0.72 48 0.97 47.97 1.22 47.93 1.36 47.86 1.49 47.70 1.69 47.46 1.86 46.82 2.14 43.14 3.59 40.13 4.81 37.45 6.03 31.20 8.95 30.46 9.26 29.56 9.58 29.10 9.77 28.70 9.98 28.38 10.22 28.14 10.48 28.03 10.64 27.91 10.86 27.77 11.18 27.68 11.57 27.65 11.92 27.68 12.37 27.75 12.71 27.89 13.09 28.06 13.39 28.34 13.74 28.67 14.05 28.91 14.23 29.12 14.37 30.01 14.82 31.09 15.34 31.84 15.73 32.32 16.01 32.78 16.31 33.49 16.78 34.10 17.22 34.68 17.68 35.24 18.17 35.93 18.82 36.62 19.53 37.39 20.39 38 21.13 38.74 22.08 39.33 22.90 39.88 23.74 40.31 24.47 40.64 25.08 40.97 25.75 41.24 26.39 41.50 27.09 41.73 27.80 41.93 28.52 42.09 29.20 42.26 30.03 42.38 30.87 42.44 31.57 42.49 33.17 42.44 34.82 42.38 35.52 42.29 36.16 42.17 36.85 41.90 38.02 41.66 38.89 41.38 39.74 41.10 40.49 40.78 41.22 40.29 42.21 39.86 43 39.40 43.77 38.88 44.56 38.30 45.38 37.83 45.97 37.16 46.71 36.68 47.22 36.15 47.74 35.32 48.48 34.55 49.10 33.82 49.64 33.21 50.07 32.53 50.49 31.70 50.96 31.07 51.27 30.35 51.61 29.47 51.98 26.65 52.99 25.93 53.21 24.87 53.49 23.89 53.69 22.86 53.87 22.11 53.95ZM21.82 43.48 22.43 43.43 23.08 43.36 23.67 43.27 24.31 43.14 24.94 42.99 25.52 42.83 26.14 42.63 26.70 42.42 27.31 42.17 27.85 41.91 28.43 41.61 28.96 41.32 29.47 41 30.01 40.63 30.50 40.28 31.01 39.87 31.46 39.47 31.93 39.03 32.35 38.60 32.79 38.12 33.17 37.66 33.57 37.14 33.94 36.61 34.29 36.06 34.62 35.50 34.93 34.93 35.19 34.39 35.44 33.79 35.68 33.19 35.88 32.57 36.05 31.99 36.17 31.45 36.29 30.66 36.31 30.20 36.32 29.70 36.27 29.04 36.20 28.58 36.11 28.18 35.95 27.54 35.72 26.81 35.20 25.24 34.96 24.63 34.71 24.09 34.28 23.35 33.86 22.73 33.55 22.34 33.12 21.85 32.31 21.03 31.35 20.16 30.78 19.68 30.26 19.28 29.34 18.60 28.75 18.21 26.89 17.13 26.41 16.78 25.97 16.37 25.57 15.92 25.14 15.25 24.84 14.56 24.72 14.23 24.62 13.84 24.51 13.25 24.47 12.76 24.47 12.26 24.54 11.46 24.60 11.11 24.73 10.58 24.91 10.12 25.18 9.58 25.46 9.10 25.86 8.59 26.25 8.21 26.69 7.88 27.08 7.65 27.76 7.33 28.32 7.12 29.42 6.78 29.65 6.69 29.86 6.56 30.05 6.39 30.21 6.14 30.28 6.01 30.32 5.86 30.34 5.62 30.33 5.47 30.29 5.32 30.17 5.05 30.08 4.93 29.97 4.82 29.77 4.67 29.63 4.61 29.49 4.57 29.19 4.54 28.89 4.56 27.90 4.71 26.93 4.92 25.53 5.29 23.27 5.94 21.71 6.32 20.15 6.68 16.53 7.63 15.90 7.81 14.87 8.18 14.46 8.38 14.21 8.54 13.98 8.73 13.64 9.03 13.28 9.38 12.67 10.10 12.33 10.60 11.98 11.20 11.81 11.56 11.70 11.84 11.53 12.37 11.41 13.11 11.36 13.66 11.37 14.71 11.43 15.45 11.55 16.04 11.71 16.62 11.99 17.37 12.37 18.13 12.54 18.44 12.78 18.82 13.54 19.93 13.70 20.24 13.85 20.61 13.92 20.90 13.93 21.20 13.91 21.45 13.81 21.79 13.68 22.06 13.47 22.34 13.25 22.54 13.05 22.68 12.77 22.81 12.49 22.90 12.05 22.99 11.21 23.11 10.87 23.21 10.54 23.33 10.14 23.52 9.49 23.90 8.96 24.28 8.47 24.70 8.04 25.12 7.68 25.54 7.27 26.10 6.69 27.02 6.35 27.68 6.13 28.21 5.95 28.76 5.88 29.06 5.80 29.57 5.76 30.18 5.79 30.85 5.88 31.55 6.02 32.20 6.20 32.83 6.46 33.55 6.75 34.25 7.10 34.98 7.48 35.69 7.90 36.38 8.36 37.04 8.88 37.72 9.40 38.33 9.96 38.92 10.54 39.48 11.15 40 11.75 40.46 12.37 40.90 13.01 41.30 13.72 41.70 14.40 42.03 15.09 42.34 15.80 42.61 16.53 42.84 17.26 43.05 18 43.21 18.75 43.34 19.51 43.43 20.27 43.48 21.03 43.50Z"/></svg>
+  </footer>
+</main>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2, K = 2, LW = 480, LH = 640;
+const DURAZNO = '#CF825A', TOSTADO = '#B46034';
+
+/* ---------- geometría ---------- */
+function addCapsule(p,x0,y0,x1,y1,r0,r1){const a=Math.atan2(y1-y0,x1-x0),s=Math.sin(a),c=Math.cos(a);p.moveTo(x0+s*r0,y0-c*r0);p.lineTo(x1+s*r1,y1-c*r1);p.arc(x1,y1,r1,a-Math.PI/2,a+Math.PI/2);p.lineTo(x0-s*r0,y0+c*r0);p.arc(x0,y0,r0,a+Math.PI/2,a+Math.PI*1.5);p.closePath();}
+function limb(pts,r){const p=new Path2D();for(let i=0;i<pts.length-1;i++)addCapsule(p,pts[i][0],pts[i][1],pts[i+1][0],pts[i+1][1],r[i],r[i+1]);return p;}
+function ell(x,y,rx,ry,rot){const p=new Path2D();p.ellipse(x,y,rx,ry,rot||0,0,TAU);return p;}
+function rrect(x,y,w,h,r){const p=new Path2D();p.moveTo(x+r,y);p.lineTo(x+w-r,y);p.arcTo(x+w,y,x+w,y+r,r);p.lineTo(x+w,y+h-r);p.arcTo(x+w,y+h,x+w-r,y+h,r);p.lineTo(x+r,y+h);p.arcTo(x,y+h,x,y+h-r,r);p.lineTo(x,y+r);p.arcTo(x,y,x+r,y,r);p.closePath();return p;}
+const HAIRS={
+  original:[['hair','M154 92 C146 40 190 30 214 34 C244 36 254 62 246 94 C244 78 238 68 230 64 C214 74 186 72 172 62 C162 70 157 80 154 92 Z M203 36 C207 28 214 24 221 25 C217 30 216 35 217 40 Z']],
+  fadequiff:[['fadeB','M155 94 C153 104 155 112 158 120 L165 120 C162 110 161 100 163 86 Z M245 94 C247 104 245 112 242 120 L235 120 C238 110 239 100 237 86 Z'],['fadeA','M157 80 C155 88 156 96 158 104 L165 104 C163 96 163 88 166 78 Z M243 80 C245 88 244 96 242 104 L235 104 C237 96 237 88 234 78 Z'],['hairq','M163 86 C156 60 166 40 192 32 C218 24 244 34 248 58 C249 70 246 80 242 88 C238 76 230 68 220 64 C206 60 190 62 178 70 C170 74 166 80 163 86 Z M157 76 C148 56 162 34 190 28 C177 38 171 52 173 67 C167 69 161 72 157 76 Z'],['hairh','M164 66 C167 52 178 41 193 35',2.2],['hairh','M174 50 C192 38 218 36 240 45',2.2],['hairh','M170 60 C190 48 222 46 245 57',2.2],['hairh','M176 69 C195 59 220 57 242 67',2],['hairh','M200 34 C214 30 228 32 238 38',1.8]],
+  buzz:[['buzz','M157 92 C153 52 186 39 200 39 C226 39 247 52 243 92 C241 78 236 68 227 63 C210 59 190 59 173 63 C164 68 159 78 157 92 Z'],['fade','M156 90 C155 100 156 108 158 113 L161 113 C160 104 160 96 161 88 Z M244 90 C245 100 244 108 242 113 L239 113 C240 104 240 96 239 88 Z']],
+  rapado:[['hair','M158 88 C156 54 186 44 200 44 C226 44 246 56 242 88 C240 72 230 62 200 60 C172 62 160 74 158 88 Z'],['fade','M157 88 C156 98 157 108 159 114 L162 114 C161 104 161 94 162 86 Z M243 88 C244 98 243 108 241 114 L238 114 C239 104 239 94 238 86 Z']],
+  raya:[['hair','M153 98 C145 52 182 31 212 33 C248 35 259 66 247 98 C244 82 238 72 226 67 C214 62 196 58 182 64 C168 70 160 84 157 98 Z'],['hairl','M184 38 C178 50 176 58 178 66',2.4]],
+  tupe:[['hair','M155 94 C146 58 166 38 194 30 C214 22 238 30 245 52 C250 68 249 84 245 96 C243 82 237 72 227 68 C208 64 184 66 171 75 C162 81 158 88 155 94 Z M170 44 C178 20 214 14 236 32 C216 28 190 32 170 44 Z']],
+  cortinas:[['hair','M151 114 C143 54 184 31 214 33 C249 37 259 68 249 114 C247 98 243 84 233 75 C223 84 208 86 200 76 C192 86 177 84 167 75 C157 84 153 98 151 114 Z']],
+  atras:[['hair','M157 84 C152 50 188 35 214 37 C244 39 252 62 244 84 C240 68 230 58 206 56 C184 56 166 66 157 84 Z'],['hairl','M172 62 C190 52 214 50 234 58',2.2],['hairl','M168 70 C190 58 216 56 238 66',2.2]],
+  rizado:[['hair','M156 94 C150 62 170 48 200 46 C230 48 250 62 244 94 C242 80 234 70 200 68 C166 70 158 80 156 94 Z'],...[[162,70,12],[172,54,13],[188,46,13],[206,44,13],[224,48,13],[238,58,12],[244,74,11],[158,88,9],[242,90,9]].map(([x,y,r])=>['hair','M'+(x-r)+' '+y+' a'+r+' '+r+' 0 1 0 '+(2*r)+' 0 a'+r+' '+r+' 0 1 0 '+(-2*r)+' 0 Z'])],
+  recto:[['hair','M155 98 C147 50 185 33 214 35 C247 37 257 64 246 98 C244 86 241 78 238 72 L162 72 C159 78 157 88 155 98 Z']],
+  undercut:[['hair','M163 82 C158 42 198 22 232 34 C252 43 252 64 241 76 C230 63 206 58 184 66 C172 70 166 76 163 82 Z'],['fade','M157 88 C156 98 157 108 159 114 L162 114 C161 104 161 94 162 84 Z M243 88 C244 98 243 108 241 114 L238 114 C239 104 239 94 238 84 Z']]
+};
+const FADE=[['fadeB','M155 94 C153 104 155 112 158 120 L165 120 C162 110 161 100 163 86 Z M245 94 C247 104 245 112 242 120 L235 120 C238 110 239 100 237 86 Z'],['fadeA','M157 80 C155 88 156 96 158 104 L165 104 C163 96 163 88 166 78 Z M243 80 C245 88 244 96 242 104 L235 104 C237 96 237 88 234 78 Z']];
+const HAIRS2={
+  pompadour:[...FADE,['hairq','M160 84 C150 56 160 24 196 14 C232 8 258 28 250 62 C248 72 245 80 243 88 C240 74 232 64 220 60 C206 56 188 60 176 68 C168 72 163 78 160 84 Z'],['hairh','M168 54 C184 30 216 22 242 34',2.2],['hairh','M164 66 C184 42 218 34 248 48',2.2],['hairh','M176 70 C196 52 222 48 246 58',2]],
+  quiffalto:[...FADE,['hairq','M162 84 C154 56 170 30 200 24 C228 18 252 32 248 62 C246 72 244 80 242 88 C238 74 230 66 220 62 C204 58 186 62 174 72 C167 76 164 80 162 84 Z M158 78 C148 60 156 40 176 30 C168 42 168 56 174 68 Z'],['hairh','M184 34 C200 26 222 26 238 36',2.2],['hairh','M174 48 C194 38 220 38 242 50',2.2]],
+  crop:[...FADE,['hairq','M158 92 C152 54 184 38 208 38 C238 40 252 58 246 92 C244 80 242 74 240 68 C228 74 212 72 200 70 C188 72 172 74 162 68 C160 74 158 82 158 92 Z M164 68 C170 80 178 78 184 72 C190 82 200 80 204 72 C210 80 222 80 228 72 C234 78 238 74 241 66 Z'],['hairh','M176 48 C192 42 218 42 236 50',2]],
+  rayadura:[...FADE,['hairq','M160 86 C154 58 176 36 206 34 C238 34 252 54 246 88 C243 74 236 66 226 62 C210 56 190 58 178 66 C170 70 164 76 160 86 Z'],['hairh','M188 36 C184 48 184 58 186 66',2.4],['hairh','M196 44 C214 40 232 44 244 56',2]],
+  fauxhawk:[['fadeA','M157 70 C156 84 156 100 158 114 L168 114 C166 100 166 84 168 66 Z M243 70 C244 84 244 100 242 114 L232 114 C234 100 234 84 232 66 Z'],['fadeB','M155 94 C153 104 155 112 158 120 L163 120 C161 110 160 100 161 88 Z M245 94 C247 104 245 112 242 120 L237 120 C239 110 240 100 239 88 Z'],['hairq','M168 82 C166 54 178 28 200 20 C222 28 234 54 232 82 C226 68 216 60 200 58 C184 60 174 68 168 82 Z'],['hairh','M200 24 L200 56',2.2],['hairh','M188 34 C190 44 190 52 189 58',2],['hairh','M212 34 C210 44 210 52 211 58',2]],
+  medioatras:[['hairq','M156 108 C146 56 176 28 206 28 C242 30 256 60 244 108 C242 92 240 80 236 70 C222 58 196 56 176 66 C164 74 158 92 156 108 Z'],['hairh','M168 66 C190 46 222 40 246 52',2.2],['hairh','M176 56 C196 44 224 40 244 50',2]],
+  desordenado:[['hairq','M152 112 C142 52 180 24 212 28 C248 32 260 66 248 112 C246 96 242 84 234 76 C226 82 216 80 210 72 C204 82 192 82 184 74 C170 80 160 92 152 112 Z M172 40 C176 26 194 22 204 30 C198 34 188 36 172 40 Z M212 28 C222 20 240 24 246 40 C236 36 224 34 212 28 Z'],['hairh','M174 46 C192 36 216 36 238 46',2],['hairh','M168 60 C190 50 222 50 244 62',2]],
+  cesar:[...FADE,['hairq','M158 92 C152 52 186 36 210 36 C242 38 252 56 246 92 C244 82 240 76 236 72 C224 82 214 82 200 80 C186 82 174 80 164 72 C160 78 158 84 158 92 Z M194 76 L200 86 L208 76 Z'],['hairh','M176 50 C194 42 220 42 238 52',2]]
+};
+Object.assign(HAIRS,HAIRS2);
+const OUTL='M154 92 C146 40 190 30 214 34 C244 36 254 62 246 94 ',TUFT=' M203 36 C207 28 214 24 221 25 C217 30 216 35 217 40 Z';
+const FRONT={
+  f1:['C244 78 238 68 230 64 C214 74 186 72 172 62 C162 70 157 80 154 92 Z'],
+  f2:['C244 86 242 78 240 72 L168 72 C162 78 157 84 154 92 Z'],
+  f3:['C244 78 238 70 230 66 C208 70 184 80 160 96 C157 98 155 96 154 92 Z',['hairh','M232 68 C208 72 184 82 162 96',2]],
+  f4:['C244 74 236 60 224 56 C206 52 186 54 172 58 C162 64 157 76 154 92 Z',['hairh','M170 56 C190 48 212 48 232 56',2]],
+  f5:['C244 80 238 70 228 66 C216 66 208 72 200 82 C192 72 184 66 172 66 C162 70 157 80 154 92 Z'],
+  f6:['C244 88 240 80 232 74 C220 78 208 74 200 66 C192 74 180 78 168 74 C160 80 156 86 154 92 Z',['hairh','M200 36 C200 48 200 58 200 68',2]],
+  f7:['C244 78 238 70 230 66 C214 68 198 74 190 88 C186 96 178 94 172 92 C164 92 158 92 154 92 Z',['hairh','M232 68 C212 70 196 78 188 90',2]],
+  f8:['C244 84 242 76 238 72 C232 80 228 80 224 72 C218 80 212 80 208 72 C202 80 196 80 192 72 C186 80 180 80 176 72 C170 80 164 80 160 74 C157 80 155 86 154 92 Z']
+};
+for(const k in FRONT){const [d,...ex]=FRONT[k];HAIRS[k]=[['hair',OUTL+d+TUFT],...ex];}
+const FR2='C244 86 242 78 240 72 L168 72 C162 78 157 84 154 92 Z';
+const TUFTS={
+  t1:['M203 36 C207 28 214 24 221 25 C217 30 216 35 217 40 Z'],
+  t2:[''],
+  t3:['M198 38 C200 28 214 26 220 34 C214 32 206 34 204 40 Z',['hairh','M208 48 C203 44 205 38 211 39 C217 40 216 48 209 49 C202 50 200 42 206 37',2]],
+  t4:['M200 38 C198 24 202 12 208 8 C210 18 212 28 212 38 Z'],
+  t5:['M196 38 C196 28 200 20 207 17 C206 25 206 32 207 38 Z M208 38 C210 28 216 22 224 22 C220 28 218 34 218 40 Z'],
+  t6:['M190 40 C190 32 192 24 198 20 C198 28 200 34 200 40 Z M200 38 C202 26 208 18 216 16 C212 24 211 32 211 40 Z M212 40 C214 32 220 26 228 25 C224 31 222 36 222 42 Z',['hairh','M170 54 C182 46 196 44 208 46',1.8],['hairh','M216 45 C228 45 238 51 243 60',1.8],['hairh','M174 64 C190 58 206 58 222 62',1.6],['hairh','M160 80 C161 70 164 62 168 58',1.6],['hairh','M240 80 C240 72 238 66 235 62',1.6]],
+  t7:['M221 36 C217 28 210 24 203 25 C207 30 208 35 207 40 Z'],
+  t8:['',['hair','M206 36 C204 22 214 16 220 8',4]]
+};
+for(const k in TUFTS){const [d,...ex]=TUFTS[k];HAIRS[k]=[['hair',OUTL+FR2+(d?' '+d:'')],...ex];}
+function handShape(x,y,deg,flip){
+  const h=new Path2D();
+  h.addPath(ell(0,11,12.5,13.5));addCapsule(h,0,-8,0,6,7.2,10);
+  for(let i=0;i<4;i++){const px=[-7.6,-2.6,2.6,7.4][i],len=[19,23,21,16][i],d=i-1.5;
+    const x1=px+d*0.7,y1=16+len*0.5,x2=px+d*1.2-1.8,y2=16+len;
+    addCapsule(h,px,16,x1,y1,4.4,4.1);addCapsule(h,x1,y1,x2,y2,4.1,3.4);}
+  addCapsule(h,10,5,14.5,15,5,4.2);addCapsule(h,14.5,15,12.6,25,4.2,3.2);
+  let m=new DOMMatrix().translate(x,y).rotate(deg);if(flip)m=m.scale(-1,1);
+  const q=new Path2D();q.addPath(h,m);return q;
+}
+function mir(p){const q=new Path2D();q.addPath(p,new DOMMatrix([-1,0,0,1,400,0]));return q;}
+
+/* Owen, vista de frente. Caja de 400 × 620 unidades; el eje del cuerpo está en x = 200. */
+function owen(o){
+  const s=[];let bodyPhase=true;
+  const BM=new DOMMatrix().translate(200,0).scale(o.slim?0.9:1,1).translate(-200,0);
+  const add=(role,path,extra)=>{if(o.slim&&bodyPhase){const q=new Path2D();q.addPath(path,BM);path=q;}s.push(Object.assign({role,path},extra||{}));};
+  if(o.slim){
+    add('pants',rrect(152,332,96,52,16));
+    add('pants',limb([[178,356],[175,468],[172,580]],[25,20,16]),{tag:'pL'});add('pants',limb([[222,356],[226,468],[231,578]],[25,20,16]),{tag:'pR'});
+    add('shoe',ell(166,596,27,12.5,-0.1),{tag:'shL'});add('shoe',ell(237,596,27,12.5,0.12),{tag:'shR'});
+    add('hoodie',new Path2D('M156 182 C170 180 230 180 244 182 C244 250 242 330 241 370 L159 370 C158 330 156 250 156 182 Z'),{tag:'tee'});
+    add('skin',handShape(138,368,-6,false));add('skin',handShape(264,358,9,true));
+    add('sleeve',limb([[142,200],[133,290],[138,366]],[21,18,15]),{tag:'sL'});add('sleeve',limb([[258,200],[268,288],[264,356]],[21,18,15]),{tag:'sR'});
+    const jl=new Path2D('M181 168 C166 166 148 170 139 181 C132 189 130 198 130 208 C129 240 135 280 139 312 C142 340 137 372 134 396 L191 397 L186 250 Z');
+    add('jacket',jl,{tag:'jL'});add('jacket',mir(jl),{tag:'jR'});
+    const cj=new Path2D('M182 170 L170 166 C163 170 158 180 157 192 L170 201 L187 181 Z');
+    add('collarj',cj,{tag:'cj'});add('collarj',mir(cj),{tag:'cj'});
+  }else{
+    add('pants',rrect(150,332,100,52,16));
+    const leg=limb([[178,356],[174,468],[171,580]],[31,25,19]);add('pants',leg);add('pants',mir(leg));
+    add('shoe',ell(165,596,28,13,-0.08));add('shoe',ell(235,596,28,13,0.08));
+    add('hoodie',new Path2D('M152 182 L248 182 L244 370 L156 370 Z'));
+    const arm=limb([[136,198],[121,292],[125,372]],[27,23,19]);
+    const hand=new Path2D();hand.addPath(rrect(113,382,25,27,10));
+    addCapsule(hand,136,388,141,404,5.5,4.2);
+    for(const [x,y2,r] of [[118,422,3.8],[124.5,425,3.8],[131,424,3.8]])addCapsule(hand,x,404,x+0.5,y2,r,r-0.3);
+    add('skin',hand);add('skin',mir(hand));
+    add('sleeve',arm);add('sleeve',mir(arm));
+    const jl=new Path2D('M181 170 C160 167 136 174 126 193 C119 252 123 330 129 388 L191 393 L185 250 Z');
+    add('jacket',jl);add('jacket',mir(jl));
+  }
+  const st=new Path2D('M158 173 L172 170 L177 302 L165 302 Z');add('strap',st,{tag:'bL'});add('strap',mir(st),{tag:'bR'});
+  if(o.slim){add('strap',rrect(176,228,48,5,2));add('strapb',rrect(194,222,12,16,3),{tag:'buckle'});}
+  add('hoodie',o.orig&&!o.tee?ell(200,171,49,19):ell(200,176,30,9));
+  add('neck',rrect(187,136,26,42,6),{tag:'neck'});const headFrom=s.length;bodyPhase=false;
+  if(o.phones==='neck'&&o.orig){
+    add('band',new Path2D('M165 158 C165 206 235 206 235 158'),{stroke:9});
+    add('cup',ell(164,158,13,21,0.15));add('cup',ell(236,158,13,21,-0.15));
+    add('skin',ell(156,101,6,11));add('skin',ell(244,101,6,11));
+  }else if(o.phones==='neck'){
+    add('cup',ell(165,171,14,21,0.4));add('cup',ell(235,171,14,21,-0.4));
+    add('cushion',ell(169,173,6,16,0.4));add('cushion',ell(231,173,6,16,-0.4));
+    if(o.slim){add('cupr',ell(165,171,9,15,0.4),{stroke:2});add('cupr',ell(235,171,9,15,-0.4),{stroke:2});}
+    add('skin',ell(156,101,6,11));add('skin',ell(244,101,6,11));
+  }
+  add('skin',new Path2D('M157 90 C155 44 245 44 243 90 C243 118 234 140 214 150 C205 154 195 154 186 150 C166 140 157 118 157 90 Z'),{face:true});
+  for(const [role,d,w] of (HAIRS[o.hair]||HAIRS.raya)){add(role,new Path2D(d),w?{stroke:w}:undefined);}
+  if(o.phones==='on'){
+    add('band',new Path2D('M151 92 C145 22 255 22 249 92'),{stroke:10});
+    add('cup',ell(151,101,13,23));add('cup',ell(249,101,13,23));
+    add('cushion',ell(158,101,6,19));add('cushion',ell(242,101,6,19));
+    if(o.slim){add('bandi',new Path2D('M155 90 C149 30 251 30 245 90'),{stroke:3.5});add('cupr',ell(151,101,8.5,18),{stroke:2});add('cupr',ell(249,101,8.5,18),{stroke:2});add('hinge',ell(150.5,76,4.5,6));add('hinge',ell(249.5,76,4.5,6));}
+  }
+  const hs=o.hs||(o.orig?1:0.86);const M=new DOMMatrix().translate(200,176).scale(hs).translate(-200,-176);
+  for(let i=headFrom;i<s.length;i++){const q=new Path2D();q.addPath(s[i].path,M);s[i].path=q;if(s[i].stroke)s[i].stroke*=hs;}
+  s.hs=hs;return s;
+}
+function line(c,x0,y0,x1,y1){c.beginPath();c.moveTo(x0,y0);c.lineTo(x1,y1);c.stroke();}
+
+/* ---------- rostro ---------- */
+function face(c,mood,p){
+  const calm=mood==='calm';
+  c.save();c.lineCap='round';c.lineJoin='round';
+  if(p.stubble){c.fillStyle=p.stubble;c.fill(new Path2D('M163 116 C168 142 186 153 200 154 C214 153 232 142 237 116 C229 131 215 139 200 139 C185 139 171 131 163 116 Z'));}
+  c.strokeStyle=p.brow;c.lineWidth=p.browW;
+  if(calm){line(c,173,85,192,86);line(c,208,86,227,85);}else{line(c,172,82.5,192,86.5);line(c,208,86.5,228,82.5);}
+  for(const x of [183,217]){
+    if(calm){
+      if(p.white){c.fillStyle=p.white;c.fill(ell(x,99.2,7.5,3.2));}
+      c.fillStyle=p.iris;c.fill(ell(x,100,2.8,2.5));
+      c.strokeStyle=p.lid;c.lineWidth=p.lidW;line(c,x-8,97,x+8,97);
+      if(!p.white){c.lineWidth=p.thin;c.beginPath();c.ellipse(x,98.5,7.5,4,0,0.15,Math.PI-0.15);c.stroke();}
+    }else{
+      if(p.white){c.fillStyle=p.white;c.fill(ell(x,98,7.8,6.4));}
+      else{c.strokeStyle=p.lid;c.lineWidth=p.thin;c.stroke(ell(x,98,7.8,6.4));}
+      c.fillStyle=p.iris;c.fill(ell(x,98,3,3));
+      if(p.white){c.fillStyle='#FFFFFF';c.fill(ell(x+1.1,96.9,0.9,0.9));c.strokeStyle=p.lid;c.lineWidth=1.6;c.beginPath();c.ellipse(x,98,7.8,6.4,0,Math.PI+0.2,TAU-0.2);c.stroke();}
+    }
+  }
+  c.strokeStyle=p.nose;c.lineWidth=p.noseW;c.beginPath();c.moveTo(200,101);c.lineTo(196.5,117);c.lineTo(203,119);c.stroke();
+  if(calm){c.strokeStyle=p.mouth;c.lineWidth=p.noseW;c.beginPath();c.moveTo(191,133);c.quadraticCurveTo(200,135,209,133);c.stroke();}
+  else{c.strokeStyle=p.mouth;c.lineWidth=p.noseW+0.6;line(c,192,134,208,134);}
+  c.restore();
+}
+
+/* ---------- fondos ---------- */
+function bgSilueta(c){
+  const g=c.createLinearGradient(0,0,0,LH);g.addColorStop(0,'#7f7873');g.addColorStop(1,'#a39c96');c.fillStyle=g;c.fillRect(0,0,LW,LH);
+  for(const [x,y,r,a,col] of [[90,150,70,0.22,'255,250,244'],[400,90,50,0.3,'207,130,90'],[410,420,90,0.18,'255,250,244'],[60,470,46,0.25,'207,130,90']]){const b=c.createRadialGradient(x,y,0,x,y,r);b.addColorStop(0,`rgba(${col},${a})`);b.addColorStop(0.7,`rgba(${col},${a*0.7})`);b.addColorStop(1,`rgba(${col},0)`);c.fillStyle=b;c.beginPath();c.arc(x,y,r,0,TAU);c.fill();}
+  const v=c.createRadialGradient(LW/2,LH/2,LH*0.3,LW/2,LH/2,LH*0.85);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,0.55)');c.fillStyle=v;c.fillRect(0,0,LW,LH);
+}
+function person(sp){
+  const w=sp.w||0.9,s=[];let body=true;
+  const BM=new DOMMatrix().translate(200,0).scale(w,1).translate(-200,0);
+  const wx=x=>200+(x-200)*w;
+  const add=(role,path,extra)=>{if(body){const q=new Path2D();q.addPath(path,BM);path=q;}s.push(Object.assign({role,path},extra||{}));};
+  add('pants',rrect(152,332,96,52,16));
+  add('pants',limb([[178,356],[175,468],[172,580]],[25,20,16]));add('pants',limb([[222,356],[226,468],[231,578]],[25,20,16]));
+  add('shoe',ell(166,596,27,12.5,-0.1),{noSole:!!sp.noSole});add('shoe',ell(237,596,27,12.5,0.12),{noSole:!!sp.noSole});
+  add('hoodie',new Path2D('M156 182 C170 180 230 180 244 182 C244 250 242 330 241 370 L159 370 C158 330 156 250 156 182 Z'));
+  if(sp.coat){const H=sp.coat,fl=H>420?7:0;
+    const jl=new Path2D(`M181 168 C166 166 148 170 139 181 C132 189 130 198 130 208 C129 240 135 280 139 312 C142 ${312+(H-312)*0.55} ${138-fl*0.4} ${H-30} ${134-fl} ${H} L191 ${H+1} L186 250 Z`);
+    add('jacket',jl);add('jacket',mir(jl));
+    const cj=new Path2D('M182 170 L170 166 C163 170 158 180 157 192 L170 201 L187 181 Z');add('collarj',cj);add('collarj',mir(cj));}
+  const aL=Object.assign({pts:[[142,200],[133,290],[138,366]],hand:[138,368,-6,false]},sp.armL||{});
+  const aR=Object.assign({pts:[[258,200],[268,288],[264,356]],hand:[264,358,9,true]},sp.armR||{});
+  const slr=[21,18,15];
+  if(!aL.none)add('skin',handShape(...aL.hand));
+  if(!aR.none)add('skin',handShape(...aR.hand));
+  add('sleeve',limb(aL.pts,slr));add('sleeve',limb(aR.pts,slr));
+  if(sp.accBody)sp.accBody(add);
+  add('hoodie',ell(200,176,sp.collar||30,9));
+  add('neck',rrect(187,136,26,42,6));
+  if(sp.accNeck)sp.accNeck(add);
+  const headFrom=s.length;body=false;
+  add('skin',ell(156,101,6,11));add('skin',ell(244,101,6,11));
+  add('skin',new Path2D('M157 90 C155 44 245 44 243 90 C243 118 234 140 214 150 C205 154 195 154 186 150 C166 140 157 118 157 90 Z'),{face:true});
+  for(const [role,d,w2] of sp.hair)add(role,new Path2D(d),w2?{stroke:w2}:undefined);
+  if(sp.accHead)sp.accHead(add);
+  const hs=sp.hs||0.78,dy=sp.dy||0;
+  const M=new DOMMatrix().translate(200,176+dy).scale(hs).translate(-200,-176);
+  for(let i=headFrom;i<s.length;i++){const q=new Path2D();q.addPath(s[i].path,M);s[i].path=q;if(s[i].stroke)s[i].stroke*=hs;}
+  if(sp.accOver)sp.accOver(add,wx);
+  s.hs=hs;s.dy=dy;s.person=true;s.faceOpts=sp.faceOpts;s.faceExtra=sp.faceExtra;
+  return s;
+}
+const FX={
+  lips:(c,col)=>{c.save();c.strokeStyle=col;c.lineWidth=2.4;c.lineCap='round';c.beginPath();c.moveTo(192,134);c.quadraticCurveTo(200,138.5,208,134);c.stroke();c.restore();},
+  glasses:(c)=>{c.save();c.strokeStyle='#2A2523';c.lineWidth=2.2;for(const x of [183,217]){c.beginPath();c.ellipse(x,98,11,9,0,0,TAU);c.stroke();}
+    c.beginPath();c.moveTo(194,97);c.lineTo(206,97);c.moveTo(172,97);c.lineTo(158,99);c.moveTo(228,97);c.lineTo(242,99);c.stroke();c.restore();},
+  mustache:(c,col)=>{c.save();c.fillStyle=col;c.beginPath();c.moveTo(188,129);c.quadraticCurveTo(200,123,212,129);c.quadraticCurveTo(206,136,200,133);c.quadraticCurveTo(194,136,188,129);c.fill();c.restore();},
+  wrinkles:(c)=>{c.save();c.strokeStyle='rgba(60,50,45,.28)';c.lineWidth=1.4;c.lineCap='round';
+    for(const d of ['M178 78 Q200 74 222 78','M180 83 Q200 80 220 83','M190 118 Q186 128 190 137','M210 118 Q214 128 210 137','M170 104 L164 108','M230 104 L236 108'])c.stroke(new Path2D(d));c.restore();},
+  bags:(c,a)=>{c.save();c.fillStyle=`rgba(50,52,62,${a})`;for(const x of [183,217]){c.beginPath();c.ellipse(x,107,9.5,3.8,0,0,TAU);c.fill();}c.restore();},
+  sweat:(c)=>{c.save();c.fillStyle='rgba(255,255,255,.55)';for(const [x,y,rx,ry] of [[212,80,2,3.2],[176,84,1.6,2.6],[224,92,1.4,2.2],[200,76,1.8,2.8]]){c.beginPath();c.ellipse(x,y,rx,ry,0,0,TAU);c.fill();}c.restore();},
+  zombie:(c)=>{c.save();
+    c.fillStyle='#E7E8D9';for(const x of [183,217]){c.beginPath();c.ellipse(x,98,8.8,7.8,0,0,TAU);c.fill();}
+    c.fillStyle='#3a3a30';for(const x of [183,217]){c.beginPath();c.ellipse(x,98,1.7,1.7,0,0,TAU);c.fill();}
+    c.strokeStyle='rgba(110,40,36,.7)';c.lineWidth=1;for(const d of ['M175 98 L181 98','M191 98 L186 99','M209 99 L214 98','M225 98 L230 98'])c.stroke(new Path2D(d));
+    c.fillStyle='rgba(50,52,62,.55)';for(const x of [183,217]){c.beginPath();c.ellipse(x,108,10,4.2,0,0,TAU);c.fill();}
+    c.fillStyle='#2A1512';c.beginPath();c.moveTo(189,130);c.quadraticCurveTo(200,148,211,130);c.quadraticCurveTo(200,134,189,130);c.fill();
+    c.fillStyle='#DAD8C8';for(const x of [192,197,203,208])c.fillRect(x-1.4,130.5,2.6,3.2);
+    c.strokeStyle='rgba(80,60,84,.6)';c.lineWidth=1.3;c.lineCap='round';for(const d of ['M170 110 Q174 120 170 130','M230 110 Q226 120 230 130','M196 62 L194 72','M206 64 L208 74'])c.stroke(new Path2D(d));
+    c.fillStyle='#5A2E1E';c.beginPath();c.ellipse(204,142,7,4,0.3,0,TAU);c.fill();
+    c.restore();}
+};
+const HAIR_MADRE=[['hair','M153 98 C147 46 184 30 212 32 C248 36 259 68 249 102 C246 84 240 72 230 66 C214 74 188 74 172 66 C162 72 157 86 153 98 Z'],['hair','M150 98 C146 132 148 154 156 174 L168 166 C163 144 162 122 162 98 Z'],['hair','M250 98 C254 132 252 154 244 174 L232 166 C237 144 238 122 238 98 Z']];
+const HAIR_SENOR=[['hair','M153 100 C150 86 156 76 164 72 C160 86 160 98 162 110 Z'],['hair','M247 100 C250 86 244 76 236 72 C240 86 240 98 238 110 Z'],['cap','M150 74 C148 44 176 32 204 32 C236 32 252 48 250 74 C240 66 226 62 200 62 C176 62 160 66 150 74 Z'],['cap','M146 72 C168 80 232 80 254 72 L254 77 C232 87 168 87 146 77 Z']];
+const HAIR_ANCIANO=[['hair','M153 100 C150 84 156 74 164 70 C160 84 160 96 162 108 Z'],['hair','M247 100 C250 84 244 74 236 70 C240 84 240 96 238 108 Z'],['hair','M172 56 C186 48 214 48 228 56 C214 52 186 52 172 56 Z',1.6]];
+const CAST=[
+ {key:'owen',name:'Owen Reed',owen:true,s:1},
+ {key:'madre',name:'La madre',s:1,bust:{z:2.7,cy:138},hands:{z:3.4,cx:150,cy:390},
+  sp:{w:.86,hs:.78,coat:478,collar:26,noSole:true,hair:HAIR_MADRE,
+   accBody:add=>{add('bandage',rrect(145,389,7,13,2));},
+   accNeck:add=>{add('acc',ell(200,182,34,13));add('acc',rrect(212,180,15,52,6));},
+   faceExtra:c=>FX.lips(c,'#9A6E66')}},
+ {key:'hijo',name:'El hijo',s:0.56,bust:{z:2.3,cy:112},
+  sp:{w:1.0,hs:1.12,coat:372,noSole:true,hair:HAIRS.original,collar:24,
+   accNeck:add=>{add('jacket',ell(200,178,37,15));},
+   faceExtra:c=>{c.save();c.fillStyle='rgba(205,140,120,.20)';for(const x of [172,228]){c.beginPath();c.ellipse(x,121,8,5.5,0,0,TAU);c.fill();}
+    c.fillStyle='#2E221C';for(const x of [183,217]){c.beginPath();c.ellipse(x,100,3.8,3.8,0,0,TAU);c.fill();c.fillStyle='#fff';c.beginPath();c.arc(x+1.2,98.8,1,0,TAU);c.fill();c.fillStyle='#2E221C';}
+    c.strokeStyle='#8A5A4E';c.lineWidth=2;c.lineCap='round';c.beginPath();c.moveTo(193,134);c.quadraticCurveTo(200,139.5,207,134);c.stroke();c.restore();}}},
+ {key:'teen',name:'El adolescente',s:0.94,bust:{z:2.7,cy:138},
+  sp:{w:.88,hs:.8,collar:36,hair:HAIRS.cortinas,armR:{pts:[[258,200],[284,238],[272,284]],hand:[272,290,168,true]},
+   accOver:(add,wx)=>{add('phone',rrect(wx(266),228,20,36,3));add('scr',rrect(wx(268),231,16,30,2));}}},
+ {key:'senor',name:'El señor del paraguas',s:0.93,bust:{z:2.7,cy:146},
+  sp:{w:.9,hs:.8,dy:6,coat:470,noSole:true,hair:HAIR_SENOR,
+   accBody:add=>{add('acc',limb([[268,372],[270,598]],[3.4,3.4]));add('acc',limb([[268,372],[269,356],[279,350],[287,358]],[3.4,3.4,3.4,3.4]));},
+   faceExtra:c=>{FX.wrinkles(c);FX.mustache(c,'#B9B4AC');}}},
+ {key:'ejecutivo',name:'El ejecutivo',s:1.03,bust:{z:2.7,cy:136},
+  sp:{w:.98,hs:.76,coat:412,noSole:true,collar:28,hair:HAIRS.raya,
+   armL:{pts:[[142,200],[118,262]],none:true},
+   accBody:add=>{add('tie',new Path2D('M194 182 L206 182 L210 200 L204 262 L200 270 L196 262 L190 200 Z'));add('case',rrect(238,380,56,40,5));add('case',limb([[258,380],[258,370],[274,370],[274,380]],[2.4,2.4,2.4,2.4]));},
+   accOver:(add,wx)=>{add('sleeve',limb([[wx(118),262],[wx(160),172]],[18,15]));add('skin',handShape(wx(162),170,172,false));add('phone',rrect(157,104,12,32,3));}}},
+ {key:'palido',name:'El hombre pálido',s:0.98,bust:{z:2.7,cy:138},hands:{z:3.4,cx:255,cy:385},
+  sp:{w:.9,hs:.78,coat:400,noSole:true,hair:HAIRS.desordenado,
+   accBody:add=>{add('bandage',rrect(252,364,26,21,8));add('stain',ell(265,374,7,5.5));},
+   faceExtra:c=>{FX.bags(c,.4);FX.sweat(c);}}},
+ {key:'inspector',name:'El inspector',s:1.01,bust:{z:2.7,cy:137},
+  sp:{w:.95,hs:.77,coat:362,noSole:true,hair:HAIRS.cesar,
+   accBody:add=>{add('acc',new Path2D('M178 172 L198 250 L222 172'),{stroke:2.6});add('badge',rrect(188,248,22,28,3));add('acc2',rrect(192,254,14,3,1));}}},
+ {key:'anciano',name:'El anciano de abajo',s:0.9,bust:{z:2.7,cy:146},
+  sp:{w:.92,hs:.8,dy:8,coat:422,noSole:true,hair:HAIR_ANCIANO,
+   accBody:add=>{for(const y of [250,290,330])add('acc2',ell(200,y,3.2,3.2));add('acc',limb([[268,372],[270,598]],[3,3]));add('acc',limb([[268,372],[267,354],[277,347],[286,354]],[3,3,3,3]));},
+   faceExtra:c=>{FX.wrinkles(c);FX.glasses(c);}}},
+ {key:'zombie',name:'El hombre pálido, convertido',s:0.98,mood:'alert',bust:{z:2.7,cy:138},
+  sp:{w:.9,hs:.78,dy:4,coat:400,noSole:true,hair:HAIRS.desordenado,
+   armL:{pts:[[142,200],[124,268],[154,316]],hand:[154,320,16,false]},armR:{pts:[[258,200],[276,268],[246,316]],hand:[246,320,-16,true]},
+   accBody:add=>{add('bandage',rrect(234,326,26,21,8));add('stain',ell(247,336,7,5.5));add('stain',ell(196,268,15,9));add('stain',ell(214,300,10,6));},
+   faceExtra:c=>FX.zombie(c)}}
+];
+const CAST_VAR={
+ madre:{jacket:'#5C5F4A',sleeve:'#4E513F',collarj:'#6B6E57',hoodie:'#CFC8C0',pants:'#26221F',shoe:'#1B1817',skin:'#DFC8B8',neck:'#C9AE9C',hair:'#3B2B24',acc:'#B9B2AA',bandage:'#D9BB9B'},
+ hijo:{jacket:'#D8B64A',sleeve:'#C4A23C',hoodie:'#8A8F94',pants:'#3A4A5A',shoe:'#2F4A3A',skin:'#EBD3C2',neck:'#D8BBA8',hair:'#4B3626'},
+ teen:{hoodie:'#44566B',sleeve:'#3A4A5C',pants:'#2C3440',shoe:'#CFCFCB',skin:'#E8CDB9',neck:'#D2B49F',hair:'#1D1A18',phone:'#15191C',scr:'#9FB4C6'},
+ senor:{jacket:'#5A4636',sleeve:'#4D3B2E',collarj:'#66503F',hoodie:'#B9B2A6',pants:'#3A3631',shoe:'#2A1F18',skin:'#D9BFAE',neck:'#C3A793',hair:'#BDB8B0',cap:'#3A3128',acc:'#1B1A19'},
+ ejecutivo:{jacket:'#2F3A46',sleeve:'#2A343E',collarj:'#38444F',hoodie:'#E9E6E1',pants:'#232A33',shoe:'#15171A',skin:'#E0C6B2',neck:'#CBAE9A',hair:'#222222',tie:'#3E6F8E',case:'#3A3430',phone:'#15191C'},
+ palido:{jacket:'#4A5043',sleeve:'#3E4438',collarj:'#565D4E',hoodie:'#6D6A66',pants:'#2B3138',shoe:'#1B1817',skin:'#C9CBC0',neck:'#B5B8AD',hair:'#1A1A1A',bandage:'#EDEAE4',stain:'#5A2E1E'},
+ inspector:{jacket:'#1E2226',sleeve:'#191D20',collarj:'#272C31',hoodie:'#9AA0A6',pants:'#1B1E22',shoe:'#14110F',skin:'#E3CBB8',neck:'#CDB29E',hair:'#241F1B',acc:'#7C7470',badge:'#E9E6E1',acc2:'#3A3430'},
+ anciano:{jacket:'#7A6A58',sleeve:'#6D5F4F',collarj:'#86766A',hoodie:'#C9C3B8',pants:'#4A4A48',shoe:'#3A2E26',skin:'#DCC7B8',neck:'#C6AF9E',hair:'#D8D4CE',acc:'#3A302A',acc2:'#4A3E34'},
+ zombie:{jacket:'#4A5043',sleeve:'#3E4438',collarj:'#565D4E',hoodie:'#6D6A66',pants:'#2B3138',shoe:'#1B1817',skin:'#AEB5A8',neck:'#9EA596',hair:'#161616',bandage:'#D8D4C8',stain:'#5A2E1E'}
+};
+function build(it){return it.owen?owen({phones:'on',hair:'t6',orig:true,tee:true,hs:0.78,slim:true}):person(it.sp);}
+function renderLineup(cv){
+  const c=cv.getContext('2d'),W2=cv.width,H2=cv.height;
+  const g=c.createLinearGradient(0,0,0,H2);g.addColorStop(0,'#2a2725');g.addColorStop(1,'#141211');c.fillStyle=g;c.fillRect(0,0,W2,H2);
+  const slot=W2/CAST.length,u=slot/190;
+  c.fillStyle='rgba(255,255,255,0.05)';c.fillRect(0,H2*0.925,W2,2);
+  CAST.forEach((it,i)=>{
+    const shapes=build(it),sc=u*(it.s||1);
+    c.save();c.translate(slot*(i+0.5),H2*0.925);c.scale(sc,sc);c.translate(-200,-612);
+    drawRecorte(c,shapes,it.mood||'calm',1,it.key==='owen'?'final':it.key);
+    c.restore();
+  });
+}
+function renderChar(cv){
+  const it=CAST.find(x=>x.key===cv.dataset.char),view=cv.dataset.view;
+  const c=cv.getContext('2d');c.setTransform(K,0,0,K,0,0);c.clearRect(0,0,LW,LH);bgRecorte(c);
+  const shapes=build(it);let z,cx=200,cy,ty=300;
+  if(view==='hands'){z=it.hands.z;cx=it.hands.cx;cy=it.hands.cy;ty=330;}else{z=it.bust.z;cy=it.bust.cy;}
+  c.save();c.translate(LW/2,ty);c.scale(z,z);c.translate(-cx,-cy);
+  drawRecorte(c,shapes,it.mood||'calm',z,it.key==='owen'?'final':it.key);
+  c.restore();
+}
+function bgRecorte(c){
+  const g=c.createRadialGradient(LW/2,LH*0.42,20,LW/2,LH*0.5,LH*0.8);g.addColorStop(0,'#57514d');g.addColorStop(1,'#1b1918');c.fillStyle=g;c.fillRect(0,0,LW,LH);
+}
+function bgTrazo(c){
+  c.fillStyle='#0a0909';c.fillRect(0,0,LW,LH);
+  c.strokeStyle='rgba(124,116,112,0.16)';c.lineWidth=1;
+  for(let x=0;x<=LW;x+=40)line(c,x,0,x,LH);for(let y=0;y<=LH;y+=40)line(c,0,y,LW,y);
+  c.save();c.strokeStyle='rgba(124,116,112,0.5)';c.setLineDash([14,5,2,5]);line(c,LW/2,10,LW/2,LH-10);c.restore();
+}
+
+/* ---------- estilos ---------- */
+const CUT={acc:'#2B2725',acc2:'#3A3430',tie:'#3E6F8E',case:'#3A3430',phone:'#15191C',scr:'#8FA0AE',bandage:'#E9E6E0',stain:'#5A2E1E',badge:'#E9E6E1',cap:'#3A3128',collarj:'#4B4541',strapb:'#8B837E',bandi:'#4A443F',cupr:'#4A443F',hinge:'#4A443F',hairq:'#141211',fadeA:'#4A4441',fadeB:'#9C918A',hairh:'#4A4441',buzz:'#2F2A28',fade:'#5E5753',hairl:'#4a4441',pants:'#141211',shoe:'#070606',hoodie:'#7C7470',sleeve:'#2B2725',jacket:'#383330',strap:'#100E0E',neck:'#CDC5BE',skin:'#E8E1DB',hair:'#1B1817',band:DURAZNO,cup:DURAZNO,cushion:TOSTADO};
+function paint(c,sh,col){if(sh.stroke){c.strokeStyle=col;c.lineWidth=sh.stroke;c.lineCap='round';c.stroke(sh.path);}else{c.fillStyle=col;c.fill(sh.path);}}
+
+function drawSilueta(c,shapes){
+  const off=document.createElement('canvas');off.width=c.canvas.width;off.height=c.canvas.height;const o=off.getContext('2d');
+  o.setTransform(c.getTransform());
+  for(const sh of shapes)paint(o,sh,DURAZNO);
+  o.globalCompositeOperation='destination-out';o.translate(-3,1.2);
+  for(const sh of shapes)paint(o,sh,'#000');
+  for(const sh of shapes)paint(c,sh,'#060505');
+  c.save();c.setTransform(1,0,0,1,0,0);c.globalAlpha=0.85;c.drawImage(off,0,0);c.restore();
+}
+const VAR={
+  previo:{skin:'#C4BCB6',neck:'#9C948E',hair:'#1B1817',hoodie:'#CF825A',band:'#2B2725',cup:'#2B2725',cushion:'#3E3835'},
+  final:{skin:'#E8E1DB',neck:'#CDC5BE',hair:'#1B1817',hoodie:'#CF825A',band:'#2B2725',cup:'#2B2725',cushion:'#3E3835'},
+  finalg:{skin:'#C4BCB6',neck:'#9C948E',hair:'#1B1817',hoodie:'#CF825A',band:'#2B2725',cup:'#2B2725',cushion:'#3E3835'},
+  original:{skin:'#C4BCB6',neck:'#9C948E',hair:'#1B1817'},
+  playera:{jacket:'#4A4441',sleeve:'#3A3532',hoodie:'#CF825A',band:'#1B1817',cup:'#1B1817',cushion:'#3a3431'},
+  chamarra:{jacket:'#CF825A',sleeve:'#B46034',hoodie:'#7C7470',band:'#1B1817',cup:'#1B1817',cushion:'#3a3431'},
+  tostada:{jacket:'#B46034',sleeve:'#8F4A26',hoodie:'#A39C96',band:'#CF825A',cup:'#CF825A',cushion:'#B46034'},
+  sudadera:{jacket:'#383330',sleeve:'#2B2725',hoodie:'#CF825A',band:'#CF825A',cup:'#CF825A',cushion:'#B46034'}};
+function detail(c,sh,mood){
+  const B=(fn,mirror)=>{c.save();c.translate(200,0);c.scale(0.9,1);c.translate(-200,0);if(mirror){c.translate(400,0);c.scale(-1,1);}fn();c.restore();};
+  const ln=(d,col,w,dash)=>{c.strokeStyle=col;c.lineWidth=w;c.lineCap='round';c.setLineDash(dash||[]);c.stroke(new Path2D(d));c.setLineDash([]);};
+  const clip=()=>{c.save();c.clip(sh.path);};
+  const t=sh.tag;
+  if(t==='jL'||t==='jR'){clip();c.strokeStyle='rgba(255,255,255,0.08)';c.lineWidth=9;c.stroke(sh.path);
+    B(()=>{ln('M185 176 C186 230 188 330 190 394','rgba(214,206,200,.5)',2,[2.2,2.2]);
+      ln('M164 170 Q146 178 134 196','rgba(0,0,0,.4)',1.6);ln('M163 173 Q146 182 135 200','rgba(255,255,255,.14)',1.2,[3,3]);
+      c.fillStyle='rgba(0,0,0,.3)';c.fill(rrect(143,322,34,10,3));ln('M143 322 L177 322','rgba(255,255,255,.14)',1.3);ln('M144 333 L176 333','rgba(0,0,0,.25)',1.6);
+      ln('M140 306 Q157 312 176 304','rgba(0,0,0,.28)',3);ln('M138 232 Q149 248 147 270','rgba(0,0,0,.22)',3);
+      ln('M138 388 L189 390','rgba(255,255,255,.13)',1.2,[3,3]);},t==='jR');c.restore();}
+  else if(t==='sL'||t==='sR'){clip();
+    B(()=>{const [ex,ey,wx,wy]=t==='sL'?[133,290,138,350]:[268,288,264,342];
+      ln(`M${ex-13} ${ey-6} Q${ex} ${ey+3} ${ex+13} ${ey-6}`,'rgba(0,0,0,.34)',2.4);ln(`M${ex-12} ${ey+2} Q${ex} ${ey+10} ${ex+12} ${ey+2}`,'rgba(0,0,0,.22)',1.8);ln(`M${ex-12} ${ey-13} Q${ex} ${ey-6} ${ex+12} ${ey-13}`,'rgba(255,255,255,.10)',1.6);
+      ln(`M${wx-14} ${wy} Q${wx} ${wy+7} ${wx+14} ${wy}`,'rgba(0,0,0,.35)',2.2);ln(`M${wx-14} ${wy+5} Q${wx} ${wy+12} ${wx+14} ${wy+5}`,'rgba(255,255,255,.12)',1.4);});c.restore();}
+  else if(t==='tee'){clip();
+    B(()=>{const g=c.createLinearGradient(156,0,244,0);g.addColorStop(0,'rgba(0,0,0,.24)');g.addColorStop(.35,'rgba(0,0,0,0)');g.addColorStop(.7,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.24)');c.fillStyle=g;c.fillRect(150,176,100,200);
+      ln('M170 296 Q183 302 197 296','rgba(0,0,0,.18)',2.6);ln('M212 318 Q226 324 238 318','rgba(0,0,0,.16)',2.4);ln('M163 345 Q176 350 190 345','rgba(0,0,0,.15)',2.2);ln('M160 365 L240 365','rgba(0,0,0,.24)',1.4,[3,3]);});c.restore();}
+  else if(t==='neck'){clip();B(()=>{c.fillStyle='rgba(0,0,0,.30)';c.beginPath();c.ellipse(200,155,24,9,0,0,TAU);c.fill();});c.restore();
+    B(()=>{ln('M171 176 Q200 190 229 176','#B46034',4.5);ln('M173 175 Q200 188 227 175','rgba(255,255,255,.14)',1.2);});}
+  else if(t==='pL'||t==='pR'){clip();
+    B(()=>{const cx=t==='pL'?[178,175,172]:[222,226,231];
+      ln(`M${cx[0]} 372 L${cx[2]-1} 560`,'rgba(255,255,255,.12)',2.2);ln(`M${cx[1]-17} 462 Q${cx[1]} 470 ${cx[1]+17} 462`,'rgba(255,255,255,.16)',2.6);ln(`M${cx[1]-16} 476 Q${cx[1]} 482 ${cx[1]+16} 476`,'rgba(255,255,255,.11)',2.2);
+      ln(`M${cx[2]-18} 568 Q${cx[2]} 575 ${cx[2]+18} 568`,'rgba(255,255,255,.12)',2);});c.restore();}
+  else if(t==='shL'||t==='shR'){clip();
+    B(()=>{const cx=t==='shL'?166:237;ln(`M${cx-24} 600 Q${cx} 585 ${cx+24} 600`,'rgba(0,0,0,.4)',2);
+      for(const [dy,w] of [[589,10],[593,12],[597,13]])ln(`M${cx-w} ${dy} L${cx+w} ${dy-3}`,'rgba(240,236,232,.85)',1.7);
+      c.fillStyle='rgba(255,255,255,.18)';c.beginPath();c.ellipse(cx,583,9,3,0,0,TAU);c.fill();});c.restore();}
+  else if(t==='bL'||t==='bR'){clip();
+    B(()=>{ln('M166 176 L171 298','rgba(255,255,255,.14)',1.3,[3,3]);c.fillStyle='#26221F';c.fill(rrect(160,297,17,12,2));ln('M162 303 L175 303','rgba(255,255,255,.18)',1.2);},t==='bR');c.restore();}
+  else if(t==='buckle'){B(()=>{c.fillStyle='#1A1716';c.fill(rrect(197,225,6,10,1.5));ln('M195 224 L205 224','rgba(255,255,255,.35)',1.2);});}
+}
+function drawRecorte(c,shapes,mood,scale,variant){const PAL=Object.assign({},CUT,VAR[variant]||{});
+  c.fillStyle='rgba(0,0,0,0.4)';c.fill(ell(200,607,112,13));
+  for(const sh of shapes){
+    c.save();c.shadowColor='rgba(0,0,0,0.42)';c.shadowBlur=3*K*scale;c.shadowOffsetX=2.2*K*scale;c.shadowOffsetY=3*K*scale;
+    paint(c,sh,PAL[sh.role]);c.restore();
+    if(sh.role==='shoe'&&!sh.noSole){c.save();c.clip(sh.path);c.fillStyle='#E6E1DC';c.fillRect(120,603,160,10);c.restore();}
+    if(variant==='final')detail(c,sh,mood);
+    if(sh.role==='jacket'&&variant!=='final'&&!shapes.person){c.save();c.clip(sh.path);if(variant==='final'){c.translate(200,0);c.scale(0.9,1);c.translate(-200,0);}c.strokeStyle='rgba(255,255,255,0.14)';c.lineWidth=2.4;c.lineJoin='round';
+      c.beginPath();c.moveTo(181,170);c.lineTo(185,250);c.lineTo(191,393);c.stroke();c.beginPath();c.moveTo(219,170);c.lineTo(215,250);c.lineTo(209,393);c.stroke();
+      c.strokeStyle='rgba(0,0,0,0.4)';c.lineWidth=2;line(c,138,332,172,335);line(c,262,332,228,335);c.restore();}
+    if(sh.face){c.save();c.clip(sh.path);c.fillStyle='rgba(0,0,0,0.10)';c.fillRect(200,40,60,120);c.restore();c.save();c.transform(shapes.hs,0,0,shapes.hs,200*(1-shapes.hs),176*(1-shapes.hs)+(shapes.dy||0));face(c,mood,Object.assign({stubble:null,brow:'#1B1817',browW:4,white:'#EDE9E5',iris:'#1B1817',lid:'#3a3431',lidW:2.6,thin:1.6,nose:'rgba(90,82,77,0.9)',noseW:2.4,mouth:'#5a524d',mouthFill:'#2a2523'},shapes.faceOpts||{}));if(shapes.faceExtra)shapes.faceExtra(c,mood);c.restore();
+      if(variant==='final'){
+        c.save();c.clip(sh.path);c.transform(shapes.hs,0,0,shapes.hs,200*(1-shapes.hs),176*(1-shapes.hs));
+        const fg=c.createLinearGradient(0,72,0,88);fg.addColorStop(0,'rgba(0,0,0,.26)');fg.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=fg;c.fillRect(150,72,100,16);c.restore();
+        c.save();c.transform(shapes.hs,0,0,shapes.hs,200*(1-shapes.hs),176*(1-shapes.hs));c.lineCap='round';
+        c.fillStyle='rgba(0,0,0,.07)';for(const x of [183,217]){c.beginPath();c.ellipse(x,106,9,3,0,0,TAU);c.fill();}
+        c.fillStyle='rgba(0,0,0,.07)';c.beginPath();c.moveTo(200,102);c.lineTo(204,104);c.lineTo(206,117);c.lineTo(203,119);c.closePath();c.fill();
+        c.fillStyle='rgba(60,52,48,.55)';c.beginPath();c.ellipse(197.2,118.6,1.8,1.1,0,0,TAU);c.fill();c.beginPath();c.ellipse(202.8,118.6,1.8,1.1,0,0,TAU);c.fill();
+        c.strokeStyle='rgba(120,100,94,.65)';c.lineWidth=1.6;c.beginPath();c.moveTo(194.5,137.5);c.quadraticCurveTo(200,mood==='calm'?140.5:139.5,205.5,137.5);c.stroke();
+        c.strokeStyle='rgba(0,0,0,.25)';c.lineWidth=1.6;c.beginPath();c.moveTo(155.2,97);c.quadraticCurveTo(159.4,101,155.2,106);c.stroke();c.beginPath();c.moveTo(244.8,97);c.quadraticCurveTo(240.6,101,244.8,106);c.stroke();
+        c.restore();
+      }}
+  }
+  if(variant==='original'){c.save();c.strokeStyle='#D8D2CD';c.lineWidth=2;c.lineCap='round';line(c,192,188,190,232);line(c,208,188,210,226);c.restore();}
+}
+function drawTrazo(c,shapes,mood){
+  const BG='#0a0909',W='#F4F1EE';
+  c.lineJoin='round';
+  for(const sh of shapes){
+    const acc=sh.role==='band'||sh.role==='cup'||sh.role==='cushion';
+    if(sh.stroke){c.strokeStyle=DURAZNO;c.lineWidth=4;c.lineCap='round';c.stroke(sh.path);continue;}
+    c.strokeStyle=acc?DURAZNO:W;c.lineWidth=5;c.stroke(sh.path);
+    c.fillStyle=sh.role==='hair'?W:sh.role==='cushion'?DURAZNO:BG;c.fill(sh.path);
+    if(sh.role==='jacket'||sh.role==='sleeve'){c.save();c.clip(sh.path);c.strokeStyle='rgba(244,241,238,0.3)';c.lineWidth=1.2;for(let d=-200;d<700;d+=8){if(sh.role==='jacket'){line(c,d,160,d+240,400);}else{line(c,d+240,160,d,400);}}c.restore();}
+    if(sh.role==='shoe'){c.save();c.clip(sh.path);c.fillStyle=W;c.fillRect(120,603,160,10);c.restore();}
+    if(sh.face)face(c,mood,{brow:W,browW:3,white:null,iris:W,lid:W,lidW:2.4,thin:1.7,nose:W,noseW:1.8,mouth:W});
+  }
+  c.save();c.strokeStyle=W;c.lineWidth=1.6;c.lineCap='round';line(c,192,188,190,232);line(c,208,188,210,226);c.restore();
+}
+
+function render(cv){
+  const style=cv.dataset.style,view=cv.dataset.view,mood=cv.dataset.mood;
+  const c=cv.getContext('2d');c.setTransform(K,0,0,K,0,0);c.clearRect(0,0,LW,LH);
+  (style==='silueta'?bgSilueta:style==='recorte'?bgRecorte:bgTrazo)(c);
+  const shapes=owen({phones:cv.dataset.phones||(mood==='alert'?'neck':'on'),hair:cv.dataset.hair,orig:/^(original|final|previo)/.test(cv.dataset.variant),tee:/^(final|previo)/.test(cv.dataset.variant),hs:cv.dataset.variant==='final'?0.78:0,slim:cv.dataset.variant==='final'});
+  let scale=1;
+  c.save();
+  if(view==='full'){c.translate(40,10);}
+  else if(view==='torso'){scale=1.7;c.translate(LW/2,LH/2);c.scale(scale,scale);c.translate(-200,-238);}
+  else if(view==='feet'){scale=3;c.translate(LW/2,LH/2);c.scale(scale,scale);c.translate(-200,-540);}
+  else if(view==='hands'){scale=2.7;c.translate(LW/2,330);c.scale(scale,scale);c.translate(-200,-392);}
+  else if(shapes.hs<0.9){scale=2.7;c.translate(LW/2,300);c.scale(scale,scale);c.translate(-200,-138);}
+  else{scale=2.35;c.translate(LW/2,300);c.scale(scale,scale);c.translate(-200,-122);}
+  if(style==='silueta')drawSilueta(c,shapes);
+  else if(style==='recorte')drawRecorte(c,shapes,mood,scale,cv.dataset.variant);
+  else drawTrazo(c,shapes,mood);
+  c.restore();
+}
+Object.assign(VAR,CAST_VAR);
+document.querySelectorAll('canvas[data-style]').forEach(render);
+document.querySelectorAll('canvas[data-lineup]').forEach(renderLineup);
+document.querySelectorAll('canvas[data-char]').forEach(renderChar);
+})();
+</script>
