@@ -1,0 +1,271 @@
+<title>Diseños de Owen Reed</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Autor: BS -->
+<style>
+/* Layout: hoja de personaje sobre fondo de sala oscura. Una columna de 1080px; cada estilo es una fila con tres láminas y su veredicto debajo. */
+:root{
+  --negro:#000000; --blanco:#FFFFFF; --gris:#7C7470; --durazno:#CF825A; --tostado:#B46034;
+  --bg:#000000; --fg:#FFFFFF; --soft:rgba(255,255,255,.78); --line:#26221F; --panel:#0B0A0A;
+  --display:"Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --body:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme:dark;
+}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-block:36px 48px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:40px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{margin:0;font-family:var(--display);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gris)}
+h1{margin:0;font-family:var(--display);font-weight:600;font-size:clamp(34px,6vw,54px);line-height:1.05;letter-spacing:-.01em;text-wrap:balance}
+h1 span{color:var(--durazno)}
+.lede{margin:4px 0 0;max-width:62ch;color:var(--soft)}
+h2{margin:0;font-family:var(--display);font-weight:600;font-size:26px;line-height:1.15;text-wrap:balance}
+h2 small{display:block;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--durazno);margin-bottom:4px}
+.label{margin:0 0 8px;font-family:var(--display);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--durazno)}
+section{display:flex;flex-direction:column;gap:18px}
+.ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:18px 28px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:22px}
+.ficha div{min-width:0}
+.ficha p{margin:0;color:var(--soft)}
+.paleta{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0;padding:0;list-style:none}
+.paleta li{display:flex;align-items:center;gap:8px;color:var(--soft);font-size:13px}
+.paleta i{width:16px;height:16px;border-radius:50%;border:1px solid #4a4541;display:inline-block}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+figure{margin:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+figure canvas{display:block;width:100%;aspect-ratio:3/4;max-width:100%;border:1px solid var(--line);background:#000}
+figcaption{font-size:12px;color:var(--gris);letter-spacing:.04em}
+.veredicto{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:18px 28px}
+.veredicto div{min-width:0}
+.veredicto p{margin:0;color:var(--soft)}
+.reco{border-top:1px solid var(--line);padding-top:26px}
+.reco p{margin:0;max-width:68ch;color:var(--soft)}
+.reco p + p{margin-top:10px}
+.reco strong{color:var(--fg);font-weight:600}
+footer{display:flex;align-items:center;gap:12px}
+footer svg{width:32px;height:36px}
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow">Historia de terror · Diseño de personaje · Ronda 1</p>
+    <h1>Owen Reed<span>.</span></h1>
+    <p class="lede">El mismo Owen en tres estilos. Los tres están dibujados con código, igual que el video, así que lo que ves aquí es lo que se puede animar.</p>
+  </header>
+
+  <div class="ficha">
+    <div>
+      <p class="label">Lo que no cambia</p>
+      <p>Inglés, entre 25 y 30 años, complexión media. Cabello corto y despeinado, barba de dos días. Nada en él dice a qué se dedica.</p>
+    </div>
+    <div>
+      <p class="label">Lo que trae puesto</p>
+      <p>Chamarra impermeable abierta, sudadera con capucha, mochila de viaje y audífonos de diadema. Sin logos ni marcas.</p>
+    </div>
+    <div>
+      <p class="label">Paleta</p>
+      <ul class="paleta">
+        <li><i style="background:#000000"></i>Negro</li>
+        <li><i style="background:#7C7470"></i>Gris</li>
+        <li><i style="background:#FFFFFF"></i>Blanco</li>
+        <li><i style="background:#CF825A"></i>Durazno, solo en sus audífonos</li>
+      </ul>
+    </div>
+  </div>
+
+  <section>
+    <h2><small>Estilo A</small>Silueta</h2>
+    <div class="trio">
+      <figure><canvas data-style="silueta" data-view="full" data-mood="calm" width="960" height="1280" aria-label="Owen en silueta, cuerpo completo"></canvas><figcaption>Cuerpo completo</figcaption></figure>
+      <figure><canvas data-style="silueta" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen en silueta, en calma"></canvas><figcaption>En calma, con su música</figcaption></figure>
+      <figure><canvas data-style="silueta" data-view="bust" data-mood="alert" width="960" height="1280" aria-label="Owen en silueta, en alerta"></canvas><figcaption>En alerta, audífonos al cuello</figcaption></figure>
+    </div>
+    <div class="veredicto">
+      <div><p class="label">A favor</p><p>Es el más fácil de animar y nunca se ve rígido. Como no tiene rostro, cualquiera puede verse en él. A contraluz, frente a la ventana, se ve muy bien.</p></div>
+      <div><p class="label">En contra</p><p>Sin rostro no hay expresión. Entre la calma y la alerta solo cambian los audífonos, y sin narrador la historia necesita que se vea lo que Owen piensa.</p></div>
+      <div><p class="label">Cómo se mueve</p><p>Una sola mancha negra que cambia de forma. Es lo que usa el piloto de la escena 1.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><small>Estilo B</small>Recorte</h2>
+    <div class="trio">
+      <figure><canvas data-style="recorte" data-view="full" data-mood="calm" width="960" height="1280" aria-label="Owen en recorte, cuerpo completo"></canvas><figcaption>Cuerpo completo</figcaption></figure>
+      <figure><canvas data-style="recorte" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen en recorte, en calma"></canvas><figcaption>En calma, con su música</figcaption></figure>
+      <figure><canvas data-style="recorte" data-view="bust" data-mood="alert" width="960" height="1280" aria-label="Owen en recorte, en alerta"></canvas><figcaption>En alerta, audífonos al cuello</figcaption></figure>
+    </div>
+    <div class="veredicto">
+      <div><p class="label">A favor</p><p>Tiene rostro: los ojos y las cejas cargan la historia. Los audífonos durazno lo identifican en cualquier toma, aunque esté lejos o entre mucha gente.</p></div>
+      <div><p class="label">En contra</p><p>Se ve menos realista, más cercano a una novela gráfica. Cada personaje nuevo hay que construirlo pieza por pieza.</p></div>
+      <div><p class="label">Cómo se mueve</p><p>Por piezas, como un títere de papel. El movimiento algo rígido es propio del estilo, así que deja de ser un defecto.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><small>Estilo C</small>Trazo</h2>
+    <div class="trio">
+      <figure><canvas data-style="trazo" data-view="full" data-mood="calm" width="960" height="1280" aria-label="Owen en trazo, cuerpo completo"></canvas><figcaption>Cuerpo completo</figcaption></figure>
+      <figure><canvas data-style="trazo" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen en trazo, en calma"></canvas><figcaption>En calma, con su música</figcaption></figure>
+      <figure><canvas data-style="trazo" data-view="bust" data-mood="alert" width="960" height="1280" aria-label="Owen en trazo, en alerta"></canvas><figcaption>En alerta, audífonos al cuello</figcaption></figure>
+    </div>
+    <div class="veredicto">
+      <div><p class="label">A favor</p><p>Parece un dibujo técnico, y eso lo conecta con el método y con el oficio de Owen sin decirlo. Es el más ligero de producir.</p></div>
+      <div><p class="label">En contra</p><p>En escenas oscuras y con lluvia las líneas se pierden. También da menos miedo: la sangre y la oscuridad pesan poco cuando todo es contorno.</p></div>
+      <div><p class="label">Cómo se mueve</p><p>Igual que el recorte, por piezas, pero las uniones entre piezas se notan más.</p></div>
+    </div>
+  </section>
+
+  <section class="reco">
+    <p class="label">Mi recomendación</p>
+    <p><strong>El recorte (B), usando la silueta (A) cuando Owen esté a contraluz.</strong> Son compatibles: el mismo Owen de recorte, puesto frente a una ventana iluminada, se vuelve silueta.</p>
+    <p>La historia no tiene narrador y Owen casi no habla, así que su cara tiene que contar lo que piensa. El recorte es el único de los tres que lo permite y que además se puede animar bien con código.</p>
+  </section>
+
+  <footer>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 54" fill="#CF825A" role="img" aria-label="Pincelada BS"><path fill-rule="evenodd" d="M21.27 53.99 20.42 54 19.67 53.98 18.88 53.91 18.13 53.82 17.34 53.70 16.65 53.57 15.68 53.34 15.01 53.15 13.44 52.62 12.60 52.30 11.92 51.99 11.07 51.56 10.37 51.17 9.23 50.46 8.57 50 7.97 49.55 7.20 48.91 6.37 48.19 5.70 47.52 5.13 46.88 4.66 46.30 4.13 45.63 3.51 44.79 3.15 44.25 2.68 43.48 2.19 42.61 1.92 42.07 1.65 41.48 1.35 40.74 1.05 39.89 0.82 39.18 0.49 37.92 0.31 37.04 0.20 36.40 0.07 35.35 0 34.06 0 32.61 0.09 31.36 0.24 30.22 0.47 29.20 0.67 28.52 0.93 27.77 1.18 27.17 1.47 26.53 1.84 25.88 2.18 25.33 2.58 24.75 3.02 24.20 3.31 23.86 3.90 23.25 4.45 22.74 4.79 22.44 5.46 21.92 6.16 21.44 6.76 21.09 7.38 20.76 7.64 20.60 7.85 20.39 7.94 20.27 8.01 20.14 8.05 20 8.09 19.80 8.09 19.65 8.07 19.45 8 19.21 7.75 18.50 7.59 17.98 7.42 17.25 7.31 16.61 7.24 16.11 7.20 15.61 7.19 14.61 7.22 14.06 7.28 13.62 7.37 13.03 7.51 12.39 7.69 11.77 7.81 11.38 8 10.92 8.22 10.42 8.55 9.80 8.89 9.24 9.32 8.63 9.72 8.12 10.03 7.79 10.63 7.19 11.15 6.73 11.72 6.31 12.22 5.99 12.92 5.60 13.46 5.34 14.11 5.07 14.77 4.84 15.25 4.69 17.66 4.04 19.79 3.49 21.69 3.06 24.29 2.50 25.22 2.33 26.75 2.07 30.08 1.71 32.50 1.33 34.18 1.11 36.87 0.82 40.40 0.47 43.29 0.21 45.78 0.04 46.88 0 47.18 0.03 47.33 0.07 47.46 0.12 47.67 0.26 47.77 0.37 47.86 0.49 47.96 0.72 48 0.97 47.97 1.22 47.93 1.36 47.86 1.49 47.70 1.69 47.46 1.86 46.82 2.14 43.14 3.59 40.13 4.81 37.45 6.03 31.20 8.95 30.46 9.26 29.56 9.58 29.10 9.77 28.70 9.98 28.38 10.22 28.14 10.48 28.03 10.64 27.91 10.86 27.77 11.18 27.68 11.57 27.65 11.92 27.68 12.37 27.75 12.71 27.89 13.09 28.06 13.39 28.34 13.74 28.67 14.05 28.91 14.23 29.12 14.37 30.01 14.82 31.09 15.34 31.84 15.73 32.32 16.01 32.78 16.31 33.49 16.78 34.10 17.22 34.68 17.68 35.24 18.17 35.93 18.82 36.62 19.53 37.39 20.39 38 21.13 38.74 22.08 39.33 22.90 39.88 23.74 40.31 24.47 40.64 25.08 40.97 25.75 41.24 26.39 41.50 27.09 41.73 27.80 41.93 28.52 42.09 29.20 42.26 30.03 42.38 30.87 42.44 31.57 42.49 33.17 42.44 34.82 42.38 35.52 42.29 36.16 42.17 36.85 41.90 38.02 41.66 38.89 41.38 39.74 41.10 40.49 40.78 41.22 40.29 42.21 39.86 43 39.40 43.77 38.88 44.56 38.30 45.38 37.83 45.97 37.16 46.71 36.68 47.22 36.15 47.74 35.32 48.48 34.55 49.10 33.82 49.64 33.21 50.07 32.53 50.49 31.70 50.96 31.07 51.27 30.35 51.61 29.47 51.98 26.65 52.99 25.93 53.21 24.87 53.49 23.89 53.69 22.86 53.87 22.11 53.95ZM21.82 43.48 22.43 43.43 23.08 43.36 23.67 43.27 24.31 43.14 24.94 42.99 25.52 42.83 26.14 42.63 26.70 42.42 27.31 42.17 27.85 41.91 28.43 41.61 28.96 41.32 29.47 41 30.01 40.63 30.50 40.28 31.01 39.87 31.46 39.47 31.93 39.03 32.35 38.60 32.79 38.12 33.17 37.66 33.57 37.14 33.94 36.61 34.29 36.06 34.62 35.50 34.93 34.93 35.19 34.39 35.44 33.79 35.68 33.19 35.88 32.57 36.05 31.99 36.17 31.45 36.29 30.66 36.31 30.20 36.32 29.70 36.27 29.04 36.20 28.58 36.11 28.18 35.95 27.54 35.72 26.81 35.20 25.24 34.96 24.63 34.71 24.09 34.28 23.35 33.86 22.73 33.55 22.34 33.12 21.85 32.31 21.03 31.35 20.16 30.78 19.68 30.26 19.28 29.34 18.60 28.75 18.21 26.89 17.13 26.41 16.78 25.97 16.37 25.57 15.92 25.14 15.25 24.84 14.56 24.72 14.23 24.62 13.84 24.51 13.25 24.47 12.76 24.47 12.26 24.54 11.46 24.60 11.11 24.73 10.58 24.91 10.12 25.18 9.58 25.46 9.10 25.86 8.59 26.25 8.21 26.69 7.88 27.08 7.65 27.76 7.33 28.32 7.12 29.42 6.78 29.65 6.69 29.86 6.56 30.05 6.39 30.21 6.14 30.28 6.01 30.32 5.86 30.34 5.62 30.33 5.47 30.29 5.32 30.17 5.05 30.08 4.93 29.97 4.82 29.77 4.67 29.63 4.61 29.49 4.57 29.19 4.54 28.89 4.56 27.90 4.71 26.93 4.92 25.53 5.29 23.27 5.94 21.71 6.32 20.15 6.68 16.53 7.63 15.90 7.81 14.87 8.18 14.46 8.38 14.21 8.54 13.98 8.73 13.64 9.03 13.28 9.38 12.67 10.10 12.33 10.60 11.98 11.20 11.81 11.56 11.70 11.84 11.53 12.37 11.41 13.11 11.36 13.66 11.37 14.71 11.43 15.45 11.55 16.04 11.71 16.62 11.99 17.37 12.37 18.13 12.54 18.44 12.78 18.82 13.54 19.93 13.70 20.24 13.85 20.61 13.92 20.90 13.93 21.20 13.91 21.45 13.81 21.79 13.68 22.06 13.47 22.34 13.25 22.54 13.05 22.68 12.77 22.81 12.49 22.90 12.05 22.99 11.21 23.11 10.87 23.21 10.54 23.33 10.14 23.52 9.49 23.90 8.96 24.28 8.47 24.70 8.04 25.12 7.68 25.54 7.27 26.10 6.69 27.02 6.35 27.68 6.13 28.21 5.95 28.76 5.88 29.06 5.80 29.57 5.76 30.18 5.79 30.85 5.88 31.55 6.02 32.20 6.20 32.83 6.46 33.55 6.75 34.25 7.10 34.98 7.48 35.69 7.90 36.38 8.36 37.04 8.88 37.72 9.40 38.33 9.96 38.92 10.54 39.48 11.15 40 11.75 40.46 12.37 40.90 13.01 41.30 13.72 41.70 14.40 42.03 15.09 42.34 15.80 42.61 16.53 42.84 17.26 43.05 18 43.21 18.75 43.34 19.51 43.43 20.27 43.48 21.03 43.50Z"/></svg>
+  </footer>
+</main>
+
+<script>
+(() => {
+'use strict';
+const TAU = Math.PI * 2, K = 2, LW = 480, LH = 640;
+const DURAZNO = '#CF825A', TOSTADO = '#B46034';
+
+/* ---------- geometría ---------- */
+function addCapsule(p,x0,y0,x1,y1,r0,r1){const a=Math.atan2(y1-y0,x1-x0),s=Math.sin(a),c=Math.cos(a);p.moveTo(x0+s*r0,y0-c*r0);p.lineTo(x1+s*r1,y1-c*r1);p.arc(x1,y1,r1,a-Math.PI/2,a+Math.PI/2);p.lineTo(x0-s*r0,y0+c*r0);p.arc(x0,y0,r0,a+Math.PI/2,a+Math.PI*1.5);p.closePath();}
+function limb(pts,r){const p=new Path2D();for(let i=0;i<pts.length-1;i++)addCapsule(p,pts[i][0],pts[i][1],pts[i+1][0],pts[i+1][1],r[i],r[i+1]);return p;}
+function ell(x,y,rx,ry,rot){const p=new Path2D();p.ellipse(x,y,rx,ry,rot||0,0,TAU);return p;}
+function rrect(x,y,w,h,r){const p=new Path2D();p.moveTo(x+r,y);p.lineTo(x+w-r,y);p.arcTo(x+w,y,x+w,y+r,r);p.lineTo(x+w,y+h-r);p.arcTo(x+w,y+h,x+w-r,y+h,r);p.lineTo(x+r,y+h);p.arcTo(x,y+h,x,y+h-r,r);p.lineTo(x,y+r);p.arcTo(x,y,x+r,y,r);p.closePath();return p;}
+function mir(p){const q=new Path2D();q.addPath(p,new DOMMatrix([-1,0,0,1,400,0]));return q;}
+
+/* Owen, vista de frente. Caja de 400 × 620 unidades; el eje del cuerpo está en x = 200. */
+function owen(o){
+  const s=[];const add=(role,path,extra)=>s.push(Object.assign({role,path},extra||{}));
+  add('pants',rrect(150,332,100,52,16));
+  const leg=limb([[178,356],[174,468],[171,580]],[31,25,19]);add('pants',leg);add('pants',mir(leg));
+  add('shoe',ell(165,596,28,13,-0.08));add('shoe',ell(235,596,28,13,0.08));
+  add('hoodie',new Path2D('M152 182 L248 182 L244 370 L156 370 Z'));
+  const arm=limb([[136,198],[121,292],[125,372]],[27,23,19]);
+  add('skin',ell(125,392,14,17));add('skin',ell(275,392,14,17));
+  add('sleeve',arm);add('sleeve',mir(arm));
+  const jl=new Path2D('M181 170 C160 167 136 174 126 193 C119 252 123 330 129 388 L191 393 L185 250 Z');
+  add('jacket',jl);add('jacket',mir(jl));
+  const st=new Path2D('M158 173 L172 170 L177 302 L165 302 Z');add('strap',st);add('strap',mir(st));
+  add('hoodie',ell(200,170,43,15));
+  add('neck',rrect(187,136,26,42,6));
+  if(o.phones==='neck'){
+    add('cup',ell(165,171,14,21,0.4));add('cup',ell(235,171,14,21,-0.4));
+    add('cushion',ell(169,173,6,16,0.4));add('cushion',ell(231,173,6,16,-0.4));
+    add('skin',ell(156,101,6,11));add('skin',ell(244,101,6,11));
+  }
+  add('skin',new Path2D('M157 90 C155 44 245 44 243 90 C243 118 234 140 214 150 C205 154 195 154 186 150 C166 140 157 118 157 90 Z'),{face:true});
+  add('hair',new Path2D('M154 92 C146 40 190 30 214 34 C244 36 254 62 246 94 C244 78 238 68 230 64 C214 74 186 72 172 62 C162 70 157 80 154 92 Z M203 36 C207 28 214 24 221 25 C217 30 216 35 217 40 Z'));
+  if(o.phones==='on'){
+    add('band',new Path2D('M151 92 C145 22 255 22 249 92'),{stroke:10});
+    add('cup',ell(151,101,13,23));add('cup',ell(249,101,13,23));
+    add('cushion',ell(158,101,6,19));add('cushion',ell(242,101,6,19));
+  }
+  return s;
+}
+function line(c,x0,y0,x1,y1){c.beginPath();c.moveTo(x0,y0);c.lineTo(x1,y1);c.stroke();}
+
+/* ---------- rostro ---------- */
+function face(c,mood,p){
+  const calm=mood==='calm';
+  c.save();c.lineCap='round';c.lineJoin='round';
+  if(p.stubble){c.fillStyle=p.stubble;c.fill(new Path2D('M163 116 C168 142 186 153 200 154 C214 153 232 142 237 116 C229 131 215 139 200 139 C185 139 171 131 163 116 Z'));}
+  c.strokeStyle=p.brow;c.lineWidth=p.browW;
+  if(calm){line(c,173,85,192,86);line(c,208,86,227,85);}else{line(c,172,82.5,192,86.5);line(c,208,86.5,228,82.5);}
+  for(const x of [183,217]){
+    if(calm){
+      if(p.white){c.fillStyle=p.white;c.fill(ell(x,99.2,7.5,3.2));}
+      c.fillStyle=p.iris;c.fill(ell(x,100,2.8,2.5));
+      c.strokeStyle=p.lid;c.lineWidth=p.lidW;line(c,x-8,97,x+8,97);
+      if(!p.white){c.lineWidth=p.thin;c.beginPath();c.ellipse(x,98.5,7.5,4,0,0.15,Math.PI-0.15);c.stroke();}
+    }else{
+      if(p.white){c.fillStyle=p.white;c.fill(ell(x,98,7.8,6.4));}
+      else{c.strokeStyle=p.lid;c.lineWidth=p.thin;c.stroke(ell(x,98,7.8,6.4));}
+      c.fillStyle=p.iris;c.fill(ell(x,98,3,3));
+      if(p.white){c.fillStyle='#FFFFFF';c.fill(ell(x+1.1,96.9,0.9,0.9));c.strokeStyle=p.lid;c.lineWidth=1.6;c.beginPath();c.ellipse(x,98,7.8,6.4,0,Math.PI+0.2,TAU-0.2);c.stroke();}
+    }
+  }
+  c.strokeStyle=p.nose;c.lineWidth=p.noseW;c.beginPath();c.moveTo(200,101);c.lineTo(196.5,117);c.lineTo(203,119);c.stroke();
+  if(calm){c.strokeStyle=p.mouth;c.lineWidth=p.noseW;c.beginPath();c.moveTo(191,133);c.quadraticCurveTo(200,135,209,133);c.stroke();}
+  else{c.strokeStyle=p.mouth;c.lineWidth=p.noseW+0.6;line(c,192,134,208,134);}
+  c.restore();
+}
+
+/* ---------- fondos ---------- */
+function bgSilueta(c){
+  const g=c.createLinearGradient(0,0,0,LH);g.addColorStop(0,'#7f7873');g.addColorStop(1,'#a39c96');c.fillStyle=g;c.fillRect(0,0,LW,LH);
+  for(const [x,y,r,a,col] of [[90,150,70,0.22,'255,250,244'],[400,90,50,0.3,'207,130,90'],[410,420,90,0.18,'255,250,244'],[60,470,46,0.25,'207,130,90']]){const b=c.createRadialGradient(x,y,0,x,y,r);b.addColorStop(0,`rgba(${col},${a})`);b.addColorStop(0.7,`rgba(${col},${a*0.7})`);b.addColorStop(1,`rgba(${col},0)`);c.fillStyle=b;c.beginPath();c.arc(x,y,r,0,TAU);c.fill();}
+  const v=c.createRadialGradient(LW/2,LH/2,LH*0.3,LW/2,LH/2,LH*0.85);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,0.55)');c.fillStyle=v;c.fillRect(0,0,LW,LH);
+}
+function bgRecorte(c){
+  const g=c.createRadialGradient(LW/2,LH*0.42,20,LW/2,LH*0.5,LH*0.8);g.addColorStop(0,'#57514d');g.addColorStop(1,'#1b1918');c.fillStyle=g;c.fillRect(0,0,LW,LH);
+}
+function bgTrazo(c){
+  c.fillStyle='#0a0909';c.fillRect(0,0,LW,LH);
+  c.strokeStyle='rgba(124,116,112,0.16)';c.lineWidth=1;
+  for(let x=0;x<=LW;x+=40)line(c,x,0,x,LH);for(let y=0;y<=LH;y+=40)line(c,0,y,LW,y);
+  c.save();c.strokeStyle='rgba(124,116,112,0.5)';c.setLineDash([14,5,2,5]);line(c,LW/2,10,LW/2,LH-10);c.restore();
+}
+
+/* ---------- estilos ---------- */
+const CUT={pants:'#141211',shoe:'#070606',hoodie:'#7C7470',sleeve:'#2B2725',jacket:'#383330',strap:'#100E0E',neck:'#9C948E',skin:'#C4BCB6',hair:'#1B1817',band:DURAZNO,cup:DURAZNO,cushion:TOSTADO};
+function paint(c,sh,col){if(sh.stroke){c.strokeStyle=col;c.lineWidth=sh.stroke;c.lineCap='round';c.stroke(sh.path);}else{c.fillStyle=col;c.fill(sh.path);}}
+
+function drawSilueta(c,shapes){
+  const off=document.createElement('canvas');off.width=c.canvas.width;off.height=c.canvas.height;const o=off.getContext('2d');
+  o.setTransform(c.getTransform());
+  for(const sh of shapes)paint(o,sh,DURAZNO);
+  o.globalCompositeOperation='destination-out';o.translate(-3,1.2);
+  for(const sh of shapes)paint(o,sh,'#000');
+  for(const sh of shapes)paint(c,sh,'#060505');
+  c.save();c.setTransform(1,0,0,1,0,0);c.globalAlpha=0.85;c.drawImage(off,0,0);c.restore();
+}
+function drawRecorte(c,shapes,mood,scale){
+  c.fillStyle='rgba(0,0,0,0.4)';c.fill(ell(200,607,112,13));
+  for(const sh of shapes){
+    c.save();c.shadowColor='rgba(0,0,0,0.42)';c.shadowBlur=3*K*scale;c.shadowOffsetX=2.2*K*scale;c.shadowOffsetY=3*K*scale;
+    paint(c,sh,CUT[sh.role]);c.restore();
+    if(sh.role==='shoe'){c.save();c.clip(sh.path);c.fillStyle='#E6E1DC';c.fillRect(120,603,160,10);c.restore();}
+    if(sh.role==='jacket'){c.save();c.clip(sh.path);c.strokeStyle='rgba(255,255,255,0.14)';c.lineWidth=2.4;c.lineJoin='round';
+      c.beginPath();c.moveTo(181,170);c.lineTo(185,250);c.lineTo(191,393);c.stroke();c.beginPath();c.moveTo(219,170);c.lineTo(215,250);c.lineTo(209,393);c.stroke();
+      c.strokeStyle='rgba(0,0,0,0.4)';c.lineWidth=2;line(c,138,332,172,335);line(c,262,332,228,335);c.restore();}
+    if(sh.face){c.save();c.clip(sh.path);c.fillStyle='rgba(0,0,0,0.10)';c.fillRect(200,40,60,120);c.restore();face(c,mood,{stubble:'rgba(60,54,50,0.30)',brow:'#1B1817',browW:4,white:'#EDE9E5',iris:'#1B1817',lid:'#3a3431',lidW:2.6,thin:1.6,nose:'rgba(90,82,77,0.9)',noseW:2.4,mouth:'#5a524d',mouthFill:'#2a2523'});}
+  }
+  c.save();c.strokeStyle='#D8D2CD';c.lineWidth=2;c.lineCap='round';line(c,192,188,190,232);line(c,208,188,210,226);c.restore();
+}
+function drawTrazo(c,shapes,mood){
+  const BG='#0a0909',W='#F4F1EE';
+  c.lineJoin='round';
+  for(const sh of shapes){
+    const acc=sh.role==='band'||sh.role==='cup'||sh.role==='cushion';
+    if(sh.stroke){c.strokeStyle=DURAZNO;c.lineWidth=4;c.lineCap='round';c.stroke(sh.path);continue;}
+    c.strokeStyle=acc?DURAZNO:W;c.lineWidth=5;c.stroke(sh.path);
+    c.fillStyle=sh.role==='hair'?W:sh.role==='cushion'?DURAZNO:BG;c.fill(sh.path);
+    if(sh.role==='jacket'||sh.role==='sleeve'){c.save();c.clip(sh.path);c.strokeStyle='rgba(244,241,238,0.3)';c.lineWidth=1.2;for(let d=-200;d<700;d+=8){if(sh.role==='jacket'){line(c,d,160,d+240,400);}else{line(c,d+240,160,d,400);}}c.restore();}
+    if(sh.role==='shoe'){c.save();c.clip(sh.path);c.fillStyle=W;c.fillRect(120,603,160,10);c.restore();}
+    if(sh.face)face(c,mood,{brow:W,browW:3,white:null,iris:W,lid:W,lidW:2.4,thin:1.7,nose:W,noseW:1.8,mouth:W});
+  }
+  c.save();c.strokeStyle=W;c.lineWidth=1.6;c.lineCap='round';line(c,192,188,190,232);line(c,208,188,210,226);c.restore();
+}
+
+function render(cv){
+  const style=cv.dataset.style,view=cv.dataset.view,mood=cv.dataset.mood;
+  const c=cv.getContext('2d');c.setTransform(K,0,0,K,0,0);c.clearRect(0,0,LW,LH);
+  (style==='silueta'?bgSilueta:style==='recorte'?bgRecorte:bgTrazo)(c);
+  const shapes=owen({phones:mood==='alert'?'neck':'on'});
+  let scale=1;
+  c.save();
+  if(view==='full'){c.translate(40,10);}else{scale=2.35;c.translate(LW/2,300);c.scale(scale,scale);c.translate(-200,-122);}
+  if(style==='silueta')drawSilueta(c,shapes);
+  else if(style==='recorte')drawRecorte(c,shapes,mood,scale);
+  else drawTrazo(c,shapes,mood);
+  c.restore();
+}
+document.querySelectorAll('canvas[data-style]').forEach(render);
+})();
+</script>
