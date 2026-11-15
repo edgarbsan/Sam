@@ -67,3 +67,4 @@ Por defecto las herramientas piden 4 variantes de imagen: siempre pedir 1. Con 9
 | 15 nov | ElevenLabs | Intento de imagen de estilo y lluvia: no arrancó (generaciones gratis saturadas) | 9,712 | 9,712 | — |
 | 15 nov | ElevenLabs | Segundo intento, con autorización: no arrancó (generaciones gratis saturadas) | 9,712 | 9,712 | — |
 | 15 nov | vidIQ | Imagen de estilo: Owen contra el vidrio (1 imagen, 22 créditos) | 150 | 128 | `piezas/estilo-01-owen-ventana.jpg` |
+| 15 nov | vidIQ | Owen de cuerpo entero, fondo transparente, con el diseño aprobado como referencia (22 créditos) | 128 | 106 | `piezas/owen-01-cuerpo-entero.png` |
