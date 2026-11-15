@@ -94,7 +94,7 @@ footer svg{width:32px;height:36px}
 
 <main class="wrap">
   <header>
-    <p class="eyebrow">Historia de terror · Diseño de personaje · Perfil · Ronda 3</p>
+    <p class="eyebrow">Historia de terror · Diseño de personaje · Perfil · Ronda 4</p>
     <h1>Owen de perfil<span>.</span></h1>
     <p class="lede">La vista de lado de Owen, para las tomas en la ventana. Todo está dibujado con código, igual que el video.</p>
   </header>
@@ -104,6 +104,10 @@ footer svg{width:32px;height:36px}
     <div><p class="label">Qué se corrigió</p><p>El pelo ya no es un casco: tiene patilla, deja libre la oreja y cubre la nuca. El cuello es curvo y la nariz, los labios y el mentón tienen forma.</p></div>
     <div><p class="label">Qué se conserva</p><p>Frente recta, mechón de tres puntas, sin barba, piel clara, audífonos grafito, chamarra gris y playera durazno.</p></div>
   </div>
+  <section>
+    <h2><small>Comparar</small>Tres formas de ver a Owen de lado</h2>
+    <div class="cast-grid"><figure class="card"><canvas data-prof="calm" width="960" height="1280" aria-label="A · Perfil actual"></canvas><figcaption><h3>A · Perfil actual</h3><p>La ronda 3. Cráneo plano y cara larga.</p></figcaption></figure><figure class="card"><canvas data-prof="b" width="960" height="1280" aria-label="B · Perfil redondeado"></canvas><figcaption><h3>B · Perfil redondeado</h3><p>Cráneo redondo, nariz con puente, labios y mentón marcados. Más cercano a una cabeza real.</p></figcaption></figure><figure class="card"><canvas data-prof="tq" width="960" height="1280" aria-label="C · Tres cuartos"></canvas><figcaption><h3>C · Tres cuartos</h3><p>Girado a medias. Conserva los rasgos de frente que ya aprobaste.</p></figcaption></figure></div>
+  </section>
   <section>
     <h2><small>Perfil</small>Owen de lado, en seis vistas</h2>
     <div class="cast-grid"><figure class="card"><canvas data-style="recorte" data-variant="final" data-hair="t6" data-view="bust" data-mood="calm" width="960" height="1280" aria-label="Owen de frente"></canvas><figcaption><h3>De frente, como referencia</h3><p>El diseño aprobado. El perfil tiene que parecer la misma persona.</p></figcaption></figure><figure class="card"><canvas data-prof="calm" width="960" height="1280" aria-label="Owen de perfil con audífonos"></canvas><figcaption><h3>De perfil, en calma</h3><p>Frente recta, mechón de tres puntas delante de la diadema, playera durazno al frente y la correa de la mochila.</p></figcaption></figure><figure class="card"><canvas data-prof="bare" width="960" height="1280" aria-label="Owen de perfil sin audífonos"></canvas><figcaption><h3>De perfil, sin audífonos</h3><p>Para revisar el corte: patilla corta, oreja libre y nuca cubierta.</p></figcaption></figure><figure class="card"><canvas data-prof="glass" width="960" height="1280" aria-label="Owen recargado en el vidrio"></canvas><figcaption><h3>Recargado en el vidrio</h3><p>La cabeza se inclina desde el cuello hasta que la frente toca la ventana.</p></figcaption></figure><figure class="card"><canvas data-prof="alert" width="960" height="1280" aria-label="Owen quitándose un audífono"></canvas><figcaption><h3>En alerta, se quita un audífono</h3><p>La mano separa la copa y deja ver la oreja. El ojo se abre y la ceja baja.</p></figcaption></figure><figure class="card"><canvas data-prof="right" width="960" height="1280" aria-label="Owen de perfil hacia la derecha"></canvas><figcaption><h3>Mirando al otro lado</h3><p>El mismo perfil volteado, para las tomas en que mira hacia el pasillo.</p></figcaption></figure></div>
@@ -977,18 +981,18 @@ function owenProfile(c,x,y,k,rot,o){o=o||{};c.save();c.translate(x,y);if(o.flip)
   c.save();c.translate(30,182);c.rotate(rot);c.scale(.86,.86);c.translate(-30,-160);
   F('#CDC5BE','M-22 84 C-18 118 -18 148 -24 172 L70 176 C62 140 58 92 66 44 Z');
   L('rgba(0,0,0,.16)',8,'M-2 100 C18 106 44 102 66 88');
-  F('#E8E1DB','M-72 -84 C-86 -58 -90 -30 -88 -12 C-92 -4 -108 10 -110 16 C-110 22 -100 24 -94 25 C-97 32 -97 38 -92 42 C-95 48 -94 54 -89 58 C-90 76 -80 92 -58 94 C-38 96 -6 84 18 66 C34 54 44 40 60 34 C90 22 104 4 104 -20 C104 -84 50 -118 0 -118 C-30 -118 -58 -106 -72 -84 Z');
+  F('#E8E1DB',o.v==='b'?'M-62 -104 C-30 -128 60 -132 92 -78 C108 -50 108 -12 96 14 C90 28 80 40 70 48 L34 46 C26 58 20 66 14 70 C-10 86 -36 96 -58 94 C-80 92 -90 84 -88 74 C-87 66 -84 62 -86 58 C-92 54 -94 50 -90 46 C-93 42 -96 38 -94 32 C-92 26 -96 24 -104 20 C-112 16 -108 8 -100 -2 C-94 -10 -90 -16 -88 -24 C-88 -34 -86 -50 -82 -70 C-78 -88 -72 -98 -62 -104 Z':'M-72 -84 C-86 -58 -90 -30 -88 -12 C-92 -4 -108 10 -110 16 C-110 22 -100 24 -94 25 C-97 32 -97 38 -92 42 C-95 48 -94 54 -89 58 C-90 76 -80 92 -58 94 C-38 96 -6 84 18 66 C34 54 44 40 60 34 C90 22 104 4 104 -20 C104 -84 50 -118 0 -118 C-30 -118 -58 -106 -72 -84 Z');
   c.save();c.fillStyle='rgba(0,0,0,.07)';c.fill(new Path2D('M-58 94 C-38 96 -6 84 18 66 C28 58 36 50 44 44 C20 56 -10 66 -40 70 C-52 80 -56 88 -58 94 Z'));c.restore();
   // oreja
-  c.fillStyle='#DDD5CE';c.beginPath();c.ellipse(26,4,15,23,0.1,0,TAU);c.fill();L('rgba(0,0,0,.28)',3,'M30 -8 C20 -6 18 8 26 16');
+  const EX=o.v==='b'?4:0;c.fillStyle='#DDD5CE';c.beginPath();c.ellipse(26+EX,4,15,23,0.1,0,TAU);c.fill();L('rgba(0,0,0,.28)',3,'M30 -8 C20 -6 18 8 26 16');
   // pelo: frente recta, patilla corta, nuca y mechón de tres puntas
-  F('#1B1817','M-84 -62 L-78 -92 C-56 -128 50 -138 96 -78 C110 -48 110 -14 102 10 C98 20 92 26 86 28 C80 10 70 -8 56 -20 C46 -30 34 -36 18 -38 C4 -38 -8 -32 -14 -24 L-24 -24 L-26 -60 Z M-48 -116 C-50 -130 -44 -142 -34 -148 C-34 -138 -30 -128 -24 -120 Z M-24 -122 C-24 -138 -16 -150 -4 -156 C-6 -144 -4 -134 0 -124 Z M-2 -124 C2 -138 12 -148 24 -150 C19 -140 18 -132 20 -122 Z');
+  F('#1B1817',o.v==='b'?'M-86 -50 C-90 -80 -70 -112 -40 -122 C0 -136 70 -128 98 -70 C110 -40 108 -6 100 16 C92 22 86 22 82 18 C78 -2 66 -20 50 -28 C38 -34 24 -36 12 -34 L8 -16 L-10 -16 L-14 -40 C-40 -42 -66 -44 -86 -50 Z M-40 -120 C-42 -134 -36 -146 -26 -152 C-26 -142 -22 -132 -16 -124 Z M-16 -126 C-16 -142 -8 -154 4 -160 C2 -148 4 -138 8 -128 Z M6 -128 C10 -142 20 -152 32 -154 C27 -144 26 -136 28 -126 Z':'M-84 -62 L-78 -92 C-56 -128 50 -138 96 -78 C110 -48 110 -14 102 10 C98 20 92 26 86 28 C80 10 70 -8 56 -20 C46 -30 34 -36 18 -38 C4 -38 -8 -32 -14 -24 L-24 -24 L-26 -60 Z M-48 -116 C-50 -130 -44 -142 -34 -148 C-34 -138 -30 -128 -24 -120 Z M-24 -122 C-24 -138 -16 -150 -4 -156 C-6 -144 -4 -134 0 -124 Z M-2 -124 C2 -138 12 -148 24 -150 C19 -140 18 -132 20 -122 Z');
   // cara
   c.lineCap='round';c.strokeStyle='#1B1817';c.lineWidth=7;c.beginPath();if(o.alert){c.moveTo(-86,-30);c.lineTo(-54,-40);}else{c.moveTo(-86,-35);c.lineTo(-54,-36);}c.stroke();
   if(o.alert){c.fillStyle='#EDE9E5';c.beginPath();c.moveTo(-80,-12);c.quadraticCurveTo(-66,-27,-50,-13);c.quadraticCurveTo(-66,-1,-80,-12);c.fill();c.fillStyle='#1B1817';c.beginPath();c.arc(-70,-13,5,0,TAU);c.fill();c.fillStyle='#fff';c.beginPath();c.arc(-71.5,-14.5,1.4,0,TAU);c.fill();L('#3a3431',3,'M-80 -12 Q-66 -27 -50 -13');}
   else{c.fillStyle='#EDE9E5';c.beginPath();c.moveTo(-80,-12);c.quadraticCurveTo(-66,-17,-50,-12);c.quadraticCurveTo(-66,-4,-80,-12);c.fill();c.fillStyle='#1B1817';c.beginPath();c.ellipse(-69,-10.5,4.6,3.6,0,0,TAU);c.fill();L('#3a3431',4.5,'M-81 -14 Q-66 -18 -50 -13');}
-  L('rgba(90,82,77,.7)',3.5,'M-98 22 Q-93 19 -90 22');
-  L('#5a524d',4.5,o.alert?'M-92 50 L-76 50':'M-92 50 Q-84 53 -75 50');
+  if(o.v==='b')L('rgba(90,82,77,.6)',3,'M-96 18 Q-92 14 -88 18');else L('rgba(90,82,77,.7)',3.5,'M-98 22 Q-93 19 -90 22');
+  if(o.v==='b'){L('#5a524d',4,o.alert?'M-93 42 L-80 42':'M-93 42 Q-86 44 -80 42');}else L('#5a524d',4.5,o.alert?'M-92 50 L-76 50':'M-92 50 Q-84 53 -75 50');
   L('rgba(0,0,0,.10)',4,'M-70 62 Q-66 72 -60 78');
   // audífonos
   if(!o.noPhones){
@@ -1003,6 +1007,10 @@ function owenProfile(c,x,y,k,rot,o){o=o||{};c.save();c.translate(x,y);if(o.flip)
   c.restore();
   if(o.cupOff){c.save();sh();c.fillStyle='#2B2725';c.fill(limb([[210,430],[150,60]],[52,34]));c.restore();L('rgba(255,255,255,.12)',4,'M118 74 L176 62');}
   c.restore();}
+function threeQ(){const sh=owen({phones:'on',hair:'t6',orig:true,tee:true,hs:0.78,slim:true});
+  const ni=sh.findIndex(x=>x.tag==='neck');const M=new DOMMatrix().translate(200,0).scale(.86,1).translate(-200-6,0);
+  const seen={};const out=[];sh.forEach((x,i)=>{if(i>ni){if(['cup','cushion','cupr','hinge'].includes(x.role)){seen[x.role]=(seen[x.role]||0)+1;if(seen[x.role]===1)return;}const q=new Path2D();q.addPath(x.path,M);x.path=q;}out.push(x);});
+  Object.assign(out,{hs:sh.hs,fx:.86,shift:-16});return out;}
 function renderProf(cv){const c=cv.getContext('2d');c.setTransform(K,0,0,K,0,0);c.clearRect(0,0,LW,LH);bgRecorte(c);
   const v=cv.dataset.prof;
   if(v==='glass'){const g=c.createLinearGradient(0,0,0,LH);g.addColorStop(0,'#5E5955');g.addColorStop(1,'#7d776f');c.fillStyle=g;c.fillRect(0,0,150,LH);c.fillStyle='rgba(150,146,142,.3)';c.fillRect(0,0,150,LH);
@@ -1011,6 +1019,9 @@ function renderProf(cv){const c=cv.getContext('2d');c.setTransform(K,0,0,K,0,0);
   else if(v==='calm')owenProfile(c,250,300,1.05,0);
   else if(v==='bare')owenProfile(c,250,300,1.05,0,{noPhones:true});
   else if(v==='alert')owenProfile(c,236,300,1.05,0.03,{alert:true,cupOff:true});
+  else if(v==='b')owenProfile(c,250,300,1.05,0,{v:'b'});
+  else if(v==='bbare')owenProfile(c,250,300,1.05,0,{v:'b',noPhones:true});
+  else if(v==='tq'){c.save();c.translate(LW/2,300);c.scale(2.7,2.7);c.translate(-200,-138);drawRecorte(c,threeQ(),'calm',2.7,'final');c.restore();}
   else if(v==='right')owenProfile(c,232,300,1.05,0,{flip:true});
 }
 function yellowPole(c,x){const pg=c.createLinearGradient(x,0,x+34,0);pg.addColorStop(0,'#8A7426');pg.addColorStop(.5,'#E4C54A');pg.addColorStop(1,'#8A7426');c.fillStyle=pg;c.fillRect(x,0,34,1080);}
@@ -1128,7 +1139,7 @@ function drawRecorte(c,shapes,mood,scale,variant){const PAL=Object.assign({},CUT
     if(sh.role==='jacket'&&variant!=='final'&&!shapes.person){c.save();c.clip(sh.path);if(variant==='final'){c.translate(200,0);c.scale(0.9,1);c.translate(-200,0);}c.strokeStyle='rgba(255,255,255,0.14)';c.lineWidth=2.4;c.lineJoin='round';
       c.beginPath();c.moveTo(181,170);c.lineTo(185,250);c.lineTo(191,393);c.stroke();c.beginPath();c.moveTo(219,170);c.lineTo(215,250);c.lineTo(209,393);c.stroke();
       c.strokeStyle='rgba(0,0,0,0.4)';c.lineWidth=2;line(c,138,332,172,335);line(c,262,332,228,335);c.restore();}
-    if(sh.face){c.save();c.clip(sh.path);c.fillStyle='rgba(0,0,0,0.10)';c.fillRect(200,40,60,120);c.restore();c.save();c.transform(shapes.hs,0,0,shapes.hs,200*(1-shapes.hs),176*(1-shapes.hs)+(shapes.dy||0));if(shapes.rot){c.translate(200,176);c.rotate(shapes.rot);c.translate(-200,-176);}face(c,mood,Object.assign({stubble:null,brow:'#1B1817',browW:4,white:'#EDE9E5',iris:'#1B1817',lid:'#3a3431',lidW:2.6,thin:1.6,nose:'rgba(90,82,77,0.9)',noseW:2.4,mouth:'#5a524d',mouthFill:'#2a2523'},shapes.faceOpts||{}));if(shapes.faceExtra)shapes.faceExtra(c,mood);c.restore();
+    if(sh.face){c.save();c.clip(sh.path);c.fillStyle='rgba(0,0,0,0.10)';c.fillRect(200,40,60,120);c.restore();c.save();c.transform(shapes.hs,0,0,shapes.hs,200*(1-shapes.hs),176*(1-shapes.hs)+(shapes.dy||0));if(shapes.rot){c.translate(200,176);c.rotate(shapes.rot);c.translate(-200,-176);}if(shapes.fx){c.translate(200,0);c.scale(shapes.fx,1);c.translate(-200+(shapes.shift||0),0);}face(c,mood,Object.assign({stubble:null,brow:'#1B1817',browW:4,white:'#EDE9E5',iris:'#1B1817',lid:'#3a3431',lidW:2.6,thin:1.6,nose:'rgba(90,82,77,0.9)',noseW:2.4,mouth:'#5a524d',mouthFill:'#2a2523'},shapes.faceOpts||{}));if(shapes.faceExtra)shapes.faceExtra(c,mood);c.restore();
       if(variant==='final'){
         c.save();c.clip(sh.path);c.transform(shapes.hs,0,0,shapes.hs,200*(1-shapes.hs),176*(1-shapes.hs));
         const fg=c.createLinearGradient(0,72,0,88);fg.addColorStop(0,'rgba(0,0,0,.26)');fg.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=fg;c.fillRect(150,72,100,16);c.restore();
