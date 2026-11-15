@@ -2,6 +2,10 @@
 
 Reglas fijadas por Edgar. Revisar antes de dibujar cualquier toma nueva.
 
+## Método de trabajo
+- Primero el guión y los escenarios por escrito. Las láminas se hacen solo cuando Edgar aprueba el texto. Después, video.
+- La venda del hombre pálido es gasa enrollada con cinta y sangre, no un parche.
+
 ## Lugar y tiempo
 - El autobús va por la carretera de acceso al aeropuerto de Berlín: campo abierto, pista a la vista, casi sin edificios.
 - Es de noche y llueve. El vuelo de Owen: BER a LHR, vuelo 983, sale 19:40, asiento 14A.
@@ -24,4 +28,5 @@ Reglas fijadas por Edgar. Revisar antes de dibujar cualquier toma nueva.
 - Madre: curita en un dedo (sangre en la escena 8). Señor: paraguas (palanca en la 7). Ejecutivo: gritos (atraen al infectado). Adolescente: graba todo.
 
 ## Sonido
+- En la parte de los celulares (escena 3, láminas 1 a 3) solo se oyen muchas alarmas de teléfono, sin música.
 - Castañeo de dientes (1) y mezcla de ambiente tranquilo (3). Dientes sucios, astillados y con sangre.
