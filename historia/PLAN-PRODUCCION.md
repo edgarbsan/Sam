@@ -53,6 +53,8 @@ Stop motion de papel recortado y fieltro, sombrío: títeres hechos a mano fotog
 | Imagen | Nano Banana Pro | 1,218 |
 | Efecto de sonido | Sound Effects v2 | 100 |
 | Música | Music v2.5 | 900 |
+| Imagen en vidIQ (acepta referencias y fondo transparente) | — | 22 de vidIQ |
+| Música en vidIQ | — | 25 de vidIQ |
 Por defecto las herramientas piden 4 variantes de imagen: siempre pedir 1. Con 9,712 créditos alcanzan unas 50 imágenes, o menos si se suma sonido y música.
 
 ## Pedidos listos para la prueba (290 créditos)
@@ -63,3 +65,5 @@ Por defecto las herramientas piden 4 variantes de imagen: siempre pedir 1. Con 9
 | Fecha | Herramienta | Qué se generó | Créditos antes | Créditos después | Archivo |
 |---|---|---|---|---|---|
 | 15 nov | ElevenLabs | Intento de imagen de estilo y lluvia: no arrancó (generaciones gratis saturadas) | 9,712 | 9,712 | — |
+| 15 nov | ElevenLabs | Segundo intento, con autorización: no arrancó (generaciones gratis saturadas) | 9,712 | 9,712 | — |
+| 15 nov | vidIQ | Imagen de estilo: Owen contra el vidrio (1 imagen, 22 créditos) | 150 | 128 | `piezas/estilo-01-owen-ventana.jpg` |
