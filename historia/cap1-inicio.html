@@ -983,7 +983,7 @@ function owenProfile(c,x,y,k,rot,o){o=o||{};c.save();c.translate(x,y);if(o.flip)
   // oreja
   c.fillStyle='#DDD5CE';c.beginPath();c.ellipse(26,4,15,23,0.1,0,TAU);c.fill();L('rgba(0,0,0,.28)',3,'M30 -8 C20 -6 18 8 26 16');
   // pelo: frente recta, patilla corta, nuca y mechón de tres puntas
-  F('#1B1817','M-84 -58 L-78 -92 C-56 -128 50 -138 96 -78 C114 -40 112 10 98 44 C92 58 84 66 74 70 C70 50 62 30 56 12 C50 -10 40 -24 24 -30 C8 -34 -8 -26 -14 -6 L-24 -6 L-26 -56 Z M-48 -116 C-50 -130 -44 -142 -34 -148 C-34 -138 -30 -128 -24 -120 Z M-24 -122 C-24 -138 -16 -150 -4 -156 C-6 -144 -4 -134 0 -124 Z M-2 -124 C2 -138 12 -148 24 -150 C19 -140 18 -132 20 -122 Z');
+  F('#1B1817','M-84 -58 L-78 -92 C-56 -128 50 -138 96 -78 C110 -48 110 -14 102 10 C98 20 92 26 86 28 C80 10 70 -8 56 -20 C46 -30 34 -36 18 -38 C4 -38 -8 -32 -14 -24 L-24 -24 L-26 -56 Z M-48 -116 C-50 -130 -44 -142 -34 -148 C-34 -138 -30 -128 -24 -120 Z M-24 -122 C-24 -138 -16 -150 -4 -156 C-6 -144 -4 -134 0 -124 Z M-2 -124 C2 -138 12 -148 24 -150 C19 -140 18 -132 20 -122 Z');
   // cara
   c.lineCap='round';c.strokeStyle='#1B1817';c.lineWidth=7;c.beginPath();if(o.alert){c.moveTo(-86,-30);c.lineTo(-54,-40);}else{c.moveTo(-86,-35);c.lineTo(-54,-36);}c.stroke();
   if(o.alert){c.fillStyle='#EDE9E5';c.beginPath();c.moveTo(-80,-12);c.quadraticCurveTo(-66,-27,-50,-13);c.quadraticCurveTo(-66,-1,-80,-12);c.fill();c.fillStyle='#1B1817';c.beginPath();c.arc(-70,-13,5,0,TAU);c.fill();c.fillStyle='#fff';c.beginPath();c.arc(-71.5,-14.5,1.4,0,TAU);c.fill();L('#3a3431',3,'M-80 -12 Q-66 -27 -50 -13');}
