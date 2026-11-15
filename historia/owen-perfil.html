@@ -1071,10 +1071,9 @@ function owenProfile(c,x,y,k,rot,o){o=o||{};rot=rot||0;
     pPiece(c,limb([[192,156],[136,34]],[29,21]),'#2B2725',()=>{pLG(c,110,0,220,0,[[0,'rgba(255,255,255,.08)'],[1,'rgba(0,0,0,.22)']]);});
     pLine(c,'M120 52 L158 36','rgba(0,0,0,.42)',3);pLine(c,'M123 58 L161 42','rgba(214,206,200,.28)',1.4,[3,3]);
     const hand=new Path2D();hand.addPath(ell(cx+40,cy+8,29,35,0.2));
-    for(let i=0;i<4;i++)addCapsule(hand,cx+30,cy-24+i*16,cx-6+i*2,cy-29+i*17.5,9,8);
-    addCapsule(hand,cx+36,cy+38,cx+8,cy+50,9.5,8.5);
+    for(let i=0;i<4;i++)addCapsule(hand,cx+30,cy-22+i*13,cx-6+i*2,cy-26+i*14,8.5,7.5);
     pPiece(c,hand,SK,()=>{pRG(c,cx+6,cy-12,2,70,[[0,'rgba(255,255,255,.12)'],[1,'rgba(0,0,0,.12)']]);},6);
-    for(let i=0;i<3;i++)pLine(c,`M${cx+28} ${cy-16+i*16} L${cx+i*2} ${cy-20+i*17.5}`,'rgba(0,0,0,.16)',1.6);
+    for(let i=0;i<3;i++)pLine(c,`M${cx+28} ${cy-15.5+i*13} L${cx+i*2} ${cy-19.5+i*14}`,'rgba(0,0,0,.16)',1.6);
   }
   c.restore();
 }
