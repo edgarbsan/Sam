@@ -42,7 +42,24 @@ Cada fase termina con la aprobación de Edgar. No se pasa a la siguiente sin ell
 - Antes de cada sesión de generación se revisa el saldo; se detiene al llegar a la reserva.
 - El video generado por IA queda fuera hasta que una toma concreta lo justifique.
 
+## Estilo visual elegido para la prueba
+Stop motion de papel recortado y fieltro, sombrío: títeres hechos a mano fotografiados con luz baja de cine, negros profundos, poca profundidad de campo, colores apagados con un solo acento durazno, textura de papel visible. Conserva el diseño aprobado de Owen (pelo negro corto con frente recta y mechón de tres puntas, sin barba, piel clara, audífonos grafito, chamarra gris, playera durazno).
+
+## Costos cotizados (15 de noviembre, una variante por pedido, sin gastar)
+| Pedido | Modelo | Créditos |
+|---|---|---|
+| Imagen | GPT Image 2.5 Sunburst (el predeterminado) | 190 |
+| Imagen | Nano Banana 2 Lite | 206 |
+| Imagen | Nano Banana Pro | 1,218 |
+| Efecto de sonido | Sound Effects v2 | 100 |
+| Música | Music v2.5 | 900 |
+Por defecto las herramientas piden 4 variantes de imagen: siempre pedir 1. Con 9,712 créditos alcanzan unas 50 imágenes, o menos si se suma sonido y música.
+
+## Pedidos listos para la prueba (290 créditos)
+1. **Imagen de estilo** (GPT Image 2.5 Sunburst, 1 variante): "Stop-motion animation still, handmade paper-cutout and felt puppets, dark moody horror, cinematic low-key lighting. Interior of the upper deck of a double-decker bus at night, heavy rain on the windows, yellow handrails, dim fluorescent ceiling light. In the foreground a young man in his late twenties seen in profile, leaning his forehead on the wet window: short black hair with a straight fringe and a small three-pointed tuft on top, clean-shaven, pale skin, graphite over-ear headphones, dark gray jacket over a peach-orange t-shirt. Outside: open flat land and distant airport runway lights. Shallow depth of field, deep blacks, desaturated palette with a single peach accent, visible paper texture, soft handmade shadows. 16:9."
+2. **Efecto de sonido** (1 variante): "Heavy rain drumming on the metal roof and windows of a bus, heard from inside, steady, with a low engine hum".
+
 ## Registro de gasto
 | Fecha | Herramienta | Qué se generó | Créditos antes | Créditos después | Archivo |
 |---|---|---|---|---|---|
-| (vacío: aún no se ha generado nada) | | | | | |
+| 15 nov | ElevenLabs | Intento de imagen de estilo y lluvia: no arrancó (generaciones gratis saturadas) | 9,712 | 9,712 | — |
