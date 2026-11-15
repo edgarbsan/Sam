@@ -6,6 +6,12 @@ Reglas fijadas por Edgar. Revisar antes de dibujar cualquier toma nueva.
 - Primero el guión y los escenarios por escrito. Las láminas se hacen solo cuando Edgar aprueba el texto. Después, video.
 - La venda del hombre pálido es gasa enrollada con cinta y sangre, no un parche.
 
+## Realismo (desde la escena 4)
+- Las miradas cuadran entre planos. Una sola luz (la fluorescente del techo). Reflejos de noche oscuros y de poco contraste.
+- Primer plano desenfocado (hombro, audífono) cuando vemos desde Owen. Ningún acercamiento dentro de un reflejo.
+- Reacciones graduales: de la duda al miedo. Cada personaje en su asiento en todos los planos.
+- El inspector va de civil, con credencial.
+
 ## Lugar y tiempo
 - El autobús va por la carretera de acceso al aeropuerto de Berlín: campo abierto, pista a la vista, casi sin edificios.
 - Es de noche y llueve. El vuelo de Owen: BER a LHR, vuelo 983, sale 19:40, asiento 14A.
