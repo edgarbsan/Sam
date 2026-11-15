@@ -1224,7 +1224,31 @@ function es7(cv){const c=B0(cv);
   c.strokeStyle='rgba(214,206,200,.28)';c.lineWidth=4;c.setLineDash([10,10]);c.beginPath();c.moveTo(1500,960);c.lineTo(hx+250,hy+170);c.stroke();c.setLineDash([]);
   bigHand(c,hx,hy,5.2,-52,true,'#E8E1DB');
   vig(c,.65);grain(c);}
-function es8(cv){const c=B0(cv);sceneAt(c,8,820,330,3.1,[8]);vig(c,.55);grain(c);}
+function es8(cv){const c=B0(cv);
+  const R=sceneAt(c,8,820,330,3.1,[8],2.5,true),G=seatGeo(8),u=3.1,top=330+215*u;
+  c.fillStyle='rgba(0,0,0,.62)';c.fillRect(0,0,1920,1080);
+  seatPerson(c,'owen',820,330,u,top+2,{o:0.12,gx:0,gy:1,k:0.3,tx:0,ty:3,lean:0.015,rise:0,bl:0,br:0,m:0});
+  seatBase(c,820,G.s*R.Z,top,R.map(0,G.g.fl-8*G.s)[1]);
+  // luz del celular sobre su cara y su pecho
+  c.save();c.globalCompositeOperation='lighter';const lg=c.createRadialGradient(830,900,20,830,760,520);lg.addColorStop(0,'rgba(190,215,240,.34)');lg.addColorStop(1,'rgba(190,215,240,0)');c.fillStyle=lg;c.fillRect(0,0,1920,1080);c.restore();
+  // celular con el vuelo
+  c.save();c.translate(830,900);c.rotate(-0.05);const pw=250,ph=440;
+  c.shadowColor='rgba(170,205,240,.55)';c.shadowBlur=70;c.fillStyle='#111';c.beginPath();c.roundRect(-pw/2,-ph/2,pw,ph,34);c.fill();c.shadowBlur=0;
+  c.save();c.beginPath();c.roundRect(-pw/2+9,-ph/2+9,pw-18,ph-18,26);c.clip();
+  const sg=c.createLinearGradient(0,-ph/2,0,ph/2);sg.addColorStop(0,'#1a1f26');sg.addColorStop(1,'#0c0f13');c.fillStyle=sg;c.fillRect(-pw/2,-ph/2,pw,ph);
+  const L=-pw/2+28,Rr=pw/2-28,T=-ph/2;
+  c.fillStyle='#9AA7B2';c.font=`500 11px ${FD}`;if('letterSpacing' in c)c.letterSpacing='3px';c.textAlign='left';c.fillText('BOARDING PASS',L,T+60);if('letterSpacing' in c)c.letterSpacing='0px';
+  c.fillStyle='#fff';c.font=`600 44px ${FD}`;c.fillText('BER',L-2,T+118);c.textAlign='right';c.fillText('LHR',Rr+2,T+118);
+  c.fillStyle='#CF825A';c.textAlign='center';c.font=`500 28px ${FD}`;c.fillText('→',0,T+112);
+  c.fillStyle='#7C7470';c.font=`400 11px ${FD}`;c.textAlign='left';c.fillText('Berlin',L,T+140);c.textAlign='right';c.fillText('London',Rr,T+140);
+  c.fillStyle='#2a2f35';c.fillRect(L,T+160,Rr-L,2);c.textAlign='left';
+  for(const [lab,val,cx_,cy_] of [['FLIGHT','983',0,0],['DEPARTS','19:40',1,0],['GATE','—',0,1],['SEAT','14A',1,1]]){const x=L+cx_*100,y=T+196+cy_*62;c.fillStyle='#7C7470';c.font=`500 10px ${FD}`;c.fillText(lab,x,y);c.fillStyle='#fff';c.font=`600 22px ${FD}`;c.fillText(val,x,y+24);}
+  c.strokeStyle='#7C7470';c.lineWidth=1.5;c.beginPath();c.roundRect(L,T+326,110,30,15);c.stroke();c.fillStyle='#fff';c.font=`600 12px ${FD}`;c.textAlign='center';c.fillText('ON TIME',L+55,T+346);
+  const qr=mulberry32(21);c.fillStyle='#fff';for(let i=0;i<14;i++)for(let j=0;j<5;j++)if(qr()<0.5)c.fillRect(-56+i*8,T+368+j*8,8,8);
+  c.restore();c.restore();
+  // manos que lo sostienen
+  c.save();c.shadowColor='rgba(0,0,0,.5)';c.shadowBlur=14;bigHand(c,690,1000,2.6,18,true,'#E8E1DB');bigHand(c,970,1000,2.6,-18,false,'#E8E1DB');c.restore();
+  vig(c,.7);grain(c);}
 const BOARDS2={21:es1,22:es2,23:es3,24:es4,25:es5,26:es6,27:es7,28:es8};
 function steam(c,y0,y1,k,xs){
   k=(k===true||k==null)?1:k;
