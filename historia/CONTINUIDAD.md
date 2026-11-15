@@ -16,7 +16,8 @@ Reglas fijadas por Edgar. Revisar antes de dibujar cualquier toma nueva.
 
 ## Fondos y personajes
 - Los acercamientos conservan el autobús real detrás: vecinos de asiento, filas, ventana, pasamanos.
-- No mostrar al hombre pálido ni al infectado antes de su escena. Los gritos se oyen antes de verse.
+- El hombre pálido aparece desde la escena 3 (sube por la escalera, calmado, con la mano vendada). El infectado completo no se muestra antes de su escena. Los gritos se oyen antes de verse.
+- La ambulancia pasa por la ventana en la escena 3; no hay avión en ninguna ventana después del inicio.
 - Sin narración. Todo se cuenta con imagen y sonido.
 
 ## Rasgos que se siembran
