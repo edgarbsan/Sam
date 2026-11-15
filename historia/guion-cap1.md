@@ -15,12 +15,13 @@ Las alarmas de teléfono suenan juntas, sin música. Alerta oficial en alemán. 
 ## Escena 4: El detonante (guión aprobado, láminas hechas)
 Todo se ve en el reflejo del vidrio, mudo, con la música de Owen.
 1. 0:00 El inspector sube por la escalera con la credencial.
-2. 0:10 Pide el boleto al hombre de la mano vendada.
-3. 0:20 Insiste y le toma el brazo, sobre la venda.
-4. 0:30 Lo jala; el hombre se agita (agitación = conversión rápida).
-5. 0:38 La venda se desliza; apenas asoma la piel con un rastro oscuro. No se ve la herida.
-6. 0:44 Forcejeo; los pasajeros se hacen a un lado.
-7. 0:52 El inspector lo arrastra a la escalera y bajan. Owen los ve de reojo en el reflejo.
+2. 0:07 Owen levanta la vista hacia el vidrio y presta atención al inspector, con los audífonos puestos.
+3. 0:14 Pide el boleto al hombre de la mano vendada.
+4. 0:21 Insiste y le toma el brazo, sobre la venda.
+5. 0:28 Lo jala; el hombre se agita (agitación = conversión rápida).
+6. 0:35 La venda se desliza; apenas asoma la piel con un rastro oscuro. No se ve la herida.
+7. 0:41 Forcejeo; los pasajeros se hacen a un lado.
+8. 0:50 El inspector lo arrastra a la escalera y bajan. Owen los sigue con la mirada fija, con las cejas arriba, hasta que desaparecen.
 
 ## Escenas 5 a 9 (guion original, por reescribir antes de las láminas)
 5. La conversión: caos abajo visto por el espejo convexo de la escalera, mudo, solo música.
