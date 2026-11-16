@@ -1,6 +1,6 @@
 # Plan de producción, versión 2 (Autor: BS)
 
-Estado: **propuesta en espera de aprobación de Edgar. No se ha construido ni animado nada de esta versión.**
+Estado: **plan aprobado el 16 de noviembre. Fase 1 terminada; en espera de aprobación para la fase 2.**
 Regla de trabajo: primero el plan, después las herramientas, y nada se usa ni se gasta sin aprobación.
 
 ## Lo que pide Edgar (16 de noviembre de 2026)
@@ -58,6 +58,22 @@ Equipo disponible: 4 núcleos, 15 GB de memoria, 30 GB de disco.
 5. **Ensayo de cada escena en baja calidad,** aprobación, y render final.
 6. **Sonido y música.**
 7. **Montaje y exportación.**
+
+## Resultado de la fase 1 (16 de noviembre de 2026)
+Hecho: el piso de arriba del autobús a escala real (2.4 m de ancho, 9 m de largo, 7 filas de asientos, pasamanos, escalera al fondo, ventanas con vidrio, pista con luces afuera) y dos maniquíes con esqueleto de 16 huesos, cada uno en su asiento. Tres cámaras dentro del mismo mundo. Sin animación y sin gasto.
+Archivos: `3d/escena.py` (la escena completa en código) y `3d/pruebas/fase1-cam*.jpg`.
+Para reinstalar Blender en una sesión nueva: `pip install bpy` (menos de un minuto).
+
+| Modo | Tamaño | Tiempo por cuadro | 9 minutos a 12 cuadros/s | 9 minutos a 24 cuadros/s |
+|---|---|---|---|---|
+| Realista, calidad alta (64 muestras) | 1920×1080 | 215 s | 16 días | 32 días |
+| Realista, calidad media (48 muestras) | 1280×720 | 81 s | 6 días | 12 días |
+| Realista rápido (6 muestras y limpieza de ruido) | 1280×720 | 14 s | 25 horas | 50 horas |
+| Tiempo real de Blender (sin tarjeta gráfica) | 1280×720 | 14 s | 25 horas | 50 horas |
+
+Conclusión: el modo «realista rápido» da la misma velocidad que el motor de tiempo real y mejor imagen (vidrios, reflejos, luces de la pista). El motor de tiempo real pierde los vidrios y mete ruido en este equipo.
+Recomendación: Blender con el modo realista rápido a 1280×720 y 12 cuadros por segundo, ampliado a 1080 en el montaje. Calidad alta solo para imágenes fijas de aprobación. Ensayos de movimiento a tamaño pequeño.
+Pendiente de comprobar en la fase 4: si la limpieza de ruido parpadea de un cuadro a otro.
 
 ## Riesgo principal
 El tiempo de render. Nueve minutos a 24 cuadros por segundo son casi 13,000 cuadros. Si cada cuadro tarda 10 segundos, son 36 horas de cálculo. Salidas posibles: animar a 12 cuadros por segundo (aspecto de stop motion, que va con los títeres), renderizar a menor tamaño, o hacerlo por tandas. La fase 1 lo mide antes de comprometer nada.
