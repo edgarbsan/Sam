@@ -1,70 +1,83 @@
-# Plan de producción con herramientas (Autor: BS)
+# Plan de producción, versión 2 (Autor: BS)
 
-Objetivo: mejorar el arte y el sonido sin desperdiciar créditos. Regla central: **se genera una vez, se reutiliza siempre**.
+Estado: **propuesta en espera de aprobación de Edgar. No se ha construido ni animado nada de esta versión.**
+Regla de trabajo: primero el plan, después las herramientas, y nada se usa ni se gasta sin aprobación.
 
-## Saldos al 15 de noviembre de 2026
-- ElevenLabs (plan gratis): 10,000 créditos al mes, usados 288. Renueva el 13 de diciembre.
-- vidIQ (plan gratis): 150 créditos, usados 0. Renueva el 13 de diciembre.
-- Pendiente de confirmar: la licencia del plan gratis de ElevenLabs para uso comercial en YouTube.
+## Lo que pide Edgar (16 de noviembre de 2026)
+- Atmósfera sombría: debe dar miedo. Público: mayores de 14 años.
+- Formato: video. La obra es visual: lo que pasa debe entenderse viendo.
+- Movimientos anatómicamente correctos y fluidos.
+- Continuidad: si un personaje está junto a otro o en una posición, así sigue en la toma siguiente.
+- Realismo, porque Owen sobrevive con ingenio aplicando el método: sus soluciones físicas deben creerse.
+- Se permite simplificar los diseños y limitar un poco la cantidad de movimientos para que la animación sea posible.
+- Lo hecho hasta ahora no sirve como imagen final: los movimientos molestan, las posiciones son incoherentes y no se distingue qué pasa.
 
-## Quién hace qué
-| Tarea | Herramienta | Costo |
-|---|---|---|
-| Guión, escenarios, continuidad | Texto en el repositorio | Gratis |
-| Arte de personajes (por piezas) y fondos | ElevenLabs, imágenes + quitar fondo | Créditos |
-| Efectos de sonido y música | ElevenLabs | Créditos |
-| Distancia y sala del sonido (gritos desde abajo) | ElevenLabs, efectos de audio | Sin costo según la herramienta |
-| Animación, luz, cámara, montaje, exportación | Código (como hasta ahora) | Gratis |
-| Miniatura, título y descripción para YouTube | vidIQ | Créditos (al publicar) |
-| Respaldo de piezas generadas | Repositorio (y Drive si se quiere) | Gratis |
-| Video generado por IA | Solo toma por toma, con aprobación expresa | Créditos (lo más caro) |
+## Por qué falló lo anterior
+1. **Cada toma se dibujó por separado.** No existe un mundo único: los asientos y las personas se recolocan en cada lámina. Por eso se rompe la continuidad.
+2. **Los personajes son recortes planos, sin esqueleto.** Un brazo es una figura que gira; no tiene huesos ni límites de articulación. Por eso los movimientos no son anatómicos.
+3. **Figuras de frente y planas.** Las acciones (agarrar, voltear, levantarse) no se leen porque no hay profundidad ni perfil real.
 
-## Fases y puertas de aprobación
-Cada fase termina con la aprobación de Edgar. No se pasa a la siguiente sin ella.
+## La solución: un solo escenario en 3D
+Construir una vez el autobús en tres dimensiones, con cada pasajero en su asiento y con un esqueleto real. Cada toma es una cámara distinta dentro de ese mismo mundo.
+- **Continuidad:** no se puede romper, porque nadie se redibuja; solo cambia la cámara.
+- **Anatomía:** huesos de longitud fija, articulaciones con límites, manos y pies que apoyan donde deben.
+- **Lectura:** con profundidad y luz real, las acciones se ven de lado, de espaldas o de frente según convenga.
+- **Sombrío y realista:** luces con origen (tubo del techo, faros, celulares) y sombras reales.
+- **El método de Owen:** la carriola, el paraguas y la escalera tienen tamaño y peso reales; sus soluciones se pueden mostrar paso a paso.
 
-0. **Decisiones previas (gratis).** Elegir el estilo visual final. Terminar por escrito el guión de las escenas 5 a 9. Sin esto no se sabe qué piezas hacen falta.
-1. **Inventario (gratis).** Lista cerrada de todo lo que hay que generar: personajes y vistas, fondos, objetos, sonidos, música. Cada pieza con su texto de pedido (prompt) escrito y aprobado antes de generar.
-2. **Prueba de costo (gasto mínimo).** Una generación de cada tipo (un efecto de sonido, una imagen, quitar un fondo). Se mide el saldo antes y después. Con eso se calcula el costo del capítulo completo.
-3. **Presupuesto.** Con los costos reales: qué alcanza con el plan gratis, qué se reparte entre meses y si conviene subir de plan. Se reserva 20 % del saldo para correcciones.
-4. **Hoja de estilo (1 a 3 imágenes).** Una imagen clave que fije el aspecto (luz, textura, color). Todo lo demás se genera con esa imagen como referencia.
-5. **Personajes.** Owen primero, con su diseño aprobado como referencia. Luego los demás. Cada uno una vez, por piezas, con fondo quitado.
-6. **Fondos.** Interior del piso de arriba, ventana, escalera con espejo, carretera del aeropuerto.
-7. **Sonido y música.** Lluvia, motor, dientes, alarmas de teléfono, gritos, golpes, sirena, respiración. Una canción de Owen.
-8. **Animación y montaje (gratis).** En código, escena por escena, con las piezas generadas.
-9. **Publicación.** Miniatura y textos con vidIQ.
+## Estilo propuesto
+Espacio, luz y objetos realistas. Personajes como títeres de proporción humana real, con caras simplificadas y muy legibles (ojos, cejas, párpados y boca que se mueven), en la línea del Owen de fieltro que ya se generó. No son humanos fotográficos: eso no se puede lograr con código y mantenerlo coherente.
 
-## Reglas para no desperdiciar
-- Nada se genera sin su texto de pedido aprobado.
-- Primero en calidad y tamaño bajos; solo la versión elegida se hace en calidad alta.
-- Se corrige editando la pieza, no generándola de nuevo.
-- Cada pieza generada se guarda de inmediato en `historia/piezas/` y se anota en el registro.
-- Nunca se repite una llamada de generación para "reintentar": cobra dos veces.
-- Antes de cada sesión de generación se revisa el saldo; se detiene al llegar a la reserva.
-- El video generado por IA queda fuera hasta que una toma concreta lo justifique.
+## Herramientas encontradas (comprobadas como disponibles, sin usarlas)
+| Herramienta | Para qué | Costo | Riesgo |
+|---|---|---|---|
+| Blender, manejado por código | Escenario 3D, esqueletos, luz, render | Gratis | Sin tarjeta gráfica; el tiempo por cuadro hay que medirlo |
+| three.js en navegador sin pantalla | Alternativa más rápida y menos realista; sirve para ensayos | Gratis | Menor calidad de luz |
+| Modelos humanos libres (MakeHuman) | Cuerpos con anatomía correcta | Gratis | Falta comprobar que se instalan aquí |
+| Bibliotecas de movimiento capturado | Caminar, forcejear | Gratis; Mixamo requiere la cuenta de Edgar | Hay que adaptarlas a cada personaje |
+| vidIQ (106 créditos) y ElevenLabs (9,712) | Texturas, caras de referencia, fondo de la ventana, sonido | Créditos | ElevenLabs gratis suele estar saturado |
+| Video con IA sobre el render 3D | Capa final opcional de realismo, conservando posiciones y movimientos | Créditos, se cotiza antes | Puede alterar caras entre tomas |
+| ffmpeg | Montaje y exportación | Gratis | Ninguno |
 
-## Estilo visual elegido para la prueba
-Stop motion de papel recortado y fieltro, sombrío: títeres hechos a mano fotografiados con luz baja de cine, negros profundos, poca profundidad de campo, colores apagados con un solo acento durazno, textura de papel visible. Conserva el diseño aprobado de Owen (pelo negro corto con frente recta y mechón de tres puntas, sin barba, piel clara, audífonos grafito, chamarra gris, playera durazno).
+Equipo disponible: 4 núcleos, 15 GB de memoria, 30 GB de disco.
 
-## Costos cotizados (15 de noviembre, una variante por pedido, sin gastar)
-| Pedido | Modelo | Créditos |
-|---|---|---|
-| Imagen | GPT Image 2.5 Sunburst (el predeterminado) | 190 |
-| Imagen | Nano Banana 2 Lite | 206 |
-| Imagen | Nano Banana Pro | 1,218 |
-| Efecto de sonido | Sound Effects v2 | 100 |
-| Música | Music v2.5 | 900 |
-| Imagen en vidIQ (acepta referencias y fondo transparente) | — | 22 de vidIQ |
-| Música en vidIQ | — | 25 de vidIQ |
-Por defecto las herramientas piden 4 variantes de imagen: siempre pedir 1. Con 9,712 créditos alcanzan unas 50 imágenes, o menos si se suma sonido y música.
+## Cómo sabremos que está bien (criterios de aceptación)
+1. **Mapa de asientos único.** Cada personaje conserva asiento, lado, ropa y objeto en todas las tomas.
+2. **Anatomía.** Ningún hueso cambia de largo, ninguna articulación se dobla al revés, nada atraviesa nada.
+3. **Lectura sin sonido.** Cada toma se entiende en silencio y se puede describir en una frase.
+4. **Fluidez.** Sin saltos de pose; cada gesto tiene preparación, acción y asentamiento.
+5. **Miedo.** Poca luz con origen claro, pero las caras y las manos importantes siempre se ven.
+6. **Vocabulario limitado.** Unas doce acciones reutilizables: respirar, parpadear, mirar, girar el torso, llevar la mano a la cabeza, agarrar, levantarse, caminar, jalar, retroceder, señalar, agacharse.
 
-## Pedidos listos para la prueba (290 créditos)
-1. **Imagen de estilo** (GPT Image 2.5 Sunburst, 1 variante): "Stop-motion animation still, handmade paper-cutout and felt puppets, dark moody horror, cinematic low-key lighting. Interior of the upper deck of a double-decker bus at night, heavy rain on the windows, yellow handrails, dim fluorescent ceiling light. In the foreground a young man in his late twenties seen in profile, leaning his forehead on the wet window: short black hair with a straight fringe and a small three-pointed tuft on top, clean-shaven, pale skin, graphite over-ear headphones, dark gray jacket over a peach-orange t-shirt. Outside: open flat land and distant airport runway lights. Shallow depth of field, deep blacks, desaturated palette with a single peach accent, visible paper texture, soft handmade shadows. 16:9."
-2. **Efecto de sonido** (1 variante): "Heavy rain drumming on the metal roof and windows of a bus, heard from inside, steady, with a low engine hum".
+## Fases, cada una con aprobación antes de pasar a la siguiente
+0. **Aprobación de este plan.**
+1. **Prueba técnica, gratis y sin animación.** Autobús en bloques grises con dos maniquíes sentados, vistos desde tres cámaras. Entrega: tres imágenes fijas y el tiempo real por cuadro. Decide si se trabaja con Blender o con three.js.
+2. **Owen en 3D, imágenes fijas.** Frente, perfil y espalda; seis expresiones; las doce acciones en pose. Se aprueba el personaje antes de moverlo.
+3. **Escenario completo, imágenes fijas.** Mapa de asientos, luz de calma y luz de pánico.
+4. **Prueba de movimiento.** Una sola toma de cinco segundos (Owen levanta el audífono).
+5. **Ensayo de cada escena en baja calidad,** aprobación, y render final.
+6. **Sonido y música.**
+7. **Montaje y exportación.**
+
+## Riesgo principal
+El tiempo de render. Nueve minutos a 24 cuadros por segundo son casi 13,000 cuadros. Si cada cuadro tarda 10 segundos, son 36 horas de cálculo. Salidas posibles: animar a 12 cuadros por segundo (aspecto de stop motion, que va con los títeres), renderizar a menor tamaño, o hacerlo por tandas. La fase 1 lo mide antes de comprometer nada.
+
+## Lo que se conserva
+El guión, el canon del contagio, las reglas de continuidad, las decisiones de sonido y el diseño de Owen como referencia.
+
+## Costos cotizados (15 de noviembre, una variante por pedido)
+| Pedido | Créditos |
+|---|---|
+| Imagen en ElevenLabs (modelo predeterminado) | 190 |
+| Imagen en ElevenLabs (mayor calidad) | 1,218 |
+| Efecto de sonido en ElevenLabs | 100 |
+| Música en ElevenLabs | 900 |
+| Imagen en vidIQ (acepta referencias y fondo transparente) | 22 de vidIQ |
+| Música en vidIQ | 25 de vidIQ |
 
 ## Registro de gasto
 | Fecha | Herramienta | Qué se generó | Créditos antes | Créditos después | Archivo |
 |---|---|---|---|---|---|
-| 15 nov | ElevenLabs | Intento de imagen de estilo y lluvia: no arrancó (generaciones gratis saturadas) | 9,712 | 9,712 | — |
-| 15 nov | ElevenLabs | Segundo intento, con autorización: no arrancó (generaciones gratis saturadas) | 9,712 | 9,712 | — |
-| 15 nov | vidIQ | Imagen de estilo: Owen contra el vidrio (1 imagen, 22 créditos) | 150 | 128 | `piezas/estilo-01-owen-ventana.jpg` |
-| 15 nov | vidIQ | Owen de cuerpo entero, fondo transparente, con el diseño aprobado como referencia (22 créditos) | 128 | 106 | `piezas/owen-01-cuerpo-entero.png` |
+| 15 nov | ElevenLabs | Dos intentos de imagen y lluvia: no arrancaron (cola gratis saturada) | 9,712 | 9,712 | — |
+| 15 nov | vidIQ | Imagen de estilo: Owen contra el vidrio | 150 | 128 | `piezas/estilo-01-owen-ventana.jpg` |
+| 15 nov | vidIQ | Owen de cuerpo entero, fondo transparente | 128 | 106 | `piezas/owen-01-cuerpo-entero.png` |

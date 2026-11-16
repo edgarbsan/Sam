@@ -2,6 +2,14 @@
 
 Reglas fijadas por Edgar. Revisar antes de dibujar cualquier toma nueva.
 
+## Criterios de Edgar (16 de noviembre de 2026)
+- Atmósfera sombría que dé miedo; público mayor de 14 años; formato video; la obra es visual.
+- Movimientos anatómicamente correctos y fluidos. Posiciones coherentes: quien está junto a alguien, sigue junto a él en la toma siguiente.
+- Realismo, para que el ingenio de Owen y su método se crean.
+- Se pueden simplificar diseños y limitar movimientos para lograrlo.
+- Primero el plan y las herramientas; nada se usa, gasta ni anima sin aprobación.
+- Lo hecho en 2D sirve como guión y referencia, no como imagen final.
+
 ## Método de trabajo
 - Primero el guión y los escenarios por escrito. Las láminas se hacen solo cuando Edgar aprueba el texto. Después, video.
 - La venda del hombre pálido es gasa enrollada con cinta y sangre, no un parche.
