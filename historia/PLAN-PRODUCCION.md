@@ -1,6 +1,6 @@
 # Plan de producción, versión 2 (Autor: BS)
 
-Estado: **plan aprobado el 16 de noviembre. Fase 1 terminada; en espera de aprobación para la fase 2.**
+Estado: **plan aprobado el 16 de noviembre. Fases 1 y 2 terminadas; en espera de aprobación de Owen en 3D para pasar a la fase 3.**
 Regla de trabajo: primero el plan, después las herramientas, y nada se usa ni se gasta sin aprobación.
 
 ## Lo que pide Edgar (16 de noviembre de 2026)
@@ -74,6 +74,13 @@ Para reinstalar Blender en una sesión nueva: `pip install bpy` (menos de un min
 Conclusión: el modo «realista rápido» da la misma velocidad que el motor de tiempo real y mejor imagen (vidrios, reflejos, luces de la pista). El motor de tiempo real pierde los vidrios y mete ruido en este equipo.
 Recomendación: Blender con el modo realista rápido a 1280×720 y 12 cuadros por segundo, ampliado a 1080 en el montaje. Calidad alta solo para imágenes fijas de aprobación. Ensayos de movimiento a tamaño pequeño.
 Pendiente de comprobar en la fase 4: si la limpieza de ruido parpadea de un cuadro a otro.
+
+## Resultado de la fase 2 (16 de noviembre de 2026)
+Formato de trabajo aprobado por Edgar: 1280×720 a 12 cuadros por segundo.
+Hecho: Owen en 3D con esqueleto de 46 huesos (columna, cuello, cabeza, brazos, piernas, cinco dedos por mano, ojos, párpados, cejas, boca). Mide 1.76 m. Las poses se resuelven con huesos de largo fijo; codos y rodillas doblan como bisagra.
+Archivos: `3d/base3d.py`, `3d/personaje.py`, `3d/hoja_owen.py`; imágenes en `3d/pruebas/fase2/` y hojas `3d/pruebas/fase2-hoja-*.jpg`; página `owen-3d.html`.
+Entregado: 4 vistas, 6 expresiones (calma, atento, duda, alarma, miedo, decisión), 12 poses del vocabulario y 3 acercamientos de manos. Sin gasto de créditos.
+Pendiente de afinar tras la aprobación: textura de tela, arrugas, detalle de cara y pelo.
 
 ## Riesgo principal
 El tiempo de render. Nueve minutos a 24 cuadros por segundo son casi 13,000 cuadros. Si cada cuadro tarda 10 segundos, son 36 horas de cálculo. Salidas posibles: animar a 12 cuadros por segundo (aspecto de stop motion, que va con los títeres), renderizar a menor tamaño, o hacerlo por tandas. La fase 1 lo mide antes de comprometer nada.
