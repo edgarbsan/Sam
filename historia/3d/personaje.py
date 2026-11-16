@@ -4,7 +4,8 @@
 # Las poses se resuelven con huesos de largo fijo; codos y rodillas doblan como bisagra.
 import bpy, bmesh, math
 from mathutils import Vector, Matrix
-from base3d import mat, terminar, capsula, elipsoide, col
+from base3d import mat, terminar, capsula, elipsoide, col, cadena, anillo
+import random
 
 R = math.radians
 LADOS = (('I', 1), ('D', -1))
@@ -81,16 +82,43 @@ class Personaje:
             bmesh.ops.delete(bm, geom=quita, context='FACES')
             for sx in (1, -1):
                 capsula(bm, (sx * .050, .012, 1.452), (sx * .172, .004, 1.408), .040, .052, 14)  # trapecio y hombro
-                elipsoide(bm, (sx * .046, -.030, 1.458), (.030, .040, .016), 12, 8)  # cuello de la chamarra
-        P('pecho', c['chamarra'], chamarra)
+        ch = P('pecho', c['chamarra'], chamarra)
+        tx = bpy.data.textures.new('arrugas', 'CLOUDS'); tx.noise_scale = .09
+        md = ch.modifiers.new('arrugas', 'DISPLACE'); md.texture = tx; md.strength = .005; md.mid_level = .5
+        def frente(x, z):  # superficie delantera de la chamarra
+            return .004 - .121 * math.sqrt(max(0.0, 1 - (x / .170) ** 2 - ((z - 1.20) / .33) ** 2))
+        def detalles(bm):
+            for sx in (1, -1):
+                cadena(bm, [(sx * .052, frente(.052, z) - .003, z) for z in [.94 + .048 * k for k in range(11)]], .0065, .0065)  # orilla con cierre
+                cadena(bm, [(sx * .072 + sx * .028 * k / 4, frente(.072 + .028 * k / 4, 1.06 - .012 * k) - .004, 1.06 - .012 * k) for k in range(5)], .0035, .0035, 6)  # bolsillo
+                pts = [(.064 * math.sin(a), .006 - .058 * math.cos(a), 1.452 + .012 * math.cos(a)) for a in [sx * (math.pi * (.18 + .82 * k / 9)) for k in range(10)]]
+                cadena(bm, pts, .0135, .0155, 10)  # cuello
+                capsula(bm, (sx * .034, -.050, 1.463), (sx * .062, -.074, 1.405), .0135, .006, 10)  # punta del cuello
+            n = 26; borde = []
+            for k in range(n + 1):
+                a = math.radians(25) + (2 * math.pi - math.radians(50)) * k / n
+                borde.append((-.105 * math.sin(a), .004 - .0745 * math.cos(a), .942))
+            cadena(bm, borde, .0085, .0085, 8)  # bajo
+        P('pecho', c['cierre'], detalles)
         P('cuello', c['piel'], lambda bm: capsula(bm, (0, .008, 1.42), (0, .002, 1.54), .049, .046))
         def cabeza(bm):
             cz, rz = 1.615, .115
-            for v in elipsoide(bm, (0, -.006, cz), (.083, .095, rz), 36, 24):
+            for v in elipsoide(bm, (0, -.006, cz), (.083, .095, rz), 40, 28):
                 if v.co.z < cz:
-                    f = 1 - .16 * ((cz - v.co.z) / rz) ** 1.6; v.co.x *= f; v.co.y = -.006 + (v.co.y + .006) * f
-            elipsoide(bm, (0, -.101, 1.607), (.0105, .015, .023), 12, 8)
-            for sx in (1, -1): elipsoide(bm, (sx * .080, .006, 1.622), (.008, .016, .024), 12, 8)
+                    f = 1 - .17 * ((cz - v.co.z) / rz) ** 1.6; v.co.x *= f; v.co.y = -.006 + (v.co.y + .006) * f
+            elipsoide(bm, (0, -.066, 1.668), (.056, .016, .010), 20, 10)                       # arco de las cejas
+            capsula(bm, (0, -.094, 1.656), (0, -.111, 1.606), .0085, .0105, 12)                # puente de la nariz
+            elipsoide(bm, (0, -.1135, 1.602), (.0118, .0105, .0098), 14, 10)                   # punta
+            for sx in (1, -1):
+                elipsoide(bm, (sx * .0112, -.1035, 1.597), (.0078, .0082, .0068), 10, 8)       # aletas
+                elipsoide(bm, (sx * .081, .006, 1.622), (.008, .017, .026), 12, 8)             # orejas
+                eye = Vector((sx * OJO_X, OJO_Y, OJO_Z))
+                vs = elipsoide(bm, eye, (.0188, .0188, .0188), 24, 16)                         # párpado de abajo
+                bmesh.ops.delete(bm, geom=[v for v in vs if v.co.z > eye.z - .0112 or v.co.y > eye.y + .006], context='VERTS')
+        def labios(bm):
+            elipsoide(bm, (0, -.0835, 1.5495), (.0145, .0062, .0052), 14, 8)                   # labio de abajo
+            elipsoide(bm, (0, -.0860, 1.5625), (.0060, .0045, .0034), 10, 6)                   # arco del labio de arriba
+        P('cabeza', c['labio'], labios)
         P('cabeza', c['piel'], cabeza)
         for s, sx in LADOS:
             eye = Vector((sx * OJO_X, OJO_Y, OJO_Z))
@@ -100,8 +128,9 @@ class Personaje:
                 vs = elipsoide(bm, eye, (.0190, .0190, .0190), 28, 18)
                 bmesh.ops.delete(bm, geom=[v for v in vs if v.co.z < eye.z + .0062 or v.co.y > eye.y + .007], context='VERTS')
             P(f'parpado.{s}', c['piel'], parp)
+            P(f'parpado.{s}', c['pelo'], lambda bm: cadena(bm, [eye + Vector((.01835 * math.sin(a), -.01835 * math.cos(a), .0063)) for a in [math.radians(-72 + 144 * k / 10) for k in range(11)]], .0013, .0013, 6))
             P(f'ceja.{s}', c['pelo'], lambda bm: capsula(bm, (sx * .013, -.0935, 1.668), (sx * .054, -.083, 1.667), .0046, .0036, 10))
-            P(f'comisura.{s}', c['labio'], lambda bm: capsula(bm, tuple(BOCA + Vector((0, -.0008, 0))), (sx * .021, -.0772, BOCA.z), .0028, .0022, 10))
+            P(f'comisura.{s}', c['labio_linea'], lambda bm: capsula(bm, tuple(BOCA + Vector((0, -.0012, 0))), (sx * .0215, -.0772, BOCA.z), .0021, .0013, 10))
         P('boca', c['boca'], lambda bm: elipsoide(bm, BOCA + Vector((0, .002, -.001)), (.016, .006, .012), 16, 10))
         for s, sx in LADOS:
             hx, hy = sx * .195, -.012
@@ -115,6 +144,12 @@ class Personaje:
             p0 = Vector((hx, hy - .034, .835)); d = Vector((0, -.5, -.87)).normalized()
             P(f'pulgar_a.{s}', c['piel'], lambda bm: capsula(bm, p0, p0 + d * .034, .0120, .0105, 10))
             P(f'pulgar_b.{s}', c['piel'], lambda bm: capsula(bm, p0 + d * .034, p0 + d * .062, .0105, .0086, 10))
+            S0, E0, W0 = (sx * .176, 0, 1.395), (sx * .195, .012, 1.11), (hx, hy, .875)
+            P(f'brazo.{s}', c['chamarra'], lambda bm: [anillo(bm, S0, E0, t, .0410 + .008 * (1 - t), .0056, inc) for t, inc in ((.86, .016), (.95, -.012))])
+            P(f'antebrazo.{s}', c['chamarra'], lambda bm: [anillo(bm, E0, W0, t, .0405 - .010 * t, .0052, inc) for t, inc in ((.07, -.014), (.74, .010))])
+            H0, K0, A0 = (sx * .09, 0, .93), (sx * .09, -.015, .50), (sx * .09, 0, .10)
+            P(f'muslo.{s}', c['pantalon'], lambda bm: [anillo(bm, H0, K0, t, .0555 + .022 * (1 - t), .0060, inc) for t, inc in ((.93, .016),)])
+            P(f'pierna.{s}', c['pantalon'], lambda bm: [anillo(bm, K0, A0, t, .0515 - .013 * t, .0056, inc) for t, inc in ((.06, -.014), (.88, .012), (.96, -.010))])
             P(f'muslo.{s}', c['pantalon'], lambda bm: capsula(bm, (sx * .09, 0, .93), (sx * .09, -.015, .50), .080, .058))
             P(f'pierna.{s}', c['pantalon'], lambda bm: capsula(bm, (sx * .09, -.015, .50), (sx * .09, 0, .10), .055, .042))
             P(f'pie.{s}', c['zapato'], lambda bm: elipsoide(bm, (sx * .09, -.072, .048), (.047, .128, .046)))
@@ -207,20 +242,36 @@ class Personaje:
 
 # ----- Owen -----
 def materiales_owen():
-    return dict(piel=mat('o_piel', (0.63, 0.57, 0.52), 0.72, bump=.25, escala=900), playera=mat('o_playera', (0.60, 0.21, 0.09), 0.92, sheen=.15, bump=.5),
-                chamarra=mat('o_chamarra', (0.075, 0.072, 0.070), 0.95, sheen=.15, bump=.6), pantalon=mat('o_pantalon', (0.020, 0.020, 0.024), 0.95, sheen=.1, bump=.5),
-                zapato=mat('o_zapato', (0.03, 0.03, 0.032), 0.8, bump=.3), suela=mat('o_suela', (0.30, 0.29, 0.27), 0.8),
-                pelo=mat('o_pelo', (0.008, 0.007, 0.007), 0.8, sheen=.05, bump=.6, escala=500), ojo=mat('o_ojo', (0.90, 0.89, 0.86), 0.25, emit=(1, 1, 1), strength=0.10),
-                iris=mat('o_iris', (0.008, 0.007, 0.006), 0.12), labio=mat('o_labio', (0.22, 0.14, 0.12), 0.7), boca=mat('o_boca', (0.02, 0.008, 0.008), 0.6),
-                audifono=mat('o_audifono', (0.028, 0.028, 0.030), 0.45, bump=.2))
+    return dict(piel=mat('o_piel', (0.68, 0.57, 0.50), 0.74, bump=.35, escala=900, motas=.06, escala_motas=40),
+                playera=mat('o_playera', (0.60, 0.21, 0.09), 0.94, sheen=.25, bump=.9, escala=1100, motas=.16),
+                chamarra=mat('o_chamarra', (0.078, 0.074, 0.072), 0.96, sheen=.3, bump=1.0, escala=1000, motas=.22),
+                cierre=mat('o_cierre', (0.045, 0.043, 0.042), 0.9, sheen=.2, bump=.8, escala=1000),
+                pantalon=mat('o_pantalon', (0.020, 0.020, 0.024), 0.95, sheen=.2, bump=.9, escala=1000, motas=.2),
+                zapato=mat('o_zapato', (0.03, 0.03, 0.032), 0.8, bump=.4), suela=mat('o_suela', (0.30, 0.29, 0.27), 0.8),
+                pelo=mat('o_pelo', (0.011, 0.010, 0.010), 0.62, sheen=.07, bump=.7, escala=1400, motas=.3, escala_motas=200),
+                ojo=mat('o_ojo', (0.90, 0.89, 0.86), 0.25, emit=(1, 1, 1), strength=0.10),
+                iris=mat('o_iris', (0.008, 0.007, 0.006), 0.12), labio=mat('o_labio', (0.52, 0.38, 0.35), 0.7, bump=.3, escala=900),
+                labio_linea=mat('o_labio_linea', (0.16, 0.09, 0.08), 0.7), boca=mat('o_boca', (0.02, 0.008, 0.008), 0.6),
+                audifono=mat('o_audifono', (0.028, 0.028, 0.030), 0.45, bump=.3, escala=600))
 
 def pelo_owen(p):
     c = p.c
     def cap(bm):
-        vs = elipsoide(bm, (0, -.002, 1.63), (.0865, .1005, .124), 40, 28)
-        bmesh.ops.delete(bm, geom=[v for v in vs if (v.co.z < 1.676 and v.co.y < .012) or v.co.z < 1.60], context='VERTS')
+        C, Rr = Vector((0, -.002, 1.63)), Vector((.0850, .0990, .1225))
+        vs = elipsoide(bm, C, Rr, 40, 28)
+        bmesh.ops.delete(bm, geom=[v for v in vs if (v.co.z < 1.698 and v.co.y < .012) or v.co.z < 1.603], context='VERTS')
+        rnd = random.Random(7)
+        def punto(az, pol, lift):  # az: 0 al frente; pol: 0 arriba
+            return Vector((C.x + Rr.x * lift * math.sin(pol) * math.sin(az), C.y - Rr.y * lift * math.sin(pol) * math.cos(az), C.z + Rr.z * lift * math.cos(pol)))
+        N = 46
+        for k in range(N):
+            az = 2 * math.pi * (k + rnd.uniform(-.3, .3)) / N; frente = abs((az + math.pi) % (2 * math.pi) - math.pi) < math.radians(72)
+            fin = math.acos(((1.694 if frente else 1.598) - C.z) / Rr.z) + rnd.uniform(-.03, .03)
+            ini = rnd.uniform(.05, .22); lift = rnd.uniform(1.012, 1.045); deriva = rnd.uniform(-.16, .16); pasos = 6
+            pts = [punto(az + deriva * (j / pasos), ini + (fin - ini) * j / pasos, lift) for j in range(pasos + 1)]
+            cadena(bm, pts, rnd.uniform(.013, .017), rnd.uniform(.0085, .011) if frente else rnd.uniform(.006, .009), 8)
         for dx in (-.030, 0, .030):  # mechón de tres puntas
-            capsula(bm, (dx, -.056, 1.728), (dx * 1.35, -.082, 1.752), .016, .005, 10)
+            capsula(bm, (dx, -.050, 1.735), (dx * 1.3, -.084, 1.745), .0165, .007, 10)
     p.parte('cabeza', c['pelo'], cap)
     def aud(bm):
         for sx in (1, -1):

@@ -9,7 +9,7 @@ def reiniciar():
 
 def col(): return bpy.context.scene.collection
 
-def mat(name, color, rough=0.8, emit=None, strength=0.0, trans=0.0, metal=0.0, sheen=0.0, bump=0.0, escala=700.0):
+def mat(name, color, rough=0.8, emit=None, strength=0.0, trans=0.0, metal=0.0, sheen=0.0, bump=0.0, escala=700.0, motas=0.0, escala_motas=60.0):
     m = bpy.data.materials.new(name); m.use_nodes = True
     nt = m.node_tree; b = nt.nodes['Principled BSDF']
     b.inputs['Base Color'].default_value = (*color, 1); b.inputs['Roughness'].default_value = rough
@@ -21,7 +21,23 @@ def mat(name, color, rough=0.8, emit=None, strength=0.0, trans=0.0, metal=0.0, s
         tc = nt.nodes.new('ShaderNodeTexCoord'); n = nt.nodes.new('ShaderNodeTexNoise'); n.inputs['Scale'].default_value = escala
         n.inputs['Detail'].default_value = 4.0; bp = nt.nodes.new('ShaderNodeBump'); bp.inputs['Strength'].default_value = bump; bp.inputs['Distance'].default_value = 0.002
         nt.links.new(tc.outputs['Object'], n.inputs['Vector']); nt.links.new(n.outputs[0], bp.inputs['Height']); nt.links.new(bp.outputs['Normal'], b.inputs['Normal'])
+    if motas:  # variación de tono, como tela teñida a mano
+        tc2 = nt.nodes.new('ShaderNodeTexCoord'); n2 = nt.nodes.new('ShaderNodeTexNoise'); n2.inputs['Scale'].default_value = escala_motas; n2.inputs['Detail'].default_value = 6.0
+        mx = nt.nodes.new('ShaderNodeMix'); mx.data_type = 'RGBA'
+        mx.inputs[6].default_value = (*[max(0.0, v * (1 - motas)) for v in color], 1); mx.inputs[7].default_value = (*[min(1.0, v * (1 + motas)) for v in color], 1)
+        nt.links.new(tc2.outputs['Object'], n2.inputs['Vector']); nt.links.new(n2.outputs[0], mx.inputs[0]); nt.links.new(mx.outputs[2], b.inputs['Base Color'])
     return m
+
+def cadena(bm, pts, r0, r1=None, seg=8):
+    r1 = r0 if r1 is None else r1; n = len(pts) - 1
+    for i in range(n): capsula(bm, pts[i], pts[i + 1], r0 + (r1 - r0) * i / n, r0 + (r1 - r0) * (i + 1) / n, seg)
+
+def anillo(bm, p0, p1, t, radio, grosor, inclin=0.0, n=14, seg=6):
+    """Arruga: un aro alrededor de una extremidad, a la fracción t entre p0 y p1."""
+    p0, p1 = Vector(p0), Vector(p1); eje = (p1 - p0).normalized(); c = p0.lerp(p1, t)
+    u = eje.orthogonal().normalized(); v = eje.cross(u)
+    pts = [c + radio * (math.cos(a) * u + math.sin(a) * v) + eje * (inclin * math.cos(a)) for a in [2 * math.pi * k / n for k in range(n + 1)]]
+    cadena(bm, pts, grosor, grosor, seg)
 
 def terminar(bm, name, material, smooth=True):
     me = bpy.data.meshes.new(name); bm.to_mesh(me); bm.free()

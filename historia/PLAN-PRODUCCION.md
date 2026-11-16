@@ -1,6 +1,6 @@
 # Plan de producción, versión 2 (Autor: BS)
 
-Estado: **plan aprobado el 16 de noviembre. Fases 1 y 2 terminadas; en espera de aprobación de Owen en 3D para pasar a la fase 3.**
+Estado: **plan aprobado el 16 de noviembre. Fases 1 y 2 terminadas; forma de Owen aprobada y acabado afinado con código. En espera de aprobación del acabado para pasar a la fase 3.**
 Regla de trabajo: primero el plan, después las herramientas, y nada se usa ni se gasta sin aprobación.
 
 ## Lo que pide Edgar (16 de noviembre de 2026)
@@ -80,7 +80,17 @@ Formato de trabajo aprobado por Edgar: 1280×720 a 12 cuadros por segundo.
 Hecho: Owen en 3D con esqueleto de 46 huesos (columna, cuello, cabeza, brazos, piernas, cinco dedos por mano, ojos, párpados, cejas, boca). Mide 1.76 m. Las poses se resuelven con huesos de largo fijo; codos y rodillas doblan como bisagra.
 Archivos: `3d/base3d.py`, `3d/personaje.py`, `3d/hoja_owen.py`; imágenes en `3d/pruebas/fase2/` y hojas `3d/pruebas/fase2-hoja-*.jpg`; página `owen-3d.html`.
 Entregado: 4 vistas, 6 expresiones (calma, atento, duda, alarma, miedo, decisión), 12 poses del vocabulario y 3 acercamientos de manos. Sin gasto de créditos.
-Pendiente de afinar tras la aprobación: textura de tela, arrugas, detalle de cara y pelo.
+Forma aprobada por Edgar el 16 de noviembre. Acabado: opción A, afinar con código.
+
+### Acabado afinado con código (16 de noviembre de 2026)
+Sin cambiar proporciones, esqueleto ni poses:
+- Cara: nariz con puente, punta y aletas; labios; pestañas que siguen al párpado; párpado inferior; arco de cejas.
+- Pelo: 46 mechones sobre el casco, con fleco recto que deja ver las cejas, y mechón de tres puntas.
+- Tela: grano y variación de tono en piel, playera, chamarra y pantalón.
+- Chamarra: orilla con cierre, cuello, bajo, bolsillos y pliegues en codos, rodillas y tobillos.
+Imágenes anteriores para comparar: `3d/pruebas/fase2-antes/`.
+Límites que siguen: la ropa es rígida (no ondea ni se arruga al moverse), el mechón todavía se lee algo duro de frente, y el grano de la tela casi no se nota en tomas abiertas.
+Opción B (pasada de imagen con IA sobre el render) queda para una toma terminada, con cotización y aprobación.
 
 ## Riesgo principal
 El tiempo de render. Nueve minutos a 24 cuadros por segundo son casi 13,000 cuadros. Si cada cuadro tarda 10 segundos, son 36 horas de cálculo. Salidas posibles: animar a 12 cuadros por segundo (aspecto de stop motion, que va con los títeres), renderizar a menor tamaño, o hacerlo por tandas. La fase 1 lo mide antes de comprometer nada.
