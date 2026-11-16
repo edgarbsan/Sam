@@ -23,23 +23,7 @@ poste = [B.tubo('poste', (-.272, -.235, 0), (-.272, -.235, 2.0), .017, tubo)]
 def ver(objs, si):
     for x in objs: x.hide_render = not si
 
-SENT = dict(cadera=(0, .04, -.455), tronco=(-4, 0, 0))
-PIES_S = {s: dict(pos=(sx * .10, -.37, .085)) for s, sx in (('I', 1), ('D', -1))}
-MANOS_S = {s: dict(pos=(sx * .13, -.25, .575), polo=(sx * .5, .8, -.3), dedos=(0, -1, -.12), palma=(0, 0, -1), curl=.18) for s, sx in (('I', 1), ('D', -1))}
-def sentado(**k):
-    d = dict(SENT); d['piernas'] = PIES_S; d['brazos'] = dict(MANOS_S); d.update(k); return d
-
-CARAS = {
- '1-calma': dict(parpado=.30),
- '2-atento': dict(parpado=.05, ceja=(.0035, .0035), mirada=(1.5, -6, 1.64)),
- '3-duda': dict(parpado=.16, ceja=(.006, -.001), ceja_int=(-4, 10), comisura=(-10, 2), mirada=(-2.5, -6, 1.6)),
- '4-alarma': dict(parpado=-.10, ceja=(.007, .007), ceja_int=(8, 8), abre=.45, ancho=.8),
- '5-miedo': dict(parpado=-.14, ceja=(.006, .006), ceja_int=(24, 24), comisura=(-14, -14), abre=.85, ancho=.9),
- '6-decision': dict(parpado=.26, ceja=(-.0035, -.0035), ceja_int=(-16, -16), comisura=(-5, -5)),
-}
-def brazo_aud(o):
-    cup = o.sigue('cabeza', (.100, .006, 1.622))
-    return dict(pos=tuple(cup + Vector((.070, -.012, -.050))), polo=(.75, -.15, -.65), dedos=(-.42, 0, .9), palma=(-1, 0, .25), curl=.38, pulgar=.3)
+from poses import SENT, PIES_S, MANOS_S, sentado, CARAS, brazo_aud
 POSES = [
  ('01-respirar', True, False, lambda: sentado(cabeza=(3, 0, 0), cara=CARAS['1-calma'])),
  ('02-parpadear', True, False, lambda: sentado(cabeza=(3, 0, 0), cara=dict(parpado=1.0))),

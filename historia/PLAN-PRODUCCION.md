@@ -1,6 +1,6 @@
 # Plan de producción, versión 2 (Autor: BS)
 
-Estado: **plan aprobado el 16 de noviembre. Fases 1 y 2 terminadas; forma de Owen aprobada y acabado afinado con código. En espera de aprobación del acabado para pasar a la fase 3.**
+Estado: **plan aprobado el 16 de noviembre. Fases 1, 2 y 3 terminadas. Owen aprobado (forma y acabado). En espera de aprobación del escenario completo para pasar a la fase 4.**
 Regla de trabajo: primero el plan, después las herramientas, y nada se usa ni se gasta sin aprobación.
 
 ## Lo que pide Edgar (16 de noviembre de 2026)
@@ -91,6 +91,19 @@ Sin cambiar proporciones, esqueleto ni poses:
 Imágenes anteriores para comparar: `3d/pruebas/fase2-antes/`.
 Límites que siguen: la ropa es rígida (no ondea ni se arruga al moverse), el mechón todavía se lee algo duro de frente, y el grano de la tela casi no se nota en tomas abiertas.
 Opción B (pasada de imagen con IA sobre el render) queda para una toma terminada, con cotización y aprobación.
+
+Acabado aprobado por Edgar el 16 de noviembre; el mechón de tres puntas va a la altura de la diadema de los audífonos.
+
+## Resultado de la fase 3 (16 de noviembre de 2026)
+Hecho: el piso de arriba completo y catorce personas sentadas según un mapa de asientos único (`3d/reparto.py`, tabla en `CONTINUIDAD.md`).
+- `3d/autobus.py`: el autobús de dos pisos a escala (asientos tapizados, tubos, botones de parada, ventanas con lluvia, parabrisas, pantalla con texto, escalera de 9 peldaños con narices amarillas y lucecitas, barandal, pasamanos, espejo convexo, carriola plegada, piso de abajo, carretera con faroles, luces de la pista y autos adelante). Dos estados de luz: calma y pánico.
+- `3d/reparto.py`: el reparto con el esqueleto de Owen; cambian estatura, piel, pelo (mechones, chongo, coleta, pelo largo, calvo, gorro), lentes, bigote, barba, bufanda, corbata, capucha, venda de gasa con sangre y curita.
+- `3d/poses.py`: poses y caras compartidas. `3d/escena3.py`: las cámaras y los dos estados. `3d/hoja_reparto.py`: el reparto en fila y en retrato. `3d/rotular_planta.py`: el mapa con números.
+- Imágenes en `3d/pruebas/fase3/`; página `autobus-3d.html`.
+Mejora técnica: las piezas redondas se crean sin recorrer toda la malla; construir a Owen pasó de 63 segundos a 0.3.
+Tiempo medido: unos 90 segundos por imagen fija de calidad (1280×720, 40 muestras) con todo el reparto.
+Pendiente de comprobar en la fase 4: el tiempo por cuadro en modo rápido con todo el reparto.
+Límites: todas las caras son la misma; el corte de la chamarra es igual para todos; en el pánico solo voltean.
 
 ## Riesgo principal
 El tiempo de render. Nueve minutos a 24 cuadros por segundo son casi 13,000 cuadros. Si cada cuadro tarda 10 segundos, son 36 horas de cálculo. Salidas posibles: animar a 12 cuadros por segundo (aspecto de stop motion, que va con los títeres), renderizar a menor tamaño, o hacerlo por tandas. La fase 1 lo mide antes de comprometer nada.

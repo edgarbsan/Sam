@@ -39,9 +39,10 @@ def huesos():
     return H
 
 class Personaje:
-    def __init__(self, nombre, c, pelo=None, extra=None):
-        """c: materiales piel, playera, chamarra, pantalon, zapato, suela, pelo, ojo, iris, labio, boca."""
-        self.nombre = nombre; self.c = c
+    def __init__(self, nombre, c, pelo=None, extra=None, escala_huesos=None, ceja=1.0):
+        """c: materiales piel, playera, chamarra, pantalon, zapato, suela, pelo, ojo, iris, labio, boca.
+        escala_huesos: {hueso: factor}, p. ej. la cabeza más grande de un niño."""
+        self.nombre = nombre; self.c = c; self.escala_huesos = escala_huesos or {}; self.ceja = ceja
         ad = bpy.data.armatures.new(nombre + '_esq'); arm = bpy.data.objects.new(nombre, ad); col().objects.link(arm)
         self.arm, self.ad = arm, ad
         bpy.context.view_layer.objects.active = arm; bpy.ops.object.mode_set(mode='EDIT')
@@ -99,7 +100,7 @@ class Personaje:
                 a = math.radians(25) + (2 * math.pi - math.radians(50)) * k / n
                 borde.append((-.105 * math.sin(a), .004 - .0745 * math.cos(a), .942))
             cadena(bm, borde, .0085, .0085, 8)  # bajo
-        P('pecho', c['cierre'], detalles)
+        P('pecho', c.get('cierre', c['chamarra']), detalles)
         P('cuello', c['piel'], lambda bm: capsula(bm, (0, .008, 1.42), (0, .002, 1.54), .049, .046))
         def cabeza(bm):
             cz, rz = 1.615, .115
@@ -129,7 +130,7 @@ class Personaje:
                 bmesh.ops.delete(bm, geom=[v for v in vs if v.co.z < eye.z + .0062 or v.co.y > eye.y + .007], context='VERTS')
             P(f'parpado.{s}', c['piel'], parp)
             P(f'parpado.{s}', c['pelo'], lambda bm: cadena(bm, [eye + Vector((.01835 * math.sin(a), -.01835 * math.cos(a), .0063)) for a in [math.radians(-72 + 144 * k / 10) for k in range(11)]], .0013, .0013, 6))
-            P(f'ceja.{s}', c['pelo'], lambda bm: capsula(bm, (sx * .013, -.0935, 1.668), (sx * .054, -.083, 1.667), .0046, .0036, 10))
+            P(f'ceja.{s}', c['pelo'], lambda bm: capsula(bm, (sx * .013, -.0935, 1.668), (sx * .054, -.083, 1.667), .0046 * self.ceja, .0036 * self.ceja, 10))
             P(f'comisura.{s}', c['labio_linea'], lambda bm: capsula(bm, tuple(BOCA + Vector((0, -.0012, 0))), (sx * .0215, -.0772, BOCA.z), .0021, .0013, 10))
         P('boca', c['boca'], lambda bm: elipsoide(bm, BOCA + Vector((0, .002, -.001)), (.016, .006, .012), 16, 10))
         for s, sx in LADOS:
@@ -180,6 +181,7 @@ class Personaje:
     def reposo(self):
         for pb in self.arm.pose.bones:
             pb.matrix_basis = Matrix.Identity(4)
+        for n, f in self.escala_huesos.items(): self.pb(n).scale = (f, f, f)
         self.pb('boca').scale = (1, 1, .06)
         self.mirada.location = (0, -6, OJO_Z); self.act()
 
@@ -270,8 +272,8 @@ def pelo_owen(p):
             ini = rnd.uniform(.05, .22); lift = rnd.uniform(1.012, 1.045); deriva = rnd.uniform(-.16, .16); pasos = 6
             pts = [punto(az + deriva * (j / pasos), ini + (fin - ini) * j / pasos, lift) for j in range(pasos + 1)]
             cadena(bm, pts, rnd.uniform(.013, .017), rnd.uniform(.0085, .011) if frente else rnd.uniform(.006, .009), 8)
-        for dx in (-.030, 0, .030):  # mechón de tres puntas
-            capsula(bm, (dx, -.050, 1.735), (dx * 1.3, -.084, 1.745), .0165, .007, 10)
+        for dx, alto in ((-.028, .030), (0, .036), (.028, .030)):  # mechón de tres puntas, a la altura de la diadema
+            cadena(bm, [(dx, .016, 1.744), (dx * 1.05, .032, 1.742 + alto * .75), (dx * 1.1, .058, 1.742 + alto)], .0150, .0045, 10)
     p.parte('cabeza', c['pelo'], cap)
     def aud(bm):
         for sx in (1, -1):

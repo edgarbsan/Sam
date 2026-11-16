@@ -51,15 +51,38 @@ def caja(name, mn, mx, material):
         v.co = Vector(((v.co.x + .5) * (mx[0] - mn[0]) + mn[0], (v.co.y + .5) * (mx[1] - mn[1]) + mn[1], (v.co.z + .5) * (mx[2] - mn[2]) + mn[2]))
     return terminar(bm, name, material, smooth=False)
 
+_PLANTILLAS = {}
+def _esfera(u, v):
+    """Esfera unitaria (coordenadas y caras), creada una sola vez por resolución."""
+    k = (u, v)
+    if k not in _PLANTILLAS:
+        t = bmesh.new(); bmesh.ops.create_uvsphere(t, u_segments=u, v_segments=v, radius=1.0); t.verts.index_update()
+        _PLANTILLAS[k] = ([tuple(x.co) for x in t.verts], [tuple(x.index for x in f.verts) for f in t.faces]); t.free()
+    return _PLANTILLAS[k]
+
+def _agrega(bm, coords, caras, M):
+    """Agrega geometría al bmesh sin recorrer lo que ya tiene (crear primitivas con bmesh.ops tarda más mientras más grande es la malla)."""
+    vs = [bm.verts.new(M @ Vector(c)) for c in coords]
+    for f in caras:
+        try: bm.faces.new([vs[i] for i in f])
+        except ValueError: pass
+    return vs
+
 def capsula(bm, p0, p1, r0, r1, seg=20):
     p0, p1 = Vector(p0), Vector(p1); d = p1 - p0
     rot = d.to_track_quat('Z', 'Y').to_matrix().to_4x4()
-    bmesh.ops.create_cone(bm, cap_ends=False, segments=seg, radius1=r0, radius2=r1, depth=d.length, matrix=Matrix.Translation((p0 + p1) / 2) @ rot)
-    bmesh.ops.create_uvsphere(bm, u_segments=seg, v_segments=10, radius=r0, matrix=Matrix.Translation(p0) @ rot)
-    bmesh.ops.create_uvsphere(bm, u_segments=seg, v_segments=10, radius=r1, matrix=Matrix.Translation(p1) @ rot)
+    L = d.length; n = seg
+    anillo0 = [(r0 * math.cos(2 * math.pi * i / n), r0 * math.sin(2 * math.pi * i / n), -L / 2) for i in range(n)]
+    anillo1 = [(r1 * math.cos(2 * math.pi * i / n), r1 * math.sin(2 * math.pi * i / n), L / 2) for i in range(n)]
+    caras = [(i, (i + 1) % n, n + (i + 1) % n, n + i) for i in range(n)]
+    _agrega(bm, anillo0 + anillo1, caras, Matrix.Translation((p0 + p1) / 2) @ rot)
+    co, ca = _esfera(seg, 10)
+    _agrega(bm, co, ca, Matrix.Translation(p0) @ rot @ Matrix.Scale(r0, 4))
+    _agrega(bm, co, ca, Matrix.Translation(p1) @ rot @ Matrix.Scale(r1, 4))
 
 def elipsoide(bm, c, r, seg=24, vseg=14):
-    return bmesh.ops.create_uvsphere(bm, u_segments=seg, v_segments=vseg, radius=1.0, matrix=Matrix.Translation(c) @ Matrix.Diagonal((r[0], r[1], r[2], 1)))['verts']
+    co, ca = _esfera(seg, vseg)
+    return _agrega(bm, co, ca, Matrix.Translation(c) @ Matrix.Diagonal((r[0], r[1], r[2], 1)))
 
 def tubo(name, p0, p1, r, material):
     bm = bmesh.new(); capsula(bm, p0, p1, r, r, 12); return terminar(bm, name, material)

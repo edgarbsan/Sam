@@ -38,6 +38,27 @@ Reglas fijadas por Edgar. Revisar antes de dibujar cualquier toma nueva.
 - La ambulancia pasa por la ventana en la escena 3; no hay avión en ninguna ventana después del inicio.
 - Sin narración. Todo se cuenta con imagen y sonido.
 
+## Mapa de asientos del piso de arriba (fase 3, 3D)
+Filas numeradas del frente (1) hacia atrás (7). Lado de la pista: ventanas a las luces de la pista; es el lado de Owen. Lado de la escalera: el hueco de la escalera queda atrás de la fila 7.
+Fuente única: `3d/reparto.py` (`MAPA`). Ninguna toma cambia a nadie de asiento.
+
+| Fila | Lado de la pista, ventana | Lado de la pista, pasillo | Lado de la escalera, pasillo | Lado de la escalera, ventana |
+|---|---|---|---|---|
+| 1 | La madre (curita en el índice derecho, bufanda) | Su hijo, unos 4 años | vacío | Señora de abrigo vino |
+| 2 | Joven dormido, gorro negro | vacío | Joven con celular, coleta | El adolescente, sudadera azul, graba |
+| 3 | **Owen** | El señor del paraguas (lentes, bigote) | El ejecutivo, al teléfono | Señor calvo |
+| 4 | El hombre de la venda (sube en la escena 3; se lo llevan en la 4) | vacío | vacío | vacío |
+| 5 | Pareja, ella | Pareja, él (barba) | vacío | vacío |
+| 6 | vacío | vacío | vacío | Mujer de gorro rojo |
+| 7 | vacío | vacío | vacío | vacío |
+
+Objetos fijos: la carriola plegada de la madre, recargada en el barandal de la escalera; el espejo convexo en la pared del fondo, sobre la escalera; la pantalla del frente, arriba del parabrisas.
+Después de la escena 4 el asiento del hombre de la venda queda vacío.
+
+## Luz (fase 3)
+- **Calma** (escenas 1 a 4): los ocho tubos del techo encendidos, luz cálida, baja y pareja. Afuera: noche, lluvia en los vidrios, luces de la pista del lado de Owen y faroles de la carretera. Abajo, la escalera con lucecitas blancas en cada peldaño. Pantalla: «Flughafen BER · Terminal 1-2».
+- **Pánico** (escenas 5 a 7, propuesta): los tubos de atrás apagados y los de adelante fríos y bajos; la escalera y el piso de abajo en rojo; un destello azul por las ventanas del lado de Owen; la linterna del celular del adolescente apuntando a la escalera. Pantalla: cinta roja «ACHTUNG · UNFALL AM FLUGHAFEN».
+
 ## Rasgos que se siembran
 - Madre: curita en un dedo (sangre en la escena 8). Señor: paraguas (palanca en la 7). Ejecutivo: gritos (atraen al infectado). Adolescente: graba todo.
 
